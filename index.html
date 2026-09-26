@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K2SBFSH1EF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K2SBFSH1EF');
+</script>
+            <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterOS – Smarter Disaster Response Platform</title>
+    <meta
+      name="description"
+      content="AI-powered disaster coordination platform for real-time hazard reporting, AI verification, interactive disaster mapping, emergency resource sharing, and community safety."
+    />
+
+    <!-- Google Fonts: Poppins (Headings) & Inter (Body) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                dark: '#0F172A',
+                green: '#10B981',
+                forest: '#166534',
+                sky: '#0EA5E9',
+                red: '#EF4444',
+                amber: '#F59E0B',
+              },
+            },
+            keyframes: {
+              marquee: {
+                '0%': { transform: 'translateX(0%)' },
+                '100%': { transform: 'translateX(-50%)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'scale(0.95)' },
+                '100%': { opacity: '1', transform: 'scale(1)' },
+              },
+            },
+            animation: {
+              marquee: 'marquee 28s linear infinite',
+              fadeIn: 'fadeIn 0.3s ease-out forwards',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Three.js CDN for 3D Globe -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Leaflet CSS & JS for Live Disaster Map -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Chart.js CDN for Impact Graph -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+      /* ==========================================================================
+   DisasterOS Master Responsive & Mobile Navigation Engine
+   Target Page: index.html
+   File: index2.css
+   Description: Advanced additive CSS rules tailored specifically for index.html with
+   enhanced mobile navigation bar responsiveness, touch-friendly header controls,
+   collapsible mobile menu styling, fluid typography, and multi-device grid rules.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VIEWPORT & SAFE AREA VARIABLES
+   -------------------------------------------------------------------------- */
+:root {
+  --nav-bg-dark: rgba(15, 23, 42, 0.92);
+  --nav-border: rgba(255, 255, 255, 0.12);
+  --brand-emerald: #10B981;
+  --brand-red: #EF4444;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
+
+*, ::before, ::after {
+  box-sizing: inherit;
+}
+
+body {
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  overflow-x: hidden;
+  word-break: break-word;
+}
+
+/* Prevent image & canvas overflow */
+img, video, canvas, svg, iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Touch active feedback on buttons */
+button, a, input, select {
+  touch-action: manipulation;
+}
+
+button:active, a.btn:active {
+  transform: scale(0.97);
+  transition: transform 0.1s ease;
+}
+
+/* --------------------------------------------------------------------------
+   2. MOBILE NAVIGATION BAR & HEADER OPTIMIZATIONS (< 768px)
+   -------------------------------------------------------------------------- */
+#main-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 100%;
+}
+
+@media (max-width: 767px) {
+  /* Compact Header Container on Mobile */
+  #main-header {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+
+  #main-header nav {
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
+    padding-top: 0.625rem !important;
+    padding-bottom: 0.625rem !important;
+    border-radius: 1rem !important;
+    background: var(--nav-bg-dark) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--nav-border) !important;
+  }
+
+  /* Responsive Brand Logo on Mobile */
+  #main-header a span {
+    font-size: 1.1rem !important;
+    letter-spacing: -0.02em;
+  }
+
+  /* Compact Action Buttons on Mobile Navigation */
+  #main-header button,
+  #main-header a.btn {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* Mobile Dropdown Drawer Menu Enhancements */
+  #mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0.5rem;
+    right: 0.5rem;
+    margin-top: 0.5rem !important;
+    padding: 1.25rem !important;
+    border-radius: 1.25rem !important;
+    background: rgba(15, 23, 42, 0.98) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8) !important;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 60;
+  }
+
+  /* Mobile Drawer Links Touch Height & Spacing */
+  #mobile-menu a {
+    display: flex !important;
+    align-items: center !important;
+    padding: 0.75rem 0.875rem !important;
+    min-height: 44px;
+    border-radius: 0.75rem;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: #e2e8f0 !important;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  #mobile-menu a:hover,
+  #mobile-menu a:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #10B981 !important;
+  }
+
+  /* Emergency SOS Top Ticker Responsiveness */
+  .top-sos-bar {
+    font-size: 0.7rem !important;
+    padding: 0.35rem 0.5rem !important;
+  }
+}
+
+/* Extra Small Phones (<= 400px e.g. iPhone SE / Galaxy S8) */
+@media (max-width: 400px) {
+  #main-header nav {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  #main-header a span {
+    font-size: 0.95rem !important;
+  }
+
+  /* Hide non-essential button labels on extremely narrow screens */
+  #main-header .btn-label-hide {
+    display: none !important;
+  }
+}
+
+/* Horizontal Scrollable Quick Link Bar for Mobile Navigation fallback */
+.mobile-nav-scroll {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.mobile-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   3. HERO SECTION & CONTENT GRID RESPONSIVENESS
+   -------------------------------------------------------------------------- */
+@media (max-width: 639px) {
+  #hero {
+    padding-top: 1.25rem !important;
+    padding-bottom: 2.5rem !important;
+  }
+
+  /* Full Width Buttons in Hero on Mobile */
+  #hero .flex-wrap {
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  #hero .flex-wrap button,
+  #hero .flex-wrap a {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  /* Card Padding and Radius Adapters */
+  .glass-card, .dashboard-card {
+    padding: 1rem !important;
+    border-radius: 1rem !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. MAP & INTERACTIVE CANVAS ADAPTATION
+   -------------------------------------------------------------------------- */
+#live-map, #disaster-map-container, .leaflet-container {
+  width: 100% !important;
+  max-width: 100% !important;
+  border-radius: 1.25rem;
+  touch-action: pan-y !important;
+}
+
+@media (max-width: 639px) {
+  #live-map, #disaster-map-container, .leaflet-container {
+    height: 340px !important;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  #live-map, #disaster-map-container, .leaflet-container {
+    height: 440px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   5. RESPONSIVE MODAL DIALOG OVERLAYS (Report Hazard Modal, Portal Modal)
+   -------------------------------------------------------------------------- */
+@media (max-width: 639px) {
+  #report-modal > div,
+  #portal-modal > div,
+  .modal-dialog {
+    width: 95% !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 1.25rem !important;
+    border-radius: 1.25rem !important;
+    margin: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   6. TABLET & DESKTOP ENHANCEMENTS (>= 768px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  /* Hide Mobile Menu Drawer on Larger Viewports */
+  #mobile-menu {
+    display: none !important;
+  }
+}
+
+/* Ultra-Wide Screen Constraints */
+@media (min-width: 1536px) {
+  .max-w-7xl {
+    max-width: 1440px !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   7. ACCESSIBILITY & PRINT SUPPORTS
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  #main-header, footer, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0b1120;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #1e293b;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #10b981;
+      }
+
+      /* Custom Leaflet Dark Map Overrides */
+      .leaflet-container {
+        background-color: #0b1120 !important;
+        font-family: 'Inter', sans-serif;
+      }
+      .leaflet-popup-content-wrapper {
+        background: #0f172a !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5) !important;
+      }
+      .leaflet-popup-tip {
+        background: #0f172a !important;
+      }
+
+      /* Hide custom cursor on touch screens */
+      @media (pointer: coarse) {
+        .custom-cursor {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0F172A] text-slate-100 font-sans antialiased selection:bg-[#10B981] selection:text-[#0F172A] min-h-screen overflow-x-hidden relative"
+  >
+    <!-- Glowing Custom Cursor -->
+    <div
+      id="cursor-dot"
+      class="custom-cursor fixed top-0 left-0 w-2.5 h-2.5 bg-[#10B981] rounded-full pointer-events-none z-50 transition-transform duration-75 -translate-x-1/2 -translate-y-1/2 shadow-[0_0_12px_#10B981]"
+    ></div>
+    <div
+      id="cursor-ring"
+      class="custom-cursor fixed top-0 left-0 w-8 h-8 border border-[#10B981]/50 rounded-full pointer-events-none z-50 transition-all duration-300 -translate-x-1/2 -translate-y-1/2"
+    ></div>
+
+    <!-- Background Atmosphere Blurs & Floating Particles -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div
+        class="absolute top-[-10%] right-[-10%] w-[650px] h-[650px] bg-[#166534] rounded-full blur-[160px] opacity-25"
+      ></div>
+      <div
+        class="absolute bottom-[-10%] left-[-10%] w-[550px] h-[550px] bg-[#0EA5E9] rounded-full blur-[140px] opacity-15"
+      ></div>
+      <div
+        class="absolute inset-0 opacity-40"
+        style="
+          background-image: radial-gradient(
+            circle at 2px 2px,
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 0
+          );
+          background-size: 40px 40px;
+        "
+      ></div>
+      <canvas id="particle-canvas" class="absolute inset-0 w-full h-full opacity-60"></canvas>
+    </div>
+
+
+
+    <!-- Main Navigation Bar -->
+    <header class="sticky top-0 z-40 px-4 sm:px-8 py-3 transition-all duration-300" id="main-header">
+      <div class="max-w-7xl mx-auto">
+        <nav
+          class="flex items-center justify-between px-6 py-3.5 rounded-2xl bg-[#0F172A]/85 backdrop-blur-xl border border-white/10 shadow-2xl shadow-black/40"
+        >
+          <a href="#" class="flex items-center gap-2.5 group">
+            <div
+              class="w-8 h-8 bg-[#10B981] rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform"
+            >
+              <div class="w-4 h-4 border-2 border-slate-900 rounded-sm rotate-45"></div>
+            </div>
+            <span class="font-heading font-extrabold text-xl tracking-tight text-white">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+          </a>
+
+          <div class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-400">
+            <a href="#hero" class="text-white hover:text-[#10B981] transition">Home</a>
+            <a href="miss.html" class="hover:text-white transition">SafeIn</a>
+            <a href="x.html" class="hover:text-white transition">Community</a>
+            <a href="live.html" class="hover:text-white transition">Live Map</a>
+
+            <a href="prepare.html" class="hover:text-white transition">Preparedness</a>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button
+              onclick=""
+              class="hidden lg:flex px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white transition cursor-pointer"
+            >
+              <a href="user.html">Login</a>
+            </button>
+            <button
+              onclick="openReportModal()"
+              class="px-5 py-2.5 bg-[#EF4444] hover:bg-red-600 rounded-full text-xs sm:text-sm font-bold text-white shadow-lg shadow-red-500/20 transition-all transform hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="siren" class="w-4 h-4 text-amber-300"></i>
+              <span>Report Hazard</span>
+            </button>
+            <button
+              onclick="toggleMobileMenu()"
+              class="md:hidden p-2 text-slate-300 hover:text-white cursor-pointer"
+              aria-label="Toggle menu"
+            >
+              <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Mobile Drawer -->
+        <div
+          id="mobile-menu"
+          class="hidden md:hidden mt-2 p-5 rounded-2xl bg-[#0F172A]/95 backdrop-blur-2xl border border-white/10 space-y-4 shadow-2xl text-sm"
+        >
+          <a href="#hero" onclick="toggleMobileMenu()" class="block text-white font-medium hover:text-[#10B981]">Home</a>
+          <a href="miss.html" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium hover:text-white">SafeIn</a>
+          <a href="x.html" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium hover:text-white">Community</a>
+          <a href="live.html" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium hover:text-white">Live Map</a>
+          
+          <a href="prepare.html" onclick="toggleMobileMenu()" class="block text-slate-300 font-medium hover:text-white">Preparedness</a>
+          <div class="pt-3 border-t border-white/10 flex flex-col gap-2">
+            <button
+              onclick="openReportModal(); toggleMobileMenu();"
+              class="w-full bg-[#EF4444] text-white py-2.5 rounded-xl font-bold text-sm cursor-pointer"
+            >
+              Report Hazard Now
+            </button>
+            <button
+              onclick="openPortalModal(); toggleMobileMenu();"
+              class="w-full bg-white/10 text-white py-2.5 rounded-xl font-medium text-sm border border-white/10 cursor-pointer"
+            >
+              Responder Portal Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative pt-6 pb-16 md:pt-12 md:pb-24 px-4 sm:px-8 z-10">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+            <div
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#166534]/30 border border-[#10B981]/30 text-[#10B981] text-xs font-bold uppercase tracking-widest"
+            >
+              <span class="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></span>
+              <span>AI System Online</span>
+            </div>
+
+            <h1
+              class="font-heading text-4xl sm:text-6xl lg:text-7xl font-bold leading-[1.1] tracking-tight text-white"
+            >
+              Smarter Disaster <br />
+              Response
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#0EA5E9]"
+              >
+                Starts Here.
+              </span>
+            </h1>
+
+            <p class="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              DisasterOS combines real-time hazard reporting, AI-powered verification, and interactive mapping into one intelligent ecosystem for resilient communities.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-5 pt-2">
+              <a
+                href="live.html"
+                class="w-full sm:w-auto px-8 py-4 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold rounded-xl text-base shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2.5 transform hover:-translate-y-0.5"
+              >
+                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                <span>Explore Live Map</span>
+              </a>
+              <a
+                href="prepare.html"
+                class="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white font-bold rounded-xl text-base hover:bg-white/10 transition-all flex items-center justify-center gap-2.5"
+              >
+                <i data-lucide="play" class="w-4 h-4 fill-white"></i>
+                <span>How It Works</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- 3D Globe Visualization Container -->
+          <div class="lg:col-span-5 relative">
+            <div
+              class="relative aspect-square w-full max-w-[460px] mx-auto rounded-full border border-white/5 flex items-center justify-center p-6 sm:p-8"
+            >
+              <div
+                class="absolute inset-0 rounded-full border border-dashed border-slate-700/60 animate-[spin_24s_linear_infinite]"
+              ></div>
+              <div class="absolute inset-4 rounded-full border border-white/5"></div>
+
+              <div
+                class="w-full h-full rounded-full bg-gradient-to-br from-[#166534] via-[#0F172A] to-[#0EA5E9] shadow-[inset_0_0_90px_rgba(0,0,0,0.85)] border border-white/10 relative overflow-hidden flex items-center justify-center"
+              >
+                <div id="globe-container" class="w-full h-full cursor-grab active:cursor-grabbing"></div>
+
+                <!-- Floating Active Alert Widget -->
+                <div
+                  class="absolute bottom-6 right-6 bg-black/50 backdrop-blur-xl p-4 rounded-2xl border border-white/10 max-w-[200px] shadow-2xl pointer-events-none"
+                >
+                  <div
+                    class="text-[10px] text-slate-400 uppercase font-bold mb-1 tracking-wider flex items-center gap-1.5"
+                  >
+                    <span class="w-2 h-2 rounded-full bg-[#EF4444] animate-ping"></span>
+                    Active Alert
+                  </div>
+                  <div class="text-xs font-bold text-white leading-snug">
+                    Flood detected in Silver Valley District.
+                  </div>
+                  <div class="w-full h-1.5 bg-white/10 rounded-full mt-3 overflow-hidden">
+                    <div class="w-3/4 h-full bg-[#EF4444]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Stats & Hazard Quick Pills Bar -->
+        <div
+          class="mt-16 pt-8 border-t border-white/5 bg-black/20 backdrop-blur-lg rounded-2xl p-6 sm:p-8 flex flex-col lg:flex-row items-center justify-between gap-8"
+        >
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-8 lg:gap-16 w-full">
+            <div class="flex flex-col">
+              <span id="stat-reports" class="text-3xl font-heading font-bold text-white">0k+</span>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">
+                Reports Verified
+              </span>
+            </div>
+            <div class="flex flex-col">
+              <span id="stat-cities" class="text-3xl font-heading font-bold text-white">0+</span>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">
+                Cities Protected
+              </span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-3xl font-heading font-bold text-white">4.2s</span>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">
+                Avg Response Time
+              </span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-3xl font-heading font-bold text-white">98%</span>
+              <span class="text-xs text-slate-400 uppercase font-bold tracking-widest mt-1">
+                Accuracy Rating
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center gap-3 border-t lg:border-t-0 lg:border-l border-white/10 pt-6 lg:pt-0 lg:pl-10 shrink-0"
+          >
+            <a
+              href="#categories"
+              class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg hover:bg-[#10B981]/20 hover:border-[#10B981]/50 transition-all cursor-pointer"
+              title="Wildfires"
+              >🔥</a
+            >
+            <a
+              href="#categories"
+              class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg hover:bg-[#0EA5E9]/20 hover:border-[#0EA5E9]/50 transition-all cursor-pointer"
+              title="Floods"
+              >🌊</a
+            >
+            <a
+              href="#categories"
+              class="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-lg hover:bg-[#10B981]/20 hover:border-[#10B981]/50 transition-all cursor-pointer"
+              title="Cyclones"
+              >🌪️</a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trusted Partners Infinite Marquee -->
+    <section class="py-8 bg-black/30 border-y border-white/5 overflow-hidden z-10 relative">
+      <div class="max-w-7xl mx-auto px-4 mb-4 text-center">
+        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+          Trusted By First Responders, NGOs & Government Partners Worldwide
+        </p>
+      </div>
+
+      <div class="relative flex overflow-x-hidden">
+        <div
+          class="animate-marquee whitespace-nowrap flex items-center gap-12 text-sm font-semibold text-slate-300"
+        >
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="cross" class="w-4 h-4 text-red-500"></i>
+            <span class="text-slate-200">Global Red Cross Alliance</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="globe" class="w-4 h-4 text-[#0EA5E9]"></i>
+            <span class="text-slate-200">UNDRR Disaster Network</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-[#10B981]"></i>
+            <span class="text-slate-200">FEMA Emergency Corps</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-500"></i>
+            <span class="text-slate-200">WHO Disaster Taskforce</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="waves" class="w-4 h-4 text-sky-400"></i>
+            <span class="text-slate-200">Maritime Coast Guard</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="cpu" class="w-4 h-4 text-[#10B981]"></i>
+            <span class="text-slate-200">Environmental AI Coalition</span>
+          </div>
+          <!-- Duplicate set for infinite marquee loop -->
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="cross" class="w-4 h-4 text-red-500"></i>
+            <span class="text-slate-200">Global Red Cross Alliance</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="globe" class="w-4 h-4 text-[#0EA5E9]"></i>
+            <span class="text-slate-200">UNDRR Disaster Network</span>
+          </div>
+          <div class="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-white/5 border border-white/5">
+            <i data-lucide="shield-check" class="w-4 h-4 text-[#10B981]"></i>
+            <span class="text-slate-200">FEMA Emergency Corps</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full z-10 relative">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <div
+          class="inline-block px-3.5 py-1.5 rounded-full bg-[#166534]/30 border border-[#10B981]/30 text-[#10B981] text-xs font-bold uppercase tracking-wider mb-4"
+        >
+          Comprehensive Disaster Architecture
+        </div>
+        <h2 class="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+          Intelligent Tools Built for Every Phase of Crisis Response
+        </h2>
+        <p class="text-slate-400 mt-4 text-base sm:text-lg leading-relaxed">
+          From early satellite hazard detection to community resource redistribution, DisasterOS unifies critical crisis tools into one cohesive, fail-safe platform.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/40 backdrop-blur-xl transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-500/10 group flex flex-col justify-between"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-[#10B981]/10 text-[#10B981] flex items-center justify-center mb-5">
+              <i data-lucide="brain-circuit" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-white mb-2">AI Report Verification</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Multi-modal AI filters rumors and duplicates by cross-referencing satellite feeds, metadata, and weather telemetry.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500 group-hover:text-[#10B981] transition-colors">
+            <span class="font-semibold">Explore Module</span><span>→</span>
+          </div>
+        </div>
+
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/40 backdrop-blur-xl transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-500/10 group flex flex-col justify-between"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-[#0EA5E9]/10 text-[#0EA5E9] flex items-center justify-center mb-5">
+              <i data-lucide="map" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-white mb-2">Live Disaster Map</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Interactive map displaying flood extents, wildfire perimeters, shelter capacities, and safe evacuation route planning.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500 group-hover:text-[#10B981] transition-colors">
+            <span class="font-semibold">Explore Module</span><span>→</span>
+          </div>
+        </div>
+
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/40 backdrop-blur-xl transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-500/10 group flex flex-col justify-between"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-5">
+              <i data-lucide="box" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-white mb-2">Resource Exchange</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Matching engine connecting surplus clean water, generators, medical supplies, and shelter space with displaced families.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500 group-hover:text-[#10B981] transition-colors">
+            <span class="font-semibold">Explore Module</span><span>→</span>
+          </div>
+        </div>
+
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/40 backdrop-blur-xl transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-emerald-500/10 group flex flex-col justify-between"
+        >
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-red-500/10 text-red-400 flex items-center justify-center mb-5">
+              <i data-lucide="user-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-heading font-bold text-lg text-white mb-2">Family Safe Check</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">
+              Low-bandwidth one-tap check-in sending satellite & SMS safety confirmations to loved ones even during cellular congestion.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-slate-500 group-hover:text-[#10B981] transition-colors">
+            <span class="font-semibold">Explore Module</span><span>→</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI Intelligence Simulator Section -->
+    <section
+      id="ai-engine"
+      class="py-24 px-4 sm:px-8 bg-[#090E1A] text-white relative overflow-hidden border-y border-white/5 z-10"
+    >
+      <div class="absolute inset-0 pointer-events-none opacity-25">
+        <canvas id="neural-canvas" class="w-full h-full"></canvas>
+      </div>
+
+      <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div class="lg:col-span-6 space-y-6">
+            <div
+              class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-bold uppercase tracking-wider"
+            >
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>DisasterOS AI Core Engine</span>
+            </div>
+
+            <h2 class="font-heading font-black text-3xl sm:text-5xl tracking-tight leading-tight">
+              AI Verification <br />
+              <span
+                class="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#0EA5E9]"
+              >
+                Eliminating Crisis Noise in Seconds.
+              </span>
+            </h2>
+
+            <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+              During natural disasters, dispatchers are overwhelmed by unverified claims. DisasterOS AI processes thousands of raw citizen submissions per minute, assigning accuracy scores and priority ranks automatically.
+            </p>
+
+            <div class="space-y-4 pt-2">
+              <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div
+                  class="w-10 h-10 rounded-xl bg-[#10B981]/20 text-[#10B981] flex items-center justify-center shrink-0"
+                >
+                  <i data-lucide="check-check" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm">Multi-Source Satellite & Radar Cross-Check</h4>
+                  <p class="text-slate-400 text-xs mt-0.5">
+                    Compares citizen images against Sentinel-2 optical imagery and weather radar.
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-start gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div
+                  class="w-10 h-10 rounded-xl bg-[#0EA5E9]/20 text-[#0EA5E9] flex items-center justify-center shrink-0"
+                >
+                  <i data-lucide="layers" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white text-sm">Duplicate Incident Cluster Deduplication</h4>
+                  <p class="text-slate-400 text-xs mt-0.5">
+                    Groups 50+ posts reporting the same fallen tree or river breach into a single entry.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive AI Simulator Box -->
+          <div class="lg:col-span-6">
+            <div
+              class="p-6 sm:p-8 rounded-3xl bg-[#0F172A]/90 backdrop-blur-2xl border border-white/10 shadow-2xl space-y-6"
+            >
+              <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#EF4444] animate-ping"></span>
+                  <span class="font-heading font-bold text-sm text-slate-200"
+                    >Interactive AI Verification Simulator</span
+                  >
+                </div>
+                <span class="text-[11px] bg-[#10B981]/20 text-[#10B981] px-2.5 py-1 rounded-full font-mono font-semibold"
+                  >MODEL v4.2 IDLE</span
+                >
+              </div>
+
+              <p class="text-xs text-slate-400">
+                Select a raw citizen submission below to test the neural AI triage pipeline:
+              </p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  id="preset-flood"
+                  onclick="selectPreset('flood')"
+                  class="p-3 rounded-2xl text-left border bg-[#10B981]/15 border-[#10B981] text-white cursor-pointer"
+                >
+                  <div class="text-xs font-bold text-[#10B981] flex items-center justify-between">
+                    <span>🌊 Flash Flood Report</span>
+                    <span class="text-[10px] bg-black/40 px-1.5 py-0.5 rounded">RAW</span>
+                  </div>
+                  <p class="text-[11px] text-slate-300 truncate mt-1">
+                    "Flash flood near West River Bridge..."
+                  </p>
+                </button>
+
+                <button
+                  id="preset-fire"
+                  onclick="selectPreset('fire')"
+                  class="p-3 rounded-2xl text-left border bg-white/5 border-white/10 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <div class="text-xs font-bold text-amber-400 flex items-center justify-between">
+                    <span>🔥 Ridge Hill Wildfire</span>
+                    <span class="text-[10px] bg-black/40 px-1.5 py-0.5 rounded">RAW</span>
+                  </div>
+                  <p class="text-[11px] text-slate-300 truncate mt-1">
+                    "Wildfire smoke advancing rapidly..."
+                  </p>
+                </button>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-black/60 border border-white/10 font-mono text-xs space-y-3">
+                <div class="flex items-center justify-between text-slate-400 text-[11px]">
+                  <span>INPUT PAYLOAD:</span>
+                  <span class="text-[#10B981] font-semibold">GPS: 34.0522° N, 118.2437° W</span>
+                </div>
+
+                <div
+                  id="ai-payload-text"
+                  class="p-3 rounded-xl bg-slate-900 text-slate-200 border border-white/5 font-sans leading-relaxed text-xs"
+                >
+                  "Flash flood near West River Bridge! Water 3ft deep, 2 vehicles submerged!"
+                </div>
+
+                <button
+                  id="run-ai-btn"
+                  onclick="executeAiPipeline()"
+                  class="w-full py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold rounded-xl transition flex items-center justify-center gap-2 text-xs font-sans shadow-lg shadow-emerald-500/20 cursor-pointer"
+                >
+                  <i data-lucide="play" class="w-4 h-4 fill-[#0F172A]"></i>
+                  <span>Execute AI Verification Pipeline</span>
+                </button>
+
+                <!-- Pipeline Steps Output Container -->
+                <div
+                  id="ai-steps-container"
+                  class="hidden pt-3 border-t border-white/10 space-y-2 text-slate-300 font-mono text-[11px]"
+                >
+                  <div class="flex items-center justify-between">
+                    <span>1. Computer Vision & NLP Analysis...</span>
+                    <span id="step-1-status" class="text-slate-500">Processing...</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span>2. Sentinel-2 Satellite Cross-Match...</span>
+                    <span id="step-2-status" class="text-slate-500">Waiting</span>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <span>3. Cluster Deduplication Check...</span>
+                    <span id="step-3-status" class="text-slate-500">Waiting</span>
+                  </div>
+
+                  <div
+                    id="ai-result-box"
+                    class="hidden mt-4 p-3.5 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] font-sans text-xs space-y-1 animate-fadeIn"
+                  >
+                    <div class="flex items-center justify-between font-bold text-sm text-white">
+                      <span class="flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-[#10B981]"></i>
+                        VERIFIED PRIORITY 1 INCIDENT
+                      </span>
+                      <span class="bg-[#10B981] text-[#0F172A] px-2 py-0.5 rounded text-[10px] font-mono font-bold"
+                        >99.2% CONFIDENCE</span
+                      >
+                    </div>
+                    <p class="text-[11px] text-slate-300 pt-1">
+                      DisasterOS AI automatically dispatched alert to West Sector Rescue Command & triggered acoustic early warning sirens.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    
+    
+
+    <!-- Disaster Categories Section -->
+    <section id="categories" class="py-24 px-4 sm:px-8 bg-[#090E1A] border-y border-white/5 z-10 relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto mb-16">
+          <h2 class="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+            Multi-Hazard Response Modules
+          </h2>
+          <p class="text-slate-400 mt-3 text-base">
+            Customized AI triage models adapted for distinct natural disaster dynamics.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div
+            onclick="openCategoryModal('flood')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="waves" class="w-6 h-6 text-[#0EA5E9]"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Floods</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">14 Active Alerts</p>
+            </div>
+          </div>
+
+          <div
+            onclick="openCategoryModal('wildfire')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="flame" class="w-6 h-6 text-amber-500"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Wildfires</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">8 Active Alerts</p>
+            </div>
+          </div>
+
+          <div
+            onclick="openCategoryModal('cyclone')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="wind" class="w-6 h-6 text-[#10B981]"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Cyclones</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">3 Active Alerts</p>
+            </div>
+          </div>
+
+          <div
+            onclick="openCategoryModal('landslide')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="mountain" class="w-6 h-6 text-slate-300"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Landslides</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">5 Active Alerts</p>
+            </div>
+          </div>
+
+          <div
+            onclick="openCategoryModal('earthquake')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="activity" class="w-6 h-6 text-red-400"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Earthquakes</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">2 Active Alerts</p>
+            </div>
+          </div>
+
+          <div
+            onclick="openCategoryModal('storm')"
+            class="p-5 rounded-3xl bg-white/5 border border-white/10 hover:border-[#10B981]/50 hover:bg-white/10 cursor-pointer transition-all text-center space-y-3 group transform hover:-translate-y-1 shadow-lg"
+          >
+            <div
+              class="w-12 h-12 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:scale-110 transition-transform"
+            >
+              <i data-lucide="cloud-lightning" class="w-6 h-6 text-[#0EA5E9]"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">Severe Storms</h4>
+              <p class="text-[11px] text-slate-400 mt-0.5">11 Active Alerts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Community Impact Graph Section -->
+    <section class="py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full z-10 relative">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="lg:col-span-5 space-y-6">
+          <div
+            class="inline-block px-3.5 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-bold uppercase tracking-wider"
+          >
+            Proven Metric Impact
+          </div>
+          <h2 class="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+            Quantifiable Acceleration in Lifesaving Operations
+          </h2>
+          <p class="text-slate-400 text-base leading-relaxed">
+            By digitizing emergency triage and automating donor-to-victim supply routing, DisasterOS reduces critical response latency by up to 68%.
+          </p>
+
+          <div class="space-y-5 pt-2">
+            <div>
+              <div class="flex justify-between text-xs font-bold mb-1.5">
+                <span class="text-slate-200">First Responder Triage Acceleration</span>
+                <span class="text-[#10B981] font-mono">68% Faster</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-[#166534] to-[#10B981] w-[68%] rounded-full"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-bold mb-1.5">
+                <span class="text-slate-200">Relief Supply Match Efficiency</span>
+                <span class="text-[#0EA5E9] font-mono">94% Accuracy</span>
+              </div>
+              <div class="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-[#0EA5E9] to-[#10B981] w-[94%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-2xl shadow-2xl">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-heading font-bold text-white text-base">
+              Average Emergency Response Speed (Minutes)
+            </h3>
+            <span class="text-xs bg-[#10B981]/20 text-[#10B981] px-3 py-1 rounded-full font-semibold font-mono">
+              2021 vs 2026
+            </span>
+          </div>
+
+          <div class="h-[280px] w-full">
+            <canvas id="impact-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Preparedness Checklist Section -->
+    <section id="preparedness" class="py-24 px-4 sm:px-8 bg-[#090E1A] border-y border-white/5 z-10 relative">
+      <div class="max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          <div class="lg:col-span-5 space-y-6">
+            <div
+              class="inline-block px-3.5 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/30 text-[#10B981] text-xs font-bold uppercase tracking-wider"
+            >
+              Citizen Readiness
+            </div>
+            <h2 class="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+              Interactive 72-Hour Survival Kit Readiness
+            </h2>
+            <p class="text-slate-400 text-base leading-relaxed">
+              Before disaster strikes, ensure your household has an emergency go-bag prepared. Check off items below to calculate your readiness score:
+            </p>
+
+            <div class="space-y-3 pt-2">
+              <button
+                onclick="alert('Downloading Flood Survival Plan PDF guide...')"
+                class="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm text-left group cursor-pointer"
+              >
+                <span class="flex items-center gap-3 font-medium text-slate-200 group-hover:text-[#10B981]">
+                  <i data-lucide="file-text" class="w-5 h-5 text-[#10B981]"></i> Flood Survival Guide (PDF)
+                </span>
+                <i data-lucide="download" class="w-4 h-4 text-slate-400 group-hover:text-white"></i>
+              </button>
+
+              <button
+                onclick="alert('Downloading Earthquake Manual PDF guide...')"
+                class="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition text-sm text-left group cursor-pointer"
+              >
+                <span class="flex items-center gap-3 font-medium text-slate-200 group-hover:text-[#0EA5E9]">
+                  <i data-lucide="file-text" class="w-5 h-5 text-[#0EA5E9]"></i> Earthquake Manual (PDF)
+                </span>
+                <i data-lucide="download" class="w-4 h-4 text-slate-400 group-hover:text-white"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Checklist Container -->
+          <div
+            class="lg:col-span-7 p-6 sm:p-8 rounded-3xl bg-[#0F172A]/90 border border-white/10 shadow-2xl space-y-6"
+          >
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h3 class="font-heading font-bold text-lg text-white">
+                  72-Hour Household Go-Bag
+                </h3>
+                <p class="text-xs text-slate-400">Select items you have packed and ready:</p>
+              </div>
+              <div class="text-right">
+                <span id="readiness-score" class="font-heading font-black text-3xl text-[#10B981]">0%</span>
+                <div class="text-[10px] text-slate-400 uppercase tracking-widest">Prepared</div>
+              </div>
+            </div>
+
+            <div class="w-full h-3 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
+              <div
+                id="readiness-progress-bar"
+                class="h-full bg-gradient-to-r from-[#166534] to-[#10B981] rounded-full transition-all duration-500 w-[0%]"
+              ></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="checklist-grid">
+              <!-- Checklist items dynamically injected -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section
+    <section class="py-24 px-4 sm:px-8 max-w-7xl mx-auto w-full z-10 relative">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <h2 class="font-heading font-extrabold text-3xl sm:text-5xl text-white tracking-tight">
+          Voices From the Frontline
+        </h2>
+        <p class="text-slate-400 mt-2 text-base">
+          Hear from dispatchers, community volunteers, and emergency commanders.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-2xl shadow-xl space-y-4 hover:border-[#10B981]/40 transition-all flex flex-col justify-between"
+        >
+          <div class="space-y-3">
+            <div class="flex items-center gap-1 text-amber-400">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed italic">
+              "During the River Basin flooding, DisasterOS AI filtered out hundreds of duplicate posts and pinpointed 12 trapped families within minutes. It saved lives."
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[#166534] text-[#10B981] font-heading font-bold flex items-center justify-center text-sm border border-[#10B981]/30 shrink-0"
+            >
+              MC
+            </div>
+            <div>
+              <div class="font-bold text-white text-sm">Capt. Marcus Chen</div>
+              <div class="text-xs text-slate-400">First Responder • Western Sector</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-2xl shadow-xl space-y-4 hover:border-[#10B981]/40 transition-all flex flex-col justify-between"
+        >
+          <div class="space-y-3">
+            <div class="flex items-center gap-1 text-amber-400">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed italic">
+              "The offline SMS safe check feature allowed our family to know everyone was safe even when cell towers went down during the cyclone."
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[#166534] text-[#10B981] font-heading font-bold flex items-center justify-center text-sm border border-[#10B981]/30 shrink-0"
+            >
+              EA
+            </div>
+            <div>
+              <div class="font-bold text-white text-sm">Elena Alarez</div>
+              <div class="text-xs text-slate-400">Safety Volunteer • District 4</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-2xl shadow-xl space-y-4 hover:border-[#10B981]/40 transition-all flex flex-col justify-between"
+        >
+          <div class="space-y-3">
+            <div class="flex items-center gap-1 text-amber-400">
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+              <i data-lucide="star" class="w-4 h-4 fill-amber-400"></i>
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed italic">
+              "The emergency resource exchange matched 15 metric tons of clean water with local shelters seamlessly. An essential disaster platform."
+            </p>
+          </div>
+          <div class="pt-4 border-t border-white/10 flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-[#166534] text-[#10B981] font-heading font-bold flex items-center justify-center text-sm border border-[#10B981]/30 shrink-0"
+            >
+              RP
+            </div>
+            <div>
+              <div class="font-bold text-white text-sm">Dr. Rajesh Patel</div>
+              <div class="text-xs text-slate-400">Relief Logistics • Taskforce</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Call to Action Banner
+    <section class="py-20 px-4 sm:px-8 max-w-7xl mx-auto w-full my-8 z-10 relative">
+      <div
+        class="bg-gradient-to-r from-[#166534] via-[#10B981] to-[#0EA5E9] rounded-3xl p-10 sm:p-16 text-center text-[#0F172A] shadow-2xl relative overflow-hidden"
+      >
+        <div
+          class="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"
+        ></div>
+
+        <div class="max-w-3xl mx-auto space-y-6 relative z-10">
+          <h2 class="font-heading font-black text-3xl sm:text-5xl tracking-tight text-slate-900">
+            Together We Build Safer, More Resilient Communities.
+          </h2>
+          <p class="text-slate-900/80 text-base sm:text-lg max-w-xl mx-auto font-medium">
+            Join the DisasterOS emergency network today. Free for citizens, emergency responders, and humanitarian organizations.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+            <button
+              onclick="openReportModal()"
+              class="w-full sm:w-auto bg-[#0F172A] hover:bg-slate-900 text-white font-bold px-8 py-4 rounded-xl text-sm shadow-xl transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="siren" class="w-4 h-4 text-[#EF4444]"></i>
+              <span>Report Hazard Incident Now</span>
+            </button>
+            <button
+              onclick="openPortalModal()"
+              class="w-full sm:w-auto bg-white/30 hover:bg-white/40 text-slate-950 font-bold px-8 py-4 rounded-xl text-sm border border-white/40 transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Responder Portal Access</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <!-- Footer -->
+    <footer
+      class="bg-[#080D18] text-slate-400 pt-16 pb-12 px-4 sm:px-8 border-t border-white/5 relative z-10"
+    >
+      <div
+        class="absolute top-0 left-0 right-0 h-4 overflow-hidden pointer-events-none opacity-20"
+      >
+        <svg
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
+          class="w-full h-full fill-[#10B981]"
+        >
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+          ></path>
+        </svg>
+      </div>
+
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 mb-12">
+        <div class="md:col-span-4 space-y-4">
+          <a href="#" class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-[#10B981] rounded-lg flex items-center justify-center">
+              <div class="w-4 h-4 border-2 border-slate-900 rounded-sm rotate-45"></div>
+            </div>
+            <span class="font-heading font-extrabold text-xl text-white">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+          </a>
+          <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+            DisasterOS is an open-access AI disaster management platform unifying early warnings, geotagged incident triage, and peer-to-peer relief logistics.
+          </p>
+          <div class="flex items-center gap-3 pt-2">
+            <a
+              href="#"
+              class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 hover:text-[#10B981] transition"
+            >
+              <i data-lucide="twitter" class="w-4 h-4"></i>
+            </a>
+            <a
+              href="#"
+              class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 hover:text-[#10B981] transition"
+            >
+              <i data-lucide="github" class="w-4 h-4"></i>
+            </a>
+            <a
+              href="#"
+              class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 hover:text-[#10B981] transition"
+            >
+              <i data-lucide="globe" class="w-4 h-4"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="md:col-span-2 space-y-3">
+          <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">
+            Quick Links
+          </h4>
+          <ul class="space-y-2 text-xs">
+            <li><a href="#hero" class="hover:text-[#10B981] transition">Home</a></li>
+            <li><a href="#features" class="hover:text-[#10B981] transition">Features</a></li>
+            <li><a href="#ai-engine" class="hover:text-[#10B981] transition">AI Engine</a></li>
+            <li><a href="#live-map" class="hover:text-[#10B981] transition">Live Map</a></li>
+            <li><a href="#preparedness" class="hover:text-[#10B981] transition">Preparedness</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3 space-y-3">
+          <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">
+            Emergency Hotlines
+          </h4>
+          <ul class="space-y-2 text-xs text-slate-300 font-mono">
+            <li class="flex items-center gap-2 text-red-400">
+              <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> Emergency SOS: <b>911 / 112</b>
+            </li>
+            <li>🌊 Flood Helpline: <b>1-800-FLOODS</b></li>
+            <li>🔥 Fire Control: <b>1-800-FIRE-00</b></li>
+            <li>🏥 Medical Dispatch: <b>1-800-RED-CROSS</b></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-3 space-y-3">
+          <h4 class="font-heading font-bold text-white text-xs uppercase tracking-wider">
+            Crisis Alert Newsletter
+          </h4>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Subscribe for localized severe weather & hazard bulletins:
+          </p>
+          <form onsubmit="handleNewsletter(event)" class="space-y-2">
+            <input
+              type="email"
+              id="newsletter-email"
+              placeholder="Enter email address"
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+            />
+            <button
+              type="submit"
+              class="w-full bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="send" class="w-3.5 h-3.5"></i> Subscribe Bulletins
+            </button>
+          </form>
+          <div
+            id="newsletter-success"
+            class="hidden p-3 rounded-xl bg-[#10B981]/15 border border-[#10B981]/40 text-[#10B981] text-xs font-semibold"
+          >
+            ✓ Subscribed to emergency bulletins!
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4"
+      >
+        <div>© 2026 DisasterOS. Built for Global Community Resilience & Safety.</div>
+        <div class="flex items-center gap-6">
+          <a href="#" class="hover:text-slate-300 transition">Privacy Policy</a>
+          <a href="#" class="hover:text-slate-300 transition">Terms of Service</a>
+          <a href="#" class="hover:text-slate-300 transition">API Telemetry Docs</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Modal 1: Report Hazard Modal -->
+    <div
+      id="report-modal"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+    >
+      <div
+        class="p-6 sm:p-8 rounded-3xl bg-[#0F172A] border border-white/10 max-w-lg w-full text-white shadow-2xl relative space-y-5 max-h-[90vh] overflow-y-auto"
+      >
+        <button
+          onclick="closeReportModal()"
+          class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+          <div
+            class="w-10 h-10 rounded-xl bg-[#EF4444]/20 text-[#EF4444] flex items-center justify-center shrink-0"
+          >
+            <i data-lucide="siren" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 class="font-heading font-bold text-lg text-white">Report Hazard Incident</h3>
+            <p class="text-xs text-slate-400">Analyzed immediately by DisasterOS AI Neural Pipeline</p>
+          </div>
+        </div>
+
+        <form onsubmit="submitHazardReport(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Disaster Category</label>
+            <select
+              id="report-category"
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-[#10B981]"
+            >
+              <option value="Flood">🌊 Flash Flood / River Overflow</option>
+              <option value="Wildfire">🔥 Wildfire / Brush Fire</option>
+              <option value="Cyclone">🌀 Cyclone / High Winds</option>
+              <option value="Landslide">⛰️ Landslide / Mudslide</option>
+              <option value="Earthquake">🌋 Earthquake Tremor</option>
+              <option value="Storm">🌩️ Severe Storm & Lightning</option>
+              <option value="Infrastructure">🚧 Road Blockage / Power Outage</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Incident Location / Address</label>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                id="report-location"
+                placeholder="e.g. West River Bridge, Sector 4"
+                required
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+              />
+              <button
+                type="button"
+                onclick="captureGpsLocation()"
+                id="gps-btn"
+                class="px-3.5 py-2.5 rounded-xl font-semibold flex items-center gap-1.5 shrink-0 text-xs transition bg-slate-800 text-[#10B981] hover:bg-slate-700 cursor-pointer"
+              >
+                <i data-lucide="crosshair" class="w-4 h-4"></i>
+                <span id="gps-btn-text">GPS</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-300 mb-1">Severity Level</label>
+              <select
+                id="report-severity"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-[#10B981]"
+              >
+                <option value="P1-Critical">P1 - Critical (Immediate Risk)</option>
+                <option value="P2-High">P2 - High Warning</option>
+                <option value="P3-Moderate">P3 - Moderate Hazard</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-300 mb-1">Contact Phone (Optional)</label>
+              <input
+                type="tel"
+                placeholder="+1 (555) 019-2831"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Incident Description</label>
+            <textarea
+              id="report-desc"
+              rows="3"
+              placeholder="Describe water depth, trapped individuals, road blockage..."
+              required
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3.5 bg-[#EF4444] hover:bg-red-600 text-white font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-red-500/20 cursor-pointer"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Submit Geo-Tagged Incident</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 2: Responder Portal Modal -->
+    <div
+      id="portal-modal"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+    >
+      <div
+        class="p-6 sm:p-8 rounded-3xl bg-[#0F172A] border border-white/10 max-w-md w-full text-white shadow-2xl relative space-y-5"
+      >
+        <button
+          onclick="closePortalModal()"
+          class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <div class="text-center space-y-2">
+          <div
+            class="w-12 h-12 rounded-2xl bg-[#10B981]/20 text-[#10B981] mx-auto flex items-center justify-center"
+          >
+            <i data-lucide="shield-check" class="w-6 h-6"></i>
+          </div>
+          <h3 class="font-heading font-bold text-xl text-white">Responder Command Console</h3>
+          <p class="text-xs text-slate-400">
+            Authorized access for emergency commanders & dispatchers
+          </p>
+        </div>
+
+        <form onsubmit="handlePortalLogin(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Agency Access ID</label>
+            <input
+              type="text"
+              required
+              placeholder="RESP-9420-US"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+            />
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-300 mb-1">Security Token / Key</label>
+            <input
+              type="password"
+              required
+              placeholder="••••••••••••"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-[#10B981]"
+            />
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 cursor-pointer"
+          >
+            <i data-lucide="lock" class="w-4 h-4"></i>
+            <span>Enter Command Console</span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 3: Category Detail Modal -->
+    <div
+      id="category-modal"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+    >
+      <div
+        class="p-6 sm:p-8 rounded-3xl bg-[#0F172A] border border-white/10 max-w-lg w-full text-white shadow-2xl relative space-y-5 max-h-[90vh] overflow-y-auto"
+      >
+        <button
+          onclick="closeCategoryModal()"
+          class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer"
+        >
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+
+        <div class="flex items-center gap-3 border-b border-white/10 pb-4">
+          <div
+            class="w-12 h-12 rounded-2xl bg-[#10B981]/20 text-[#10B981] flex items-center justify-center shrink-0"
+          >
+            <i data-lucide="shield-alert" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h3 id="cat-modal-title" class="font-heading font-bold text-xl text-white">
+              Response Telemetry
+            </h3>
+            <p id="cat-modal-incidents" class="text-xs text-slate-400">Active Incidents Detected</p>
+          </div>
+        </div>
+
+        <div class="space-y-4 text-xs">
+          <div>
+            <span class="font-bold text-[#10B981] uppercase tracking-wider text-[10px]">
+              AI Sensor Pipeline
+            </span>
+            <div
+              id="cat-modal-telemetry"
+              class="p-3 rounded-xl bg-slate-900 border border-white/5 text-slate-200 mt-1 font-mono text-[11px]"
+            ></div>
+          </div>
+
+          <div>
+            <span class="font-bold text-slate-300 uppercase tracking-wider text-[10px]">
+              Overview & Dynamics
+            </span>
+            <p id="cat-modal-desc" class="text-slate-300 leading-relaxed mt-1"></p>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <span class="font-bold text-[#10B981] uppercase tracking-wider text-[10px]">
+              Immediate Citizen Safety Steps
+            </span>
+            <div id="cat-modal-steps" class="space-y-2"></div>
+          </div>
+
+          <div class="pt-4 flex gap-3">
+            <button
+              onclick="closeCategoryModal(); openReportModal();"
+              class="w-full bg-[#EF4444] hover:bg-red-600 text-white font-bold py-3 rounded-xl transition text-xs flex items-center justify-center gap-2 shadow-lg shadow-red-500/20 cursor-pointer"
+            >
+              Report Active Incident
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Embedded Application JavaScript Logic -->
+    <script>
+      // Initialize Lucide Icons
+      document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        initCustomCursor();
+        initParticleCanvas();
+        initStatsCounter();
+        init3DGlobe();
+        initNeuralCanvas();
+        initLeafletMap();
+        initImpactChart();
+        initChecklist();
+      });
+
+      // 1. Custom Glowing Cursor
+      function initCustomCursor() {
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        if (!dot || !ring) return;
+
+        window.addEventListener('mousemove', (e) => {
+          dot.style.left = e.clientX + 'px';
+          dot.style.top = e.clientY + 'px';
+          ring.style.left = e.clientX + 'px';
+          ring.style.top = e.clientY + 'px';
+        });
+
+        document.querySelectorAll('button, a, select, input, textarea').forEach((el) => {
+          el.addEventListener('mouseenter', () => {
+            ring.style.transform = 'translate(-50%, -50%) scale(1.6)';
+            ring.style.borderColor = '#10B981';
+          });
+          el.addEventListener('mouseleave', () => {
+            ring.style.transform = 'translate(-50%, -50%) scale(1)';
+          });
+        });
+      }
+
+      // 2. Floating Particle Canvas
+      function initParticleCanvas() {
+        const canvas = document.getElementById('particle-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width = (canvas.width = window.innerWidth);
+        let height = (canvas.height = window.innerHeight);
+
+        window.addEventListener('resize', () => {
+          width = canvas.width = window.innerWidth;
+          height = canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        for (let i = 0; i < 35; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            radius: Math.random() * 2.5 + 1,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+            alpha: Math.random() * 0.3 + 0.1,
+          });
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, width, height);
+          particles.forEach((p) => {
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(16, 185, 129, ${p.alpha})`;
+            ctx.fill();
+          });
+          requestAnimationFrame(render);
+        }
+        render();
+      }
+
+      // 3. Stats Count-Up Animation
+      function initStatsCounter() {
+        const reportsEl = document.getElementById('stat-reports');
+        const citiesEl = document.getElementById('stat-cities');
+        let count = 0;
+        const interval = setInterval(() => {
+          count++;
+          if (reportsEl) reportsEl.innerText = (count * 0.284).toFixed(1) + 'k+';
+          if (citiesEl) citiesEl.innerText = Math.floor(count * 17) + '+';
+          if (count >= 50) {
+            clearInterval(interval);
+            if (reportsEl) reportsEl.innerText = '14.2k+';
+            if (citiesEl) citiesEl.innerText = '850+';
+          }
+        }, 40);
+      }
+
+      // 4. Three.js 3D Wireframe Globe
+      function init3DGlobe() {
+        const container = document.getElementById('globe-container');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(
+          45,
+          container.clientWidth / container.clientHeight,
+          0.1,
+          1000
+        );
+        camera.position.z = 3.2;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        container.appendChild(renderer.domElement);
+
+        const geometry = new THREE.SphereGeometry(1, 48, 48);
+        const material = new THREE.MeshPhongMaterial({
+          color: 0x166534,
+          emissive: 0x064e3b,
+          wireframe: true,
+          transparent: true,
+          opacity: 0.85,
+        });
+        const globe = new THREE.Mesh(geometry, material);
+        scene.add(globe);
+
+        const atmosphereGeo = new THREE.SphereGeometry(1.08, 32, 32);
+        const atmosphereMat = new THREE.MeshBasicMaterial({
+          color: 0x0ea5e9,
+          transparent: true,
+          opacity: 0.18,
+          wireframe: true,
+        });
+        const atmosphere = new THREE.Mesh(atmosphereGeo, atmosphereMat);
+        scene.add(atmosphere);
+
+        const pinGeo = new THREE.SphereGeometry(0.03, 16, 16);
+        const pinMatRed = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+        const pinMatAmber = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+
+        const pin1 = new THREE.Mesh(pinGeo, pinMatRed);
+        pin1.position.set(0.6, 0.5, 0.65);
+        globe.add(pin1);
+
+        const pin2 = new THREE.Mesh(pinGeo, pinMatAmber);
+        pin2.position.set(-0.7, 0.2, 0.7);
+        globe.add(pin2);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
+        scene.add(ambientLight);
+        const dirLight = new THREE.DirectionalLight(0x10b981, 1.8);
+        dirLight.position.set(5, 3, 5);
+        scene.add(dirLight);
+
+        let isDragging = false;
+        let prevMouse = { x: 0, y: 0 };
+
+        container.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          prevMouse = { x: e.clientX, y: e.clientY };
+        });
+        window.addEventListener('mouseup', () => (isDragging = false));
+        container.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const deltaX = e.clientX - prevMouse.x;
+          const deltaY = e.clientY - prevMouse.y;
+          globe.rotation.y += deltaX * 0.006;
+          globe.rotation.x += deltaY * 0.006;
+          prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        function animate() {
+          requestAnimationFrame(animate);
+          if (!isDragging) {
+            globe.rotation.y += 0.003;
+            atmosphere.rotation.y += 0.001;
+          }
+          renderer.render(scene, camera);
+        }
+        animate();
+      }
+
+      // 5. Neural AI Simulator Canvas
+      function initNeuralCanvas() {
+        const canvas = document.getElementById('neural-canvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width = (canvas.width = canvas.parentElement.clientWidth || 600);
+        let height = (canvas.height = canvas.parentElement.clientHeight || 400);
+
+        const nodes = [];
+        for (let i = 0; i < 28; i++) {
+          nodes.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.6,
+            vy: (Math.random() - 0.5) * 0.6,
+          });
+        }
+
+        function render() {
+          ctx.clearRect(0, 0, width, height);
+          nodes.forEach((n) => {
+            n.x += n.vx;
+            n.y += n.vy;
+            if (n.x < 0 || n.x > width) n.vx *= -1;
+            if (n.y < 0 || n.y > height) n.vy *= -1;
+
+            ctx.beginPath();
+            ctx.arc(n.x, n.y, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#10B981';
+            ctx.fill();
+          });
+
+          for (let i = 0; i < nodes.length; i++) {
+            for (let j = i + 1; j < nodes.length; j++) {
+              const dx = nodes[i].x - nodes[j].x;
+              const dy = nodes[i].y - nodes[j].y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 120) {
+                ctx.beginPath();
+                ctx.moveTo(nodes[i].x, nodes[i].y);
+                ctx.lineTo(nodes[j].x, nodes[j].y);
+                ctx.strokeStyle = `rgba(16, 185, 129, ${0.3 * (1 - dist / 120)})`;
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
+              }
+            }
+          }
+          requestAnimationFrame(render);
+        }
+        render();
+      }
+
+      // AI Simulator Logic
+      let currentPreset = 'flood';
+      function selectPreset(type) {
+        currentPreset = type;
+        const pFlood = document.getElementById('preset-flood');
+        const pFire = document.getElementById('preset-fire');
+        const payloadText = document.getElementById('ai-payload-text');
+
+        if (type === 'flood') {
+          pFlood.className = 'p-3 rounded-2xl text-left border bg-[#10B981]/15 border-[#10B981] text-white cursor-pointer';
+          pFire.className = 'p-3 rounded-2xl text-left border bg-white/5 border-white/10 text-slate-400 hover:text-white cursor-pointer';
+          payloadText.innerText = '"Flash flood near West River Bridge! Water 3ft deep, 2 vehicles submerged!"';
+        } else {
+          pFire.className = 'p-3 rounded-2xl text-left border bg-[#10B981]/15 border-[#10B981] text-white cursor-pointer';
+          pFlood.className = 'p-3 rounded-2xl text-left border bg-white/5 border-white/10 text-slate-400 hover:text-white cursor-pointer';
+          payloadText.innerText = '"Wildfire smoke advancing rapidly along Ridge Crest slope! High gust speeds!"';
+        }
+
+        document.getElementById('ai-steps-container').classList.add('hidden');
+        document.getElementById('ai-result-box').classList.add('hidden');
+      }
+
+      function executeAiPipeline() {
+        const container = document.getElementById('ai-steps-container');
+        const s1 = document.getElementById('step-1-status');
+        const s2 = document.getElementById('step-2-status');
+        const s3 = document.getElementById('step-3-status');
+        const resBox = document.getElementById('ai-result-box');
+
+        container.classList.remove('hidden');
+        s1.innerText = 'Processing...';
+        s1.className = 'text-slate-400';
+        s2.innerText = 'Waiting';
+        s2.className = 'text-slate-500';
+        s3.innerText = 'Waiting';
+        s3.className = 'text-slate-500';
+        resBox.classList.add('hidden');
+
+        setTimeout(() => {
+          s1.innerText = '✅ Complete (0.11s)';
+          s1.className = 'text-[#10B981]';
+          s2.innerText = 'Analyzing...';
+          s2.className = 'text-slate-400';
+
+          setTimeout(() => {
+            s2.innerText = '✅ Matched Radar (0.21s)';
+            s2.className = 'text-[#10B981]';
+            s3.innerText = 'Scanning...';
+            s3.className = 'text-slate-400';
+
+            setTimeout(() => {
+              s3.innerText = '✅ Merged 12 Duplicates (0.15s)';
+              s3.className = 'text-[#10B981]';
+              resBox.classList.remove('hidden');
+            }, 600);
+          }, 600);
+        }, 500);
+      }
+
+      // 6. Leaflet Live Disaster Map
+      let leafletMap;
+      let mapMarkers = [];
+
+      function initLeafletMap() {
+        const container = document.getElementById('leaflet-map');
+        if (!container) return;
+
+        leafletMap = L.map(container, {
+          zoomControl: false,
+          attributionControl: false,
+        }).setView([34.0522, -118.2437], 11);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19,
+        }).addTo(leafletMap);
+
+        L.control.zoom({ position: 'bottomright' }).addTo(leafletMap);
+
+        const defaultMarkers = [
+          {
+            lat: 34.0522,
+            lng: -118.2437,
+            type: 'flood',
+            popup: '<b style="color:#EF4444">🌊 Flash Flood (P1 Critical)</b><br/>Water 3ft high near West Bridge.',
+          },
+          {
+            lat: 34.1012,
+            lng: -118.3255,
+            type: 'fire',
+            popup: '<b style="color:#F59E0B">🔥 Wildfire Warning (P2)</b><br/>Ridge Crest slope evac active.',
+          },
+          {
+            lat: 34.0211,
+            lng: -118.1922,
+            type: 'shelter',
+            popup: '<b style="color:#10B981">🏠 Civic Shelter #3</b><br/>450 / 800 Beds Available.',
+          },
+        ];
+
+        defaultMarkers.forEach((item) => {
+          const marker = L.marker([item.lat, item.lng]).addTo(leafletMap);
+          marker.bindPopup(item.popup);
+          marker.incidentType = item.type;
+          mapMarkers.push(marker);
+        });
+      }
+
+      function filterMap(type) {
+        ['all', 'flood', 'fire', 'shelter'].forEach((t) => {
+          const btn = document.getElementById(`map-filter-${t}`);
+          if (btn) {
+            if (t === type) {
+              btn.className = 'px-4 py-2 rounded-xl transition bg-[#10B981] text-[#0F172A] font-bold shadow-lg shadow-emerald-500/20 cursor-pointer';
+            } else {
+              btn.className = 'px-4 py-2 rounded-xl transition text-slate-400 hover:text-white cursor-pointer';
+            }
+          }
+        });
+
+        mapMarkers.forEach((m) => {
+          if (type === 'all' || m.incidentType === type) {
+            m.addTo(leafletMap);
+          } else {
+            m.remove();
+          }
+        });
+      }
+
+      function flyToMap(lat, lng) {
+        if (leafletMap) {
+          leafletMap.flyTo([lat, lng], 13, { duration: 1.2 });
+        }
+      }
+
+      // 7. Community Impact Chart.js
+      function initImpactChart() {
+        const ctx = document.getElementById('impact-chart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['2021', '2022', '2023', '2024', '2025', '2026'],
+            datasets: [
+              {
+                label: 'DisasterOS AI (Minutes)',
+                data: [18, 12, 8, 5, 4, 3.4],
+                borderColor: '#10B981',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+              },
+              {
+                label: 'Legacy Systems (Minutes)',
+                data: [42, 38, 35, 30, 28, 25],
+                borderColor: '#64748B',
+                borderDash: [5, 5],
+                borderWidth: 2,
+                fill: false,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                labels: { color: '#94A3B8', font: { family: 'Inter', size: 12 } },
+              },
+            },
+            scales: {
+              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
+              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94A3B8' } },
+            },
+          },
+        });
+      }
+
+      // 8. Preparedness Checklist Logic
+      const checklistData = [
+        { id: '1', label: '3 Gallons Clean Water / Person' },
+        { id: '2', label: '3-Day Non-Perishable Food Supply' },
+        { id: '3', label: 'First Aid Kit & Prescription Meds' },
+        { id: '4', label: 'Hand-Crank Radio & Flashlight' },
+        { id: '5', label: 'Solar Power Bank & Extra Cables' },
+        { id: '6', label: 'Waterproof Copies of ID & Docs' },
+      ];
+      let checkedItems = new Set();
+
+      function initChecklist() {
+        const container = document.getElementById('checklist-grid');
+        if (!container) return;
+
+        container.innerHTML = checklistData
+          .map(
+            (it) => `
+          <div
+            id="chk-${it.id}"
+            onclick="toggleChecklist('${it.id}')"
+            class="p-3.5 rounded-2xl border cursor-pointer transition flex items-center gap-3 text-xs bg-white/5 border-white/5 text-slate-300 hover:bg-white/10"
+          >
+            <i data-lucide="square" id="icon-${it.id}" class="w-5 h-5 text-slate-500 shrink-0"></i>
+            <span class="font-medium leading-snug">${it.label}</span>
+          </div>
+        `
+          )
+          .join('');
+        lucide.createIcons();
+      }
+
+      function toggleChecklist(id) {
+        const card = document.getElementById(`chk-${id}`);
+        const icon = document.getElementById(`icon-${id}`);
+
+        if (checkedItems.has(id)) {
+          checkedItems.delete(id);
+          card.className = 'p-3.5 rounded-2xl border cursor-pointer transition flex items-center gap-3 text-xs bg-white/5 border-white/5 text-slate-300 hover:bg-white/10';
+          icon.setAttribute('data-lucide', 'square');
+          icon.className = 'w-5 h-5 text-slate-500 shrink-0';
+        } else {
+          checkedItems.add(id);
+          card.className = 'p-3.5 rounded-2xl border cursor-pointer transition flex items-center gap-3 text-xs bg-[#10B981]/15 border-[#10B981]/50 text-white';
+          icon.setAttribute('data-lucide', 'check-square');
+          icon.className = 'w-5 h-5 text-[#10B981] shrink-0';
+        }
+
+        lucide.createIcons();
+        const percent = Math.round((checkedItems.size / checklistData.length) * 100);
+        document.getElementById('readiness-score').innerText = `${percent}%`;
+        document.getElementById('readiness-progress-bar').style.width = `${percent}%`;
+      }
+
+      // Modal Triggers
+      function openReportModal() {
+        document.getElementById('report-modal').classList.remove('hidden');
+      }
+      function closeReportModal() {
+        document.getElementById('report-modal').classList.add('hidden');
+      }
+
+      function openPortalModal() {
+        document.getElementById('portal-modal').classList.remove('hidden');
+      }
+      function closePortalModal() {
+        document.getElementById('portal-modal').classList.add('hidden');
+      }
+
+      const categoryDetails = {
+        flood: {
+          title: 'Floods Response Telemetry',
+          incidents: '14 Active Alerts Detected',
+          telemetry: 'River Water Level & Rainfall Telemetry Mesh',
+          desc: 'Automated monitoring of river gauges, rainfall accumulation, dam outflow rates, and inundation mapping.',
+          steps: [
+            'Move to higher ground immediately when flash flood warning is issued.',
+            'Avoid driving or walking through moving water.',
+            'Elevate essential appliances and turn off main power switches.',
+          ],
+        },
+        wildfire: {
+          title: 'Wildfires Response Telemetry',
+          incidents: '8 Active Alerts Detected',
+          telemetry: 'Thermal Infrared Satellite Telemetry',
+          desc: 'Thermal satellite detection, wind gust vectors, humidity indices, and aerial drone perimeter tracking.',
+          steps: [
+            'Clear flammable debris within 30 feet of home perimeter.',
+            'Prepare emergency go-bag and keep vehicle fuel full.',
+            'Close all windows and vents to prevent ember entry.',
+          ],
+        },
+        cyclone: {
+          title: 'Cyclones Response Telemetry',
+          incidents: '3 Active Alerts Detected',
+          telemetry: 'Atmospheric Pressure Radar Network',
+          desc: 'Barometric pressure trajectory, storm surge height, eyewall gust velocity, and coastal evacuation zones.',
+          steps: [
+            'Board up windows or install storm shutters.',
+            'Secure outdoor furniture and loose objects.',
+            'Stock 72 hours of water and non-perishable food.',
+          ],
+        },
+        landslide: {
+          title: 'Landslides Response Telemetry',
+          incidents: '5 Active Alerts Detected',
+          telemetry: 'Slope Soil Saturation Tilt Sensors',
+          desc: 'Ground strain sensors, soil moisture saturation thresholds, and slope movement tilt telemetry.',
+          steps: [
+            'Watch for unusual sounds like cracking trees or rumbling earth.',
+            'Evacuate immediately if slope instability is detected.',
+            'Avoid river valleys and low-lying drainage paths.',
+          ],
+        },
+        earthquake: {
+          title: 'Earthquakes Response Telemetry',
+          incidents: '2 Active Alerts Detected',
+          telemetry: 'Seismic Accelerometer Acoustic Network',
+          desc: 'P-wave early acoustic detection, shake intensity maps, structural risk ratings, and tsunami warnings.',
+          steps: [
+            'Drop, Cover, and Hold On under sturdy furniture.',
+            'Stay away from glass, exterior walls, and tall objects.',
+            'Check gas lines for leaks immediately after tremors stop.',
+          ],
+        },
+        storm: {
+          title: 'Severe Storms Response Telemetry',
+          incidents: '11 Active Alerts Detected',
+          telemetry: 'Doppler Lightning & Wind Radar',
+          desc: 'Lightning strike density, hail size detection, microburst wind speed alerts, and power grid status.',
+          steps: [
+            'Unplug sensitive electronics to prevent surge damage.',
+            'Stay indoors away from exterior windows.',
+            'Keep emergency flashlights readily accessible.',
+          ],
+        },
+      };
+
+      function openCategoryModal(catKey) {
+        const cat = categoryDetails[catKey];
+        if (!cat) return;
+
+        document.getElementById('cat-modal-title').innerText = cat.title;
+        document.getElementById('cat-modal-incidents').innerText = cat.incidents;
+        document.getElementById('cat-modal-telemetry').innerText = cat.telemetry;
+        document.getElementById('cat-modal-desc').innerText = cat.desc;
+
+        document.getElementById('cat-modal-steps').innerHTML = cat.steps
+          .map(
+            (s) => `
+          <div class="flex items-start gap-2.5 p-3 rounded-xl bg-white/5 border border-white/5 text-slate-200">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-[#10B981] shrink-0 mt-0.5"></i>
+            <span class="leading-snug">${s}</span>
+          </div>
+        `
+          )
+          .join('');
+
+        lucide.createIcons();
+        document.getElementById('category-modal').classList.remove('hidden');
+      }
+
+      function closeCategoryModal() {
+        document.getElementById('category-modal').classList.add('hidden');
+      }
+
+      function toggleMobileMenu() {
+        document.getElementById('mobile-menu').classList.toggle('hidden');
+      }
+
+      function captureGpsLocation() {
+        document.getElementById('report-location').value = '34.0522° N, 118.2437° W (GPS Fixed)';
+        document.getElementById('gps-btn-text').innerText = 'GPS Fixed';
+        document.getElementById('gps-btn').className = 'px-3.5 py-2.5 rounded-xl font-semibold flex items-center gap-1.5 shrink-0 text-xs transition bg-[#10B981] text-[#0F172A]';
+      }
+
+      function submitHazardReport(e) {
+        e.preventDefault();
+        const cat = document.getElementById('report-category').value;
+        const loc = document.getElementById('report-location').value;
+        const desc = document.getElementById('report-desc').value;
+
+        // Append to incident stream list
+        const streamList = document.getElementById('incident-stream-list');
+        if (streamList) {
+          const itemHtml = `
+            <div class="p-3.5 rounded-2xl bg-[#10B981]/10 border border-[#10B981]/30 cursor-pointer transition space-y-1.5 animate-fadeIn">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-[#10B981] flex items-center gap-1.5">
+                  <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> User Submitted: ${cat}
+                </span>
+                <span class="text-[10px] text-slate-400">Just Now</span>
+              </div>
+              <div class="font-medium text-xs text-white">${loc}</div>
+              <div class="text-[11px] text-slate-300 line-clamp-1">${desc}</div>
+            </div>
+          `;
+          streamList.insertAdjacentHTML('afterbegin', itemHtml);
+          lucide.createIcons();
+        }
+
+        // Add Marker to Leaflet map
+        if (leafletMap) {
+          const lat = 34.0522 + (Math.random() - 0.5) * 0.05;
+          const lng = -118.2437 + (Math.random() - 0.5) * 0.05;
+          const marker = L.marker([lat, lng]).addTo(leafletMap);
+          marker.bindPopup(`<b style="color:#10B981">🚨 User Report: ${cat}</b><br/>${loc}`);
+          mapMarkers.push(marker);
+          leafletMap.flyTo([lat, lng], 12);
+        }
+
+        closeReportModal();
+        alert('✅ Hazard Incident Submitted! DisasterOS AI verified satellite telemetry.');
+      }
+
+      function handlePortalLogin(e) {
+        e.preventDefault();
+        alert('✅ Authenticated successfully! Entering Command Console...');
+        closePortalModal();
+      }
+
+      function handleNewsletter(e) {
+        e.preventDefault();
+        document.getElementById('newsletter-email').value = '';
+        const msg = document.getElementById('newsletter-success');
+        msg.classList.remove('hidden');
+        setTimeout(() => msg.classList.add('hidden'), 4000);
+      }
+    </script>
+  </body>
+</html>

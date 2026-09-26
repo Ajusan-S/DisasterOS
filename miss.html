@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+  <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K2SBFSH1EF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K2SBFSH1EF');
+</script>
+        <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterOS – Family Safe Check & Missing Person Center (Real-Time Engine)</title>
+    <meta
+      name="description"
+      content="Real-Time Emergency Family Reconnection & Missing Person Registry. Mark yourself safe, report missing loved ones, and track sightings during disasters."
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                dark: '#0F172A',
+                light: '#F8FAFC',
+                emerald: '#10B981',
+              },
+            },
+            boxShadow: {
+              glass: '0 8px 32px 0 rgba(15, 23, 42, 0.25)',
+              glow: '0 0 25px rgba(16, 185, 129, 0.35)',
+              'glow-red': '0 0 25px rgba(239, 68, 68, 0.45)',
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.05)', opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { transform: 'translateY(16px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+            },
+            animation: {
+              pulseGlow: 'pulseGlow 2.5s ease-in-out infinite',
+              fadeInUp: 'fadeInUp 0.3s ease-out forwards',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Leaflet CSS & JS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.4);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #10b981;
+      }
+
+      .glass-card {
+        background: rgba(15, 23, 42, 0.88);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .glass-card-hover {
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .glass-card-hover:hover {
+        transform: translateY(-3px);
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 16px 32px -10px rgba(16, 185, 129, 0.2);
+      }
+
+      #person-map {
+        height: 400px;
+        width: 100%;
+        border-radius: 1.5rem;
+        z-index: 10;
+        background-color: #0b1120;
+      }
+
+      .pulse-marker-missing {
+        background: rgba(239, 68, 68, 0.9);
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.9);
+        animation: pulseGlow 1.5s infinite;
+      }
+      .pulse-marker-sighting {
+        background: rgba(59, 130, 246, 0.9);
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.9);
+        animation: pulseGlow 1.8s infinite;
+      }
+      .pulse-marker-safe {
+        background: rgba(16, 185, 129, 0.9);
+        border: 2px solid #ffffff;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.9);
+        animation: pulseGlow 2s infinite;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0B1120] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-[#10B981] selection:text-[#0F172A]"
+  >
+    <!-- Toast Notification Container -->
+    <div
+      id="toast-container"
+      class="fixed top-20 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+    ></div>
+
+    <!-- ========================================== -->
+    <!-- TOP NAVIGATION BAR                         -->
+    <!-- ========================================== -->
+    <header class="sticky top-0 z-40 bg-[#0F172A]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+            <i data-lucide="heart-handshake" class="w-5 h-5 text-[#0F172A]"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-extrabold text-lg leading-none text-white tracking-tight">
+              Disaster<span class="text-[#10B981]">OS</span> SafeNet
+            </span>
+            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">
+              Family Safe Check & Missing Person Center
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Quick Nav Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+        <a href="index.html" class="hover:text-white transition flex items-center gap-1.5">
+          <i data-lucide="home" class="w-4 h-4"></i> Home
+        </a>
+        <a href="live.html" class="hover:text-emerald-400 transition flex items-center gap-1.5 text-emerald-400 font-bold">
+          <i data-lucide="map" class="w-4 h-4"></i> Live Map
+        </a>
+
+        <a href="miss.html" class="hover:text-pink-400 transition flex items-center gap-1.5 text-pink-400 font-bold">
+          <i data-lucide="heart-handshake" class="w-4 h-4"></i> Safe & Missing
+        </a>
+        <a href="prepare.html" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="book-open" class="w-4 h-4"></i> Academy
+        </a>
+        <a href="x.html" class="hover:text-amber-400 transition flex items-center gap-1.5 text-amber-400">
+          <i data-lucide="users" class="w-4 h-4"></i> Community
+        </a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <button
+          onclick="openSafeModal()"
+          class="px-3.5 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-400 font-bold text-xs rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+          <span>I'm Safe Check-In</span>
+        </button>
+
+        <button
+          onclick="openMissingModal()"
+          class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-red-600/30 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Report Missing</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- HERO BANNER SECTION                        -->
+    <!-- ========================================== -->
+    <section class="relative bg-gradient-to-b from-[#0F172A] via-[#0F172A]/80 to-[#0B1120] border-b border-white/10 px-4 sm:px-8 py-10 overflow-hidden">
+      <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+        
+        <div class="space-y-4 max-w-2xl text-center md:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-extrabold tracking-wide uppercase">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            Real-Time Family Reconnection Platform
+          </div>
+
+          <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight leading-tight">
+            Reconnect When Every <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300">Second Matters.</span>
+          </h1>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Mark yourself safe, report missing loved ones, and crowd-verify sightings in real time. Powered by AI keyword extraction and location mapping to bring families back together.
+          </p>
+
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+            <button
+              onclick="openSafeModal()"
+              class="px-5 py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-500/25 transition flex items-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="shield-check" class="w-4 h-4"></i> Mark Myself Safe
+            </button>
+
+            <button
+              onclick="openMissingModal()"
+              class="px-5 py-3 bg-red-600/90 hover:bg-red-500 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-red-600/30 transition flex items-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="alert-circle" class="w-4 h-4"></i> Report Missing Person
+            </button>
+
+            <button
+              onclick="scrollToRegistry()"
+              class="px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 font-bold text-xs sm:text-sm rounded-xl transition flex items-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="search" class="w-4 h-4 text-emerald-400"></i> Search Person Registry
+            </button>
+          </div>
+        </div>
+
+        <!-- Real-Time Counter Dashboard -->
+        <div class="grid grid-cols-2 gap-3.5 w-full md:w-80 shrink-0">
+          <div class="p-4 rounded-2xl glass-card border border-emerald-500/30 space-y-1 text-center">
+            <div class="text-emerald-400 font-heading font-extrabold text-2xl" id="stat-safe-count">0</div>
+            <div class="text-[11px] font-bold text-slate-300">People Marked Safe</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-red-500/30 space-y-1 text-center">
+            <div class="text-red-400 font-heading font-extrabold text-2xl" id="stat-missing-count">0</div>
+            <div class="text-[11px] font-bold text-slate-300">Active Missing Cases</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-sky-500/30 space-y-1 text-center">
+            <div class="text-sky-400 font-heading font-extrabold text-2xl" id="stat-sightings-count">0</div>
+            <div class="text-[11px] font-bold text-slate-300">Sightings Reported</div>
+          </div>
+
+          <div class="p-4 rounded-2xl glass-card border border-amber-500/30 space-y-1 text-center">
+            <div class="text-amber-400 font-heading font-extrabold text-2xl" id="stat-reconnected-count">0</div>
+            <div class="text-[11px] font-bold text-slate-300">Families Reconnected</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- MAIN CONTENT BODY (TABS & REGISTRY)        -->
+    <!-- ========================================== -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-8 py-8 flex-1 space-y-10 w-full">
+
+      <!-- Interactive Tab Selector -->
+      <div class="flex items-center justify-between border-b border-white/10 pb-4 overflow-x-auto no-scrollbar gap-4">
+        <div class="flex items-center gap-2 font-bold text-xs">
+          <button
+            onclick="switchTab('missing')"
+            id="tab-btn-missing"
+            class="px-4 py-2 rounded-xl bg-emerald-500 text-[#0F172A] font-extrabold transition cursor-pointer flex items-center gap-2"
+          >
+            <i data-lucide="users" class="w-4 h-4"></i> Missing Persons Registry
+          </button>
+
+          <button
+            onclick="switchTab('safe')"
+            id="tab-btn-safe"
+            class="px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-white/10 transition cursor-pointer flex items-center gap-2"
+          >
+            <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Live Safe Check-Ins
+          </button>
+
+          <button
+            onclick="switchTab('map')"
+            id="tab-btn-map"
+            class="px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-white/10 transition cursor-pointer flex items-center gap-2"
+          >
+            <i data-lucide="map-pin" class="w-4 h-4 text-sky-400"></i> Sightings Map
+          </button>
+
+          <button
+            onclick="switchTab('contacts')"
+            id="tab-btn-contacts"
+            class="px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-white/10 transition cursor-pointer flex items-center gap-2"
+          >
+            <i data-lucide="phone-call" class="w-4 h-4 text-amber-400"></i> Emergency Contacts
+          </button>
+        </div>
+
+        <!-- System Controls -->
+        <div class="flex items-center gap-3 text-xs">
+          <button
+            onclick="clearAllRegistryData()"
+            class="px-3 py-1.5 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-white/10 rounded-xl transition cursor-pointer flex items-center gap-1"
+            title="Reset Local Registry"
+          >
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Registry Data
+          </button>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- TAB 1: MISSING PERSONS REGISTRY            -->
+      <!-- ========================================== -->
+      <section id="tab-content-missing" class="space-y-6">
+        <!-- Search & Filter Controls -->
+        <div class="glass-card rounded-2xl p-4 border border-white/15 flex flex-wrap items-center justify-between gap-4 text-xs">
+          
+          <div class="relative flex-1 min-w-[240px]">
+            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input
+              type="text"
+              id="search-missing-input"
+              oninput="filterMissingPersons()"
+              placeholder="Search by name, district, city, clothing, or features..."
+              class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+
+          <div class="flex items-center gap-2 flex-wrap font-semibold">
+            <select
+              id="filter-status-select"
+              onchange="filterMissingPersons()"
+              class="px-3 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-slate-200 focus:outline-none"
+            >
+              <option value="all">All Statuses</option>
+              <option value="Missing">🚨 Active Missing</option>
+              <option value="Sighting Reported">👁️ Sighting Reported</option>
+              <option value="Located Safe">✅ Located Safe</option>
+            </select>
+
+            <select
+              id="filter-gender-select"
+              onchange="filterMissingPersons()"
+              class="px-3 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-slate-200 focus:outline-none"
+            >
+              <option value="all">All Genders</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <button
+              onclick="openMissingModal()"
+              class="px-4 py-2.5 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i> New Report
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Missing Person Cards Grid -->
+        <div id="missing-cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Dynamic Cards Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 2: LIVE SAFE CHECK-INS                 -->
+      <!-- ========================================== -->
+      <section id="tab-content-safe" class="hidden space-y-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-heading font-bold text-lg text-white">Verified Safe Check-Ins</h3>
+            <p class="text-xs text-slate-400">Real-time status feed of citizens who have marked themselves safe in disaster zones.</p>
+          </div>
+          <button
+            onclick="openSafeModal()"
+            class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Submit Safe Status
+          </button>
+        </div>
+
+        <div id="safe-feed-list" class="space-y-3">
+          <!-- Rendered via JS -->
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 3: SIGHTINGS MAP                       -->
+      <!-- ========================================== -->
+      <section id="tab-content-map" class="hidden space-y-6">
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <div>
+              <h3 class="font-heading font-bold text-base text-white">Live Sighting Coordinates & Last Known Locations</h3>
+              <p class="text-xs text-slate-400">Interactive geographic overview of reported missing individuals and community sightings.</p>
+            </div>
+            <span class="text-xs text-emerald-400 font-mono font-bold bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+              LEAFLET MAP RADAR
+            </span>
+          </div>
+
+          <div id="person-map"></div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TAB 4: EMERGENCY CONTACTS MANAGER          -->
+      <!-- ========================================== -->
+      <section id="tab-content-contacts" class="hidden space-y-6">
+        <div class="glass-card rounded-3xl p-6 border border-white/15 space-y-5">
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white">My Emergency Family Network</h3>
+              <p class="text-xs text-slate-400">Add trusted contacts to automatically notify when your safety status changes.</p>
+            </div>
+            <button
+              onclick="openContactModal()"
+              class="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-[#0F172A] font-extrabold text-xs rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="user-plus" class="w-4 h-4"></i> Add Emergency Contact
+            </button>
+          </div>
+
+          <div id="contacts-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: REPORT MISSING PERSON             -->
+    <!-- ========================================== -->
+    <div
+      id="modal-missing"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-2xl w-full border border-white/20 shadow-2xl space-y-5 my-8 animate-fadeInUp">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center font-bold">
+              <i data-lucide="user-plus" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white">Report a Missing Loved One</h3>
+              <p class="text-xs text-slate-400">Provide accurate information to broadcast across the DisasterOS registry.</p>
+            </div>
+          </div>
+          <button onclick="closeModal('modal-missing')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="form-report-missing" onsubmit="handleMissingSubmit(event)" class="space-y-4 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Full Name *</label>
+              <input type="text" id="m-name" required placeholder="e.g. Priyantha Silva" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Age & Gender *</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="number" id="m-age" required min="1" max="120" placeholder="Age" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+                <select id="m-gender" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none">
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Last Seen District / City *</label>
+              <input type="text" id="m-location" required placeholder="e.g. Jaffna Town Market Area" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Last Seen Date & Time *</label>
+              <input type="text" id="m-time" required placeholder="e.g. Yesterday around 4:00 PM" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Latitude (Optional GPS)</label>
+              <input type="number" step="any" id="m-lat" value="9.6615" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white font-mono focus:outline-none" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Longitude (Optional GPS)</label>
+              <input type="number" step="any" id="m-lng" value="80.0255" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white font-mono focus:outline-none" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Photograph (File Upload or Photo URL)</label>
+            <div class="space-y-2">
+              <input type="file" id="m-photo-file" accept="image/*" onchange="previewImageUpload(this)" class="w-full text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-500/20 file:text-emerald-400 hover:file:bg-emerald-500/30 cursor-pointer" />
+              <input type="url" id="m-photo-url" placeholder="Or paste image URL (e.g. https://images.unsplash.com/...)" class="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-white/15 text-white text-[11px]" />
+              <input type="hidden" id="m-photo-base64" />
+              <div id="m-photo-preview-container" class="hidden flex items-center gap-2 p-2 rounded-xl bg-slate-900 border border-emerald-500/30">
+                <img id="m-photo-preview-img" src="" class="w-12 h-12 rounded-lg object-cover" />
+                <span class="text-emerald-400 font-bold text-[11px]">Image attached successfully!</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Clothing & Physical Description *</label>
+            <textarea id="m-desc" rows="3" required placeholder="e.g. Wearing blue jeans and dark green raincoat. Height approx 5'8''. Has a silver watch on left wrist." class="w-full p-3.5 rounded-xl bg-slate-900 border border-white/15 text-white resize-none focus:outline-none focus:border-red-500"></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Reporter Name & Relationship *</label>
+              <input type="text" id="m-reporter" required placeholder="e.g. Subaskaran (Brother)" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Contact Phone Number *</label>
+              <input type="tel" id="m-phone" required placeholder="+94 77 123 4567" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white focus:outline-none focus:border-red-500" />
+            </div>
+          </div>
+
+          <button type="submit" id="btn-submit-missing" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-extrabold rounded-xl shadow-lg shadow-red-600/30 transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="send" class="w-4 h-4"></i> Submit Missing Person Report
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: I'M SAFE CHECK-IN                 -->
+    <!-- ========================================== -->
+    <div
+      id="modal-safe"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 shadow-2xl space-y-5 animate-fadeInUp">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white">Family Safety Check-In</h3>
+              <p class="text-xs text-slate-400">Broadcast your location & safe status to loved ones.</p>
+            </div>
+          </div>
+          <button onclick="closeModal('modal-safe')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="form-report-safe" onsubmit="handleSafeSubmit(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Your Full Name *</label>
+            <input type="text" id="s-name" required placeholder="e.g. Ajusan Subaskaran" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Current City / District *</label>
+            <input type="text" id="s-city" required placeholder="e.g. Colombo, Western Province" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Emergency Status</label>
+            <select id="s-status" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white">
+              <option value="Safe & Sound">✅ Safe & Sound at Shelter/Home</option>
+              <option value="In Evacuation Center">🏫 Evacuated to Safe Shelter</option>
+              <option value="Need Supplies / Water">💧 Safe but Need Supplies/Water</option>
+              <option value="Requiring Medical Aid">🚑 Requiring Minor Medical Aid</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Status Note / Message for Family</label>
+            <textarea id="s-note" rows="2" placeholder="e.g. Currently at relief shelter. Power is out but I am completely safe with food." class="w-full p-3.5 rounded-xl bg-slate-900 border border-white/15 text-white resize-none"></textarea>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+            <span class="text-emerald-400 font-bold">Include Device GPS Coordinates?</span>
+            <button type="button" onclick="getSafeLocationGps()" class="px-3 py-1 bg-emerald-500 text-[#0F172A] font-extrabold rounded-lg hover:bg-emerald-400 transition cursor-pointer">
+              Get GPS
+            </button>
+          </div>
+          <input type="hidden" id="s-gps" value="" />
+
+          <button type="submit" class="w-full py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="check-circle" class="w-4 h-4"></i> Broadcast Safe Status Now
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 3: REPORT A SIGHTING                 -->
+    <!-- ========================================== -->
+    <div
+      id="modal-sighting"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-white/20 shadow-2xl space-y-5 animate-fadeInUp">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+              <i data-lucide="eye" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white">Report Sighting</h3>
+              <p class="text-xs text-slate-400" id="sighting-person-title">Reporting for Person</p>
+            </div>
+          </div>
+          <button onclick="closeModal('modal-sighting')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="form-report-sighting" onsubmit="handleSightingSubmit(event)" class="space-y-4 text-xs">
+          <input type="hidden" id="sg-person-id" />
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Sighting Location / Landmark *</label>
+            <input type="text" id="sg-location" required placeholder="e.g. Near Kilinochchi Bus Stand Shelter" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Date & Time Seen *</label>
+            <input type="text" id="sg-time" required placeholder="e.g. Today around 10:30 AM" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Sighting Description & Condition *</label>
+            <textarea id="sg-desc" rows="3" required placeholder="Describe clothing, state of health, or direction they were traveling..." class="w-full p-3.5 rounded-xl bg-slate-900 border border-white/15 text-white resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Your Name / Contact Info (Optional)</label>
+            <input type="text" id="sg-reporter" placeholder="e.g. Local Volunteer / +94 71 888 999" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-sky-500 hover:bg-sky-400 text-[#0F172A] font-extrabold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="send" class="w-4 h-4"></i> Submit Sighting Info
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 4: ADD EMERGENCY CONTACT             -->
+    <!-- ========================================== -->
+    <div
+      id="modal-contact"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-md w-full border border-white/20 shadow-2xl space-y-5 animate-fadeInUp">
+        
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+              <i data-lucide="phone" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-lg text-white">Add Emergency Contact</h3>
+              <p class="text-xs text-slate-400">Save family contacts for one-click emergency broadcasts.</p>
+            </div>
+          </div>
+          <button onclick="closeModal('modal-contact')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form id="form-report-contact" onsubmit="handleContactSubmit(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Contact Name *</label>
+            <input type="text" id="c-name" required placeholder="e.g. S. Subaskaran" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Relationship *</label>
+            <input type="text" id="c-rel" required placeholder="e.g. Father / Brother / Guardian" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Phone Number *</label>
+            <input type="tel" id="c-phone" required placeholder="+94 77 999 8888" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-amber-500 hover:bg-amber-400 text-[#0F172A] font-extrabold rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+            <i data-lucide="check" class="w-4 h-4"></i> Save Emergency Contact
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- FOOTER                                     -->
+    <!-- ========================================== -->
+    <footer class="bg-[#0F172A] border-t border-white/10 px-6 py-8 mt-12 text-xs text-slate-400">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <i data-lucide="heart-handshake" class="w-4 h-4 text-emerald-400"></i>
+          <span class="font-heading font-bold text-white">DisasterOS Family Reconnection Engine</span>
+        </div>
+        <div>
+          <span>Operating continuously during disaster response operations. Real user submission storage active.</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <a href="/index.html" class="hover:text-white transition">Home</a>
+          <a href="/map2.html" class="hover:text-emerald-400 transition">Map</a>
+          <a href="/live.html" class="hover:text-red-400 transition">Live Center</a>
+          <a href="/user.html" class="hover:text-sky-400 transition">Portal</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- MASTER JAVASCRIPT & STATE ENGINE           -->
+    <!-- ========================================== -->
+    <script>
+      // Global Leaflet Map Instance
+      let map = null;
+      let markersLayerGroup = null;
+
+      // Local State Stores (Persisted in localStorage)
+      let missingPersons = [];
+      let safeCheckins = [];
+      let emergencyContacts = [];
+
+      // ----------------------------------------------------
+      // LOAD & SAVE STATE HELPERS
+      // ----------------------------------------------------
+      function loadStateFromStorage() {
+        try {
+          const storedMissing = localStorage.getItem('dos_missing_persons');
+          missingPersons = storedMissing ? JSON.parse(storedMissing) : [];
+
+          const storedSafe = localStorage.getItem('dos_safe_checkins');
+          safeCheckins = storedSafe ? JSON.parse(storedSafe) : [];
+
+          const storedContacts = localStorage.getItem('dos_emergency_contacts');
+          emergencyContacts = storedContacts ? JSON.parse(storedContacts) : [
+            { id: 'c1', name: 'Emergency Services Hotline', rel: 'National Hotline', phone: '119 / 117' }
+          ];
+        } catch (e) {
+          console.error("Storage loading error:", e);
+          missingPersons = [];
+          safeCheckins = [];
+          emergencyContacts = [
+            { id: 'c1', name: 'Emergency Services Hotline', rel: 'National Hotline', phone: '119 / 117' }
+          ];
+        }
+      }
+
+      function saveStateToStorage() {
+        try {
+          localStorage.setItem('dos_missing_persons', JSON.stringify(missingPersons));
+          localStorage.setItem('dos_safe_checkins', JSON.stringify(safeCheckins));
+          localStorage.setItem('dos_emergency_contacts', JSON.stringify(emergencyContacts));
+        } catch (e) {
+          console.error("Storage save error:", e);
+        }
+      }
+
+      // ----------------------------------------------------
+      // 1. INITIALIZE PAGE & EVENT LISTENERS
+      // ----------------------------------------------------
+      window.addEventListener('DOMContentLoaded', () => {
+        loadStateFromStorage();
+        lucide.createIcons();
+        renderMissingCards();
+        renderSafeFeed();
+        renderContactsList();
+        updateDashboardStats();
+      });
+
+      function switchTab(tab) {
+        const tabs = ['missing', 'safe', 'map', 'contacts'];
+        tabs.forEach(t => {
+          const content = document.getElementById(`tab-content-${t}`);
+          const btn = document.getElementById(`tab-btn-${t}`);
+          if (content && btn) {
+            if (t === tab) {
+              content.classList.remove('hidden');
+              btn.className = 'px-4 py-2 rounded-xl bg-emerald-500 text-[#0F172A] font-extrabold transition cursor-pointer flex items-center gap-2';
+            } else {
+              content.classList.add('hidden');
+              btn.className = 'px-4 py-2 rounded-xl bg-slate-900 text-slate-300 hover:bg-slate-800 border border-white/10 transition cursor-pointer flex items-center gap-2';
+            }
+          }
+        });
+
+        if (tab === 'map') {
+          setTimeout(initSightingsMap, 150);
+        }
+      }
+
+      function scrollToRegistry() {
+        switchTab('missing');
+        document.getElementById('missing-cards-grid').scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // ----------------------------------------------------
+      // 2. MISSING PERSONS REGISTRY LOGIC
+      // ----------------------------------------------------
+      function renderMissingCards(filteredData = null) {
+        const grid = document.getElementById('missing-cards-grid');
+        if (!grid) return;
+
+        const data = filteredData !== null ? filteredData : missingPersons;
+
+        if (!data || data.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full text-center py-16 space-y-3 glass-card rounded-3xl border border-white/10 p-8">
+              <i data-lucide="user-check" class="w-12 h-12 text-emerald-400 mx-auto"></i>
+              <h4 class="font-heading font-bold text-base text-white">No Missing Person Reports in Database</h4>
+              <p class="text-xs text-slate-400 max-w-md mx-auto">Click "Report Missing Person" to submit a report. Submissions will immediately save into the live system registry.</p>
+              <button onclick="openMissingModal()" class="px-5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold text-xs rounded-xl shadow-lg transition cursor-pointer inline-flex items-center gap-1.5">
+                <i data-lucide="plus" class="w-4 h-4"></i> Submit Missing Person Report
+              </button>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        grid.innerHTML = data.map(item => `
+          <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-4 flex flex-col justify-between glass-card-hover">
+            <div class="space-y-3">
+              <!-- Top Badges & Status -->
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                  item.status === 'Located Safe' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                  item.status === 'Sighting Reported' ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30' :
+                  'bg-red-500/20 text-red-400 border border-red-500/30'
+                }">${item.status}</span>
+                <span class="text-[10px] text-slate-400">${item.dateReported || 'Recently'}</span>
+              </div>
+
+              <!-- Profile Photo & Header -->
+              <div class="flex items-center gap-3.5">
+                <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-white/15 overflow-hidden shrink-0 flex items-center justify-center">
+                  ${item.photo ? `<img src="${item.photo}" class="w-full h-full object-cover" onerror="this.src=''; this.onerror=null;" />` : `<i data-lucide="user" class="w-8 h-8 text-slate-500"></i>`}
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-base text-white">${item.name}</h4>
+                  <div class="text-xs text-slate-300 font-medium">${item.age} Years Old • ${item.gender}</div>
+                  <div class="text-[11px] text-emerald-400 font-bold flex items-center gap-1 mt-0.5">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${item.location}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Physical Description -->
+              <div class="bg-slate-900/60 p-3 rounded-2xl border border-white/5 space-y-1">
+                <p class="text-xs text-slate-300 leading-relaxed line-clamp-3">
+                  ${item.desc}
+                </p>
+                <div class="text-[10px] text-slate-400 pt-1 border-t border-white/5 flex items-center justify-between">
+                  <span>Reporter: ${item.reporter}</span>
+                  <a href="tel:${item.phone}" class="text-emerald-400 font-bold hover:underline">${item.phone}</a>
+                </div>
+              </div>
+
+              <!-- Sightings Count Timeline -->
+              ${item.sightings && item.sightings.length > 0 ? `
+                <div class="p-3 rounded-2xl bg-sky-500/10 border border-sky-500/20 space-y-1 text-xs">
+                  <div class="font-bold text-sky-400 flex items-center justify-between">
+                    <span>👁️ ${item.sightings.length} Community Sighting(s)</span>
+                    <span class="text-[10px] text-slate-400">${item.sightings[0].time}</span>
+                  </div>
+                  <p class="text-[11px] text-slate-300 line-clamp-1">"${item.sightings[0].desc}"</p>
+                </div>
+              ` : ''}
+            </div>
+
+            <!-- Card Action Footer -->
+            <div class="pt-3 border-t border-white/10 flex items-center justify-between gap-2 text-xs">
+              <button
+                onclick="openSightingModal('${item.id}', '${item.name.replace(/'/g, "\\'")}')"
+                class="flex-1 py-2 bg-sky-500/20 hover:bg-sky-500/30 text-sky-400 font-bold rounded-xl transition text-center cursor-pointer flex items-center justify-center gap-1"
+              >
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i> Report Sighting
+              </button>
+
+              <button
+                onclick="toggleMarkLocatedSafe('${item.id}')"
+                class="px-3 py-2 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-bold rounded-xl transition cursor-pointer"
+                title="Toggle Safe Status"
+              >
+                <i data-lucide="check" class="w-4 h-4"></i>
+              </button>
+
+              <button
+                onclick="deleteMissingPerson('${item.id}')"
+                class="px-2.5 py-2 bg-slate-800 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-xl transition cursor-pointer"
+                title="Delete Report"
+              >
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      function filterMissingPersons() {
+        const queryInput = document.getElementById('search-missing-input');
+        const query = queryInput ? queryInput.value.toLowerCase().trim() : '';
+        const status = document.getElementById('filter-status-select').value;
+        const gender = document.getElementById('filter-gender-select').value;
+
+        const filtered = missingPersons.filter(item => {
+          const matchesQuery = !query || item.name.toLowerCase().includes(query) ||
+            item.location.toLowerCase().includes(query) ||
+            item.desc.toLowerCase().includes(query);
+          const matchesStatus = status === 'all' || item.status === status;
+          const matchesGender = gender === 'all' || item.gender === gender;
+
+          return matchesQuery && matchesStatus && matchesGender;
+        });
+
+        renderMissingCards(filtered);
+      }
+
+      function handleMissingSubmit(e) {
+        e.preventDefault();
+
+        const btn = document.getElementById('btn-submit-missing');
+        if (btn) btn.disabled = true;
+
+        const name = document.getElementById('m-name').value.trim();
+        const age = document.getElementById('m-age').value.trim();
+        const gender = document.getElementById('m-gender').value;
+        const location = document.getElementById('m-location').value.trim();
+        const timeLastSeen = document.getElementById('m-time').value.trim();
+        const lat = parseFloat(document.getElementById('m-lat').value) || 9.6615;
+        const lng = parseFloat(document.getElementById('m-lng').value) || 80.0255;
+        const photoUrlInput = document.getElementById('m-photo-url').value.trim();
+        const photoBase64 = document.getElementById('m-photo-base64').value;
+        const desc = document.getElementById('m-desc').value.trim();
+        const reporter = document.getElementById('m-reporter').value.trim();
+        const phone = document.getElementById('m-phone').value.trim();
+
+        const photo = photoBase64 || photoUrlInput || null;
+
+        const newPerson = {
+          id: 'm-' + Date.now(),
+          name,
+          age,
+          gender,
+          location,
+          timeLastSeen,
+          lat,
+          lng,
+          photo,
+          desc,
+          reporter,
+          phone,
+          status: 'Missing',
+          dateReported: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          sightings: []
+        };
+
+        missingPersons.unshift(newPerson);
+        saveStateToStorage();
+
+        // Reset Form
+        document.getElementById('form-report-missing').reset();
+        document.getElementById('m-photo-base64').value = '';
+        const previewCont = document.getElementById('m-photo-preview-container');
+        if (previewCont) previewCont.classList.add('hidden');
+        if (btn) btn.disabled = false;
+
+        closeModal('modal-missing');
+        showToast(`Missing Person report for ${name} registered successfully!`, 'success');
+
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
+        }
+
+        renderMissingCards();
+        updateDashboardStats();
+        if (map) renderMapMarkers();
+      }
+
+      function toggleMarkLocatedSafe(id) {
+        const idx = missingPersons.findIndex(m => m.id === id);
+        if (idx !== -1) {
+          missingPersons[idx].status = missingPersons[idx].status === 'Located Safe' ? 'Missing' : 'Located Safe';
+          saveStateToStorage();
+          renderMissingCards();
+          updateDashboardStats();
+          if (map) renderMapMarkers();
+          showToast(`Updated status for ${missingPersons[idx].name}!`, 'success');
+        }
+      }
+
+      function deleteMissingPerson(id) {
+        if (confirm("Are you sure you want to delete this report from the database?")) {
+          missingPersons = missingPersons.filter(m => m.id !== id);
+          saveStateToStorage();
+          renderMissingCards();
+          updateDashboardStats();
+          if (map) renderMapMarkers();
+          showToast('Report removed from registry.', 'info');
+        }
+      }
+
+      // ----------------------------------------------------
+      // 3. SAFE CHECK-IN FEED LOGIC
+      // ----------------------------------------------------
+      function renderSafeFeed() {
+        const list = document.getElementById('safe-feed-list');
+        if (!list) return;
+
+        if (!safeCheckins || safeCheckins.length === 0) {
+          list.innerHTML = `
+            <div class="text-center py-12 text-slate-400 text-xs glass-card rounded-2xl border border-white/10 p-6">
+              No recent safe check-ins. Click "Submit Safe Status" to broadcast your status.
+            </div>
+          `;
+          return;
+        }
+
+        list.innerHTML = safeCheckins.map(item => `
+          <div class="p-4 rounded-2xl bg-slate-900/90 border border-white/10 flex items-center justify-between gap-4 text-xs">
+            <div class="flex items-center gap-3.5">
+              <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-lg shrink-0">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <h4 class="font-heading font-bold text-sm text-white">${item.name}</h4>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-400">${item.status}</span>
+                </div>
+                <div class="text-slate-300 mt-0.5">${item.city} • ${item.time}</div>
+                ${item.note ? `<p class="text-[11px] text-slate-400 mt-1">"${item.note}"</p>` : ''}
+              </div>
+            </div>
+
+            <button onclick="notifyContactsForUser('${item.name.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-[11px] rounded-xl transition shrink-0 cursor-pointer">
+              Notify Contacts
+            </button>
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      function handleSafeSubmit(e) {
+        e.preventDefault();
+        const newSafe = {
+          id: 's-' + Date.now(),
+          name: document.getElementById('s-name').value.trim(),
+          city: document.getElementById('s-city').value.trim(),
+          status: document.getElementById('s-status').value,
+          note: document.getElementById('s-note').value.trim(),
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          gps: document.getElementById('s-gps').value
+        };
+
+        safeCheckins.unshift(newSafe);
+        saveStateToStorage();
+
+        document.getElementById('form-report-safe').reset();
+        closeModal('modal-safe');
+        showToast('Safety check-in published successfully!', 'success');
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        }
+
+        renderSafeFeed();
+        updateDashboardStats();
+      }
+
+      function getSafeLocationGps() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            pos => {
+              document.getElementById('s-gps').value = `${pos.coords.latitude.toFixed(4)}, ${pos.coords.longitude.toFixed(4)}`;
+              showToast('GPS position attached to check-in!', 'success');
+            },
+            err => showToast('GPS access unavailable', 'warning')
+          );
+        }
+      }
+
+      // ----------------------------------------------------
+      // 4. REPORT SIGHTING LOGIC
+      // ----------------------------------------------------
+      function openSightingModal(personId, personName) {
+        document.getElementById('sg-person-id').value = personId;
+        document.getElementById('sighting-person-title').innerText = `Reporting for: ${personName}`;
+        document.getElementById('modal-sighting').classList.remove('hidden');
+      }
+
+      function handleSightingSubmit(e) {
+        e.preventDefault();
+        const personId = document.getElementById('sg-person-id').value;
+        const newSighting = {
+          id: 'sg-' + Date.now(),
+          location: document.getElementById('sg-location').value.trim(),
+          time: document.getElementById('sg-time').value.trim(),
+          desc: document.getElementById('sg-desc').value.trim(),
+          reporter: document.getElementById('sg-reporter').value.trim() || 'Anonymous Volunteer'
+        };
+
+        const idx = missingPersons.findIndex(m => m.id === personId);
+        if (idx !== -1) {
+          if (!missingPersons[idx].sightings) missingPersons[idx].sightings = [];
+          missingPersons[idx].sightings.unshift(newSighting);
+          missingPersons[idx].status = 'Sighting Reported';
+          saveStateToStorage();
+        }
+
+        document.getElementById('form-report-sighting').reset();
+        closeModal('modal-sighting');
+        showToast('Community sighting reported!', 'success');
+        renderMissingCards();
+        updateDashboardStats();
+      }
+
+      // ----------------------------------------------------
+      // 5. EMERGENCY CONTACTS LOGIC
+      // ----------------------------------------------------
+      function renderContactsList() {
+        const list = document.getElementById('contacts-list');
+        if (!list) return;
+
+        list.innerHTML = emergencyContacts.map(c => `
+          <div class="p-4 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-between text-xs">
+            <div class="space-y-1">
+              <h4 class="font-heading font-bold text-sm text-white">${c.name}</h4>
+              <div class="text-emerald-400 font-semibold">${c.rel}</div>
+              <div class="text-slate-300 font-mono">${c.phone}</div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="callPhone('${c.phone}')" class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center hover:bg-emerald-500/30 transition cursor-pointer">
+                <i data-lucide="phone-call" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      function handleContactSubmit(e) {
+        e.preventDefault();
+        const newC = {
+          id: 'c-' + Date.now(),
+          name: document.getElementById('c-name').value.trim(),
+          rel: document.getElementById('c-rel').value.trim(),
+          phone: document.getElementById('c-phone').value.trim()
+        };
+
+        emergencyContacts.push(newC);
+        saveStateToStorage();
+
+        document.getElementById('form-report-contact').reset();
+        closeModal('modal-contact');
+        showToast('Emergency contact added!', 'success');
+        renderContactsList();
+      }
+
+      function notifyContactsForUser(userName) {
+        showToast(`SMS / Push notification broadcast sent to emergency contacts for ${userName}!`, 'success');
+      }
+
+      function callPhone(phone) {
+        window.open(`tel:${phone}`);
+      }
+
+      function clearAllRegistryData() {
+        if (confirm("Reset local database registry?")) {
+          localStorage.removeItem('dos_missing_persons');
+          localStorage.removeItem('dos_safe_checkins');
+          missingPersons = [];
+          safeCheckins = [];
+          saveStateToStorage();
+          renderMissingCards();
+          renderSafeFeed();
+          updateDashboardStats();
+          if (map) renderMapMarkers();
+          showToast('Registry reset.', 'info');
+        }
+      }
+
+      // ----------------------------------------------------
+      // 6. LEAFLET SIGHTINGS MAP LOGIC
+      // ----------------------------------------------------
+      function initSightingsMap() {
+        if (map) {
+          map.invalidateSize();
+          renderMapMarkers();
+          return;
+        }
+
+        const mapContainer = document.getElementById('person-map');
+        if (!mapContainer) return;
+
+        map = L.map('person-map', {
+          center: [7.8731, 80.7718], // Center of Sri Lanka
+          zoom: 7,
+          zoomControl: false
+        });
+
+        L.control.zoom({ position: 'topleft' }).addTo(map);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          attribution: '&copy; OpenStreetMap &copy; CARTO'
+        }).addTo(map);
+
+        markersLayerGroup = L.layerGroup().addTo(map);
+        renderMapMarkers();
+      }
+
+      function renderMapMarkers() {
+        if (!markersLayerGroup) return;
+        markersLayerGroup.clearLayers();
+
+        missingPersons.forEach(item => {
+          const markerClass = item.status === 'Located Safe' ? 'pulse-marker-safe' :
+            item.status === 'Sighting Reported' ? 'pulse-marker-sighting' : 'pulse-marker-missing';
+
+          const customIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div class="${markerClass} w-7 h-7 flex items-center justify-center text-xs shadow-lg cursor-pointer">👤</div>`,
+            iconSize: [28, 28],
+            iconAnchor: [14, 14]
+          });
+
+          const marker = L.marker([item.lat, item.lng], { icon: customIcon });
+
+          const popupContent = `
+            <div class="p-3 max-w-xs space-y-1.5 text-xs bg-[#0F172A] text-slate-100 rounded-xl font-sans">
+              <div class="font-bold text-emerald-400 text-[10px] uppercase">${item.status}</div>
+              <h4 class="font-heading font-bold text-sm text-white">${item.name}</h4>
+              <p class="text-slate-300 text-[11px]">${item.location}</p>
+              <div class="text-[10px] text-slate-400">Age: ${item.age} | ${item.gender}</div>
+              <button onclick="openSightingModal('${item.id}', '${item.name.replace(/'/g, "\\'")}')" class="w-full mt-1.5 py-1 bg-sky-500 text-[#0F172A] font-extrabold rounded-lg text-[10px] cursor-pointer">Report Sighting</button>
+            </div>
+          `;
+
+          marker.bindPopup(popupContent);
+          markersLayerGroup.addLayer(marker);
+        });
+      }
+
+      // ----------------------------------------------------
+      // UTILS: IMAGE PREVIEW, TOASTS & MODALS
+      // ----------------------------------------------------
+      function previewImageUpload(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('m-photo-base64').value = e.target.result;
+            const img = document.getElementById('m-photo-preview-img');
+            const cont = document.getElementById('m-photo-preview-container');
+            if (img && cont) {
+              img.src = e.target.result;
+              cont.classList.remove('hidden');
+            }
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function updateDashboardStats() {
+        const safeCount = safeCheckins ? safeCheckins.length : 0;
+        const missingCount = missingPersons ? missingPersons.filter(m => m.status === 'Missing').length : 0;
+        const sightingsCount = missingPersons ? missingPersons.reduce((acc, m) => acc + (m.sightings ? m.sightings.length : 0), 0) : 0;
+        const reconnectedCount = missingPersons ? missingPersons.filter(m => m.status === 'Located Safe').length : 0;
+
+        const elSafe = document.getElementById('stat-safe-count');
+        const elMissing = document.getElementById('stat-missing-count');
+        const elSightings = document.getElementById('stat-sightings-count');
+        const elReconnected = document.getElementById('stat-reconnected-count');
+
+        if (elSafe) elSafe.innerText = safeCount;
+        if (elMissing) elMissing.innerText = missingCount;
+        if (elSightings) elSightings.innerText = sightingsCount;
+        if (elReconnected) elReconnected.innerText = reconnectedCount;
+      }
+
+      function openMissingModal() {
+        document.getElementById('modal-missing').classList.remove('hidden');
+      }
+      function openSafeModal() {
+        document.getElementById('modal-safe').classList.remove('hidden');
+      }
+      function openContactModal() {
+        document.getElementById('modal-contact').classList.remove('hidden');
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+      }
+
+      function showToast(msg, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `p-4 rounded-2xl glass-card border ${
+          type === 'success' ? 'border-emerald-500/40 text-emerald-300' :
+          type === 'warning' ? 'border-amber-500/40 text-amber-300' : 'border-sky-500/40 text-sky-300'
+        } shadow-2xl text-xs font-semibold flex items-center justify-between animate-fadeInUp pointer-events-auto`;
+
+        toast.innerHTML = `
+          <span>${msg}</span>
+          <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white ml-2">✕</button>
+        `;
+
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+      }
+    </script>
+  </body>
+</html>

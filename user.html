@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+  <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K2SBFSH1EF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K2SBFSH1EF');
+</script>
+        <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterOS – Authentication & Command Dashboard</title>
+    <meta
+      name="description"
+      content="Secure authentication portal and personalized disaster command center. Real-time incident tracking, safe check-in, volunteer dispatch, and AI safety intelligence."
+    />
+
+    <!-- Google Fonts: Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              forest: '#166534',
+              verified: '#22C55E',
+              flood: '#3B82F6',
+              cyclone: '#8B5CF6',
+              landslide: '#A16207',
+              fire: '#EF4444',
+              earthquake: '#F97316',
+              storm: '#475569',
+              warning: '#F59E0B',
+              danger: '#DC2626',
+              safezone: '#10B981',
+              brand: {
+                dark: '#0F172A',
+                light: '#F8FAFC',
+              },
+            },
+            boxShadow: {
+              glass: '0 8px 32px 0 rgba(15, 23, 42, 0.12)',
+              'glass-dark': '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
+              glow: '0 0 25px rgba(16, 185, 129, 0.35)',
+              'glow-red': '0 0 25px rgba(239, 68, 68, 0.45)',
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.08)', opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { transform: 'translateY(16px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+            },
+            animation: {
+              pulseGlow: 'pulseGlow 2.5s ease-in-out infinite',
+              fadeInUp: 'fadeInUp 0.3s ease-out forwards',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Leaflet CSS & JS for Dashboard Mini-Map -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.4);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #10b981;
+      }
+
+      /* Glassmorphism Styles */
+      .glass-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      html:not(.dark) .glass-card {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+      }
+
+      .glass-card-hover {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .glass-card-hover:hover {
+        transform: translateY(-4px);
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.2);
+      }
+
+      #dash-mini-map {
+        height: 260px;
+        width: 100%;
+        border-radius: 1rem;
+        z-index: 10;
+        background-color: #0b1120;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0B1120] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-[#10B981] selection:text-[#0F172A] transition-colors duration-300"
+    id="app-body"
+  >
+    <!-- Toast Notification Container -->
+    <div
+      id="toast-container"
+      class="fixed top-20 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+    ></div>
+
+    <!-- ========================================== -->
+    <!-- SECTION 1: AUTHENTICATION LANDING VIEW     -->
+    <!-- ========================================== -->
+    <div id="auth-container" class="min-h-screen flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-[#0F172A] via-[#0B1120] to-[#0F172A]">
+      <!-- Background Ambient Glow Spheres -->
+      <div class="absolute w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-3xl -top-32 -left-32 pointer-events-none"></div>
+      <div class="absolute w-[500px] h-[500px] bg-sky-500/10 rounded-full blur-3xl bottom-0 -right-32 pointer-events-none"></div>
+
+      <!-- Header Navigation -->
+      <header class="w-full px-6 py-4 flex items-center justify-between border-b border-white/10 relative z-20 backdrop-blur-md">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <div class="w-10 h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+            <i data-lucide="shield-alert" class="w-6 h-6 text-[#0F172A]"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-extrabold text-xl leading-none tracking-tight text-white">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">
+              Command Portal v4.2
+            </span>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-4 text-xs font-semibold">
+          <a href="index.html" class="text-slate-300 hover:text-white transition flex items-center gap-1.5 hidden sm:flex">
+            <i data-lucide="home" class="w-4 h-4"></i> Home
+          </a>
+          <a href="live.html" class="text-slate-300 hover:text-emerald-400 transition flex items-center gap-1.5">
+            <i data-lucide="map" class="w-4 h-4 text-sky-400"></i> Live Map
+          </a>
+          <a href="prepare.html" class="text-slate-300 hover:text-emerald-400 transition flex items-center gap-1.5">
+            <i data-lucide="book-open-check" class="w-4 h-4 text-emerald-400"></i> Academy
+          </a>
+          <button onclick="toggleTheme()" class="p-2 rounded-xl text-slate-300 hover:bg-white/5 transition cursor-pointer">
+            <i data-lucide="sun" class="w-4 h-4 text-amber-400"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Split Screen Layout -->
+      <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-20 my-auto">
+        <!-- Left Side: Brand Narrative & Real-Time Stats -->
+        <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="lock" class="w-4 h-4"></i> Secure Emergency Access Token
+          </div>
+
+          <h1 class="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.12]">
+            Welcome to <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-emerald-400 to-sky-400">
+              DisasterOS Portal
+            </span>
+          </h1>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl mx-auto lg:mx-0">
+            Sign in or register your account to manage emergency alerts, submit geo-verified reports, coordinate volunteer rescue ops, and access localized safety intelligence.
+          </p>
+
+          <!-- Animated Metrics Banner -->
+          <div class="grid grid-cols-3 gap-3 pt-4 border-t border-white/10 text-left">
+            <div class="p-4 rounded-2xl glass-card border border-white/10">
+              <div class="font-heading font-extrabold text-2xl text-emerald-400" id="auth-stat-1">14,280+</div>
+              <div class="text-xs text-slate-400 font-medium mt-0.5">Verified Reports</div>
+            </div>
+            <div class="p-4 rounded-2xl glass-card border border-white/10">
+              <div class="font-heading font-extrabold text-2xl text-sky-400" id="auth-stat-2">850+</div>
+              <div class="text-xs text-slate-400 font-medium mt-0.5">Communities Shielded</div>
+            </div>
+            <div class="p-4 rounded-2xl glass-card border border-white/10">
+              <div class="font-heading font-extrabold text-2xl text-amber-400" id="auth-stat-3">3,400+</div>
+              <div class="text-xs text-slate-400 font-medium mt-0.5">Active Volunteers</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Dynamic Auth Card (Login / Register / OTP / Reset) -->
+        <div class="lg:col-span-5 w-full">
+          <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/15 relative overflow-hidden transition-all duration-300">
+            
+            <!-- Auth Form View Switch Tabs -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-6" id="auth-tabs">
+              <div class="flex gap-2 text-xs font-bold">
+                <button
+                  onclick="switchAuthTab('login')"
+                  id="tab-login"
+                  class="px-4 py-2 rounded-xl bg-[#10B981] text-[#0F172A] transition cursor-pointer"
+                >
+                  Sign In
+                </button>
+                <button
+                  onclick="switchAuthTab('register')"
+                  id="tab-register"
+                  class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 transition cursor-pointer"
+                >
+                  Create Account
+                </button>
+              </div>
+
+              <button
+                onclick="switchAuthTab('otp')"
+                class="text-[11px] font-semibold text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i> Phone OTP
+              </button>
+            </div>
+
+            <!-- VIEW A: LOGIN FORM -->
+            <form id="view-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Email or Mobile Number</label>
+                <div class="relative">
+                  <i data-lucide="mail" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                  <input
+                    type="text"
+                    id="login-email"
+                    required
+                    placeholder="user@disasteros.org or +1 (555) 019-2831"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981] transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between items-center mb-1.5">
+                  <label class="text-xs font-semibold text-slate-300">Password</label>
+                  <button type="button" onclick="switchAuthTab('forgot')" class="text-[11px] text-emerald-400 hover:underline">
+                    Forgot Password?
+                  </button>
+                </div>
+                <div class="relative">
+                  <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                  <input
+                    type="password"
+                    id="login-password"
+                    required
+                    placeholder="••••••••••••"
+                    class="w-full pl-10 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981] transition"
+                  />
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between text-xs text-slate-300">
+                <label class="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" id="login-remember" checked class="accent-[#10B981] rounded" />
+                  <span>Keep me logged in</span>
+                </label>
+                <span class="text-[10px] text-slate-400 font-mono">256-bit SSL</span>
+              </div>
+
+              <button
+                type="submit"
+                id="login-btn"
+                class="w-full py-3.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl text-xs transition shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center justify-center gap-2"
+              >
+                <i data-lucide="log-in" class="w-4 h-4"></i> Sign In to Command Center
+              </button>
+
+              <div class="relative py-2 flex items-center justify-center">
+                <div class="border-t border-white/10 w-full"></div>
+                <span class="bg-[#0F172A] px-3 text-[10px] uppercase font-bold text-slate-400 shrink-0">or continue with</span>
+                <div class="border-t border-white/10 w-full"></div>
+              </div>
+
+              <!-- Social Auth Buttons -->
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onclick="triggerGoogleAuth()"
+                  class="py-2.5 px-3 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl text-xs font-bold text-white transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                  Google Account
+                </button>
+
+                <button
+                  type="button"
+                  onclick="switchAuthTab('otp')"
+                  class="py-2.5 px-3 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl text-xs font-bold text-white transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <i data-lucide="smartphone" class="w-4 h-4 text-emerald-400"></i> SMS OTP
+                </button>
+              </div>
+
+              <!-- Quick Demo Login Bar -->
+              <div class="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                <span>Quick Demo Login:</span>
+                <button
+                  type="button"
+                  onclick="fillDemoAccount()"
+                  class="text-emerald-400 font-bold hover:underline cursor-pointer"
+                >
+                  Auto-Fill Demo User
+                </button>
+              </div>
+            </form>
+
+            <!-- VIEW B: MULTI-STEP REGISTER FORM -->
+            <div id="view-register" class="hidden space-y-4">
+              <!-- Step Progress Indicators -->
+              <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 border-b border-white/10 pb-3 mb-2">
+                <span>STEP <strong id="reg-step-num" class="text-emerald-400">1</strong> OF 4</span>
+                <span id="reg-step-title" class="text-slate-200">Personal Information</span>
+              </div>
+
+              <!-- Register Step 1: Personal Info -->
+              <div id="reg-step-1" class="space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Full Legal Name</label>
+                  <input type="text" id="reg-name" placeholder="e.g. Alex Johnson" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white focus:ring-2 focus:ring-[#10B981]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                  <input type="email" id="reg-email" placeholder="alex@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white focus:ring-2 focus:ring-[#10B981]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Mobile Phone Number</label>
+                  <input type="tel" id="reg-phone" placeholder="+1 (555) 019-2831" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white focus:ring-2 focus:ring-[#10B981]" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Account Password</label>
+                  <input type="password" id="reg-pass" placeholder="••••••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white focus:ring-2 focus:ring-[#10B981]" />
+                </div>
+              </div>
+
+              <!-- Register Step 2: Role Selection Cards -->
+              <div id="reg-step-2" class="hidden space-y-3">
+                <label class="block text-xs font-semibold text-slate-300">Choose Your Operational Role</label>
+                
+                <div class="grid grid-cols-2 gap-2 text-xs" id="role-selector-grid">
+                  <div onclick="selectRegisterRole('citizen')" id="role-card-citizen" class="p-3 rounded-2xl bg-white/5 border border-emerald-500/50 cursor-pointer hover:bg-white/10 transition space-y-1">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                      <i data-lucide="user" class="w-4 h-4 text-emerald-400"></i> Citizen
+                    </div>
+                    <p class="text-[10px] text-slate-400">General user, receive alerts, submit reports, safe check-in.</p>
+                  </div>
+
+                  <div onclick="selectRegisterRole('volunteer')" id="role-card-volunteer" class="p-3 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition space-y-1">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                      <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-400"></i> Volunteer
+                    </div>
+                    <p class="text-[10px] text-slate-400">Accept rescue missions, assist shelters, emergency dispatch.</p>
+                  </div>
+
+                  <div onclick="selectRegisterRole('ngo')" id="role-card-ngo" class="p-3 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition space-y-1">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                      <i data-lucide="building-2" class="w-4 h-4 text-sky-400"></i> NGO / Relief
+                    </div>
+                    <p class="text-[10px] text-slate-400">Manage supply distribution, aid requests, shelter operations.</p>
+                  </div>
+
+                  <div onclick="selectRegisterRole('org')" id="role-card-org" class="p-3 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition space-y-1">
+                    <div class="flex items-center gap-2 font-bold text-white">
+                      <i data-lucide="shield-check" class="w-4 h-4 text-purple-400"></i> Gov / Org
+                    </div>
+                    <p class="text-[10px] text-slate-400">Regional command, official broadcasts, telemetry analytics.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Register Step 3: Location & Language -->
+              <div id="reg-step-3" class="hidden space-y-3">
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">State / Province</label>
+                  <input type="text" id="reg-province" value="California" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">District / City Location</label>
+                  <input type="text" id="reg-city" value="Los Angeles - Silver Valley" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                </div>
+                <div>
+                  <label class="block text-xs font-semibold text-slate-300 mb-1">Preferred Language</label>
+                  <select id="reg-lang" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white">
+                    <option value="English">English</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="Sinhala">Sinhala</option>
+                    <option value="Tamil">Tamil</option>
+                  </select>
+                </div>
+                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer pt-1">
+                  <input type="checkbox" id="reg-gps-permit" checked class="accent-[#10B981] rounded" />
+                  <span>Grant GPS location access for real-time risk alerts</span>
+                </label>
+              </div>
+
+              <!-- Register Step 4: Finish & Confirm -->
+              <div id="reg-step-4" class="hidden space-y-4">
+                <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-slate-200 space-y-2">
+                  <div class="font-bold text-emerald-400 flex items-center gap-1.5">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i> Ready to Provision Command Account
+                  </div>
+                  <p class="text-[11px] text-slate-300 leading-relaxed">
+                    By clicking Create Account, you agree to DisasterOS Terms of Service, Privacy Policy, and Emergency Dispatch Protocols.
+                  </p>
+                </div>
+
+                <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                  <input type="checkbox" id="reg-terms-chk" checked class="accent-[#10B981] rounded" />
+                  <span>I agree to Terms & Privacy Policy</span>
+                </label>
+              </div>
+
+              <!-- Multi-step Control Buttons -->
+              <div class="flex items-center justify-between pt-2 border-t border-white/10">
+                <button
+                  type="button"
+                  onclick="prevRegStep()"
+                  id="reg-prev-btn"
+                  class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer hidden"
+                >
+                  Back
+                </button>
+                <button
+                  type="button"
+                  onclick="nextRegStep()"
+                  id="reg-next-btn"
+                  class="ml-auto px-6 py-2.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl text-xs transition shadow-lg cursor-pointer"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+
+            <!-- VIEW C: MOBILE OTP VERIFICATION -->
+            <div id="view-otp" class="hidden space-y-4">
+              <div class="text-center space-y-1">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center">
+                  <i data-lucide="smartphone" class="w-6 h-6"></i>
+                </div>
+                <h3 class="font-heading font-bold text-base text-white">Phone OTP Verification</h3>
+                <p class="text-xs text-slate-400">Enter your mobile number to receive a 6-digit login passcode.</p>
+              </div>
+
+              <div id="otp-phone-input-step" class="space-y-3">
+                <input
+                  type="tel"
+                  id="otp-phone"
+                  value="+1 (555) 019-2831"
+                  placeholder="+1 (555) 000-0000"
+                  class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/15 text-xs text-white"
+                />
+                <button
+                  type="button"
+                  onclick="sendOtpCode()"
+                  class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-[#0F172A] font-bold text-xs rounded-xl transition cursor-pointer"
+                >
+                  Send OTP SMS Code
+                </button>
+              </div>
+
+              <div id="otp-code-input-step" class="hidden space-y-3">
+                <div class="text-xs text-emerald-400 font-semibold text-center">SMS Sent! Code is: <strong class="font-mono text-white text-sm">748209</strong></div>
+                
+                <div class="flex justify-center gap-2 py-2">
+                  <input type="text" maxlength="1" value="7" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                  <input type="text" maxlength="1" value="4" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                  <input type="text" maxlength="1" value="8" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                  <input type="text" maxlength="1" value="2" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                  <input type="text" maxlength="1" value="0" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                  <input type="text" maxlength="1" value="9" class="w-10 h-12 text-center text-lg font-bold bg-slate-900 border border-white/20 rounded-xl text-emerald-400" />
+                </div>
+
+                <button
+                  type="button"
+                  onclick="verifyOtpCode()"
+                  class="w-full py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl shadow-lg transition cursor-pointer"
+                >
+                  Verify & Log In
+                </button>
+              </div>
+            </div>
+
+            <!-- VIEW D: FORGOT PASSWORD -->
+            <div id="view-forgot" class="hidden space-y-4">
+              <div class="text-center space-y-1">
+                <h3 class="font-heading font-bold text-base text-white">Reset Password</h3>
+                <p class="text-xs text-slate-400">Enter your account email to receive a password recovery link.</p>
+              </div>
+
+              <input
+                type="email"
+                id="reset-email"
+                placeholder="registered@email.com"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/15 text-xs text-white"
+              />
+
+              <button
+                type="button"
+                onclick="sendResetLink()"
+                class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-[#0F172A] font-bold text-xs rounded-xl shadow-lg transition cursor-pointer"
+              >
+                Send Reset Instructions
+              </button>
+
+              <button type="button" onclick="switchAuthTab('login')" class="w-full text-center text-xs text-slate-400 hover:underline">
+                Back to Login
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="w-full py-4 text-center text-[11px] text-slate-400 border-t border-white/10 relative z-20">
+        © 2026 DisasterOS. Encrypted Emergency Response Protocol.
+      </footer>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SECTION 2: PERSONALIZED USER DASHBOARD    -->
+    <!-- ========================================== -->
+    <div id="dashboard-container" class="hidden min-h-screen flex flex-col bg-[#0B1120] text-slate-100">
+      
+      <!-- Top Navigation Bar -->
+      <header class="h-16 bg-[#0F172A]/95 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 flex items-center justify-between shrink-0 sticky top-0 z-40">
+        <!-- Left Brand & Sidebar Toggle -->
+        <div class="flex items-center gap-3">
+          <button
+            onclick="toggleDashSidebar()"
+            class="p-2 rounded-xl text-slate-300 hover:bg-white/10 transition cursor-pointer"
+            title="Toggle Menu"
+          >
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+
+          <a href="/index.html" class="flex items-center gap-2.5">
+            <div class="w-8 h-8 bg-[#10B981] rounded-lg flex items-center justify-center shadow-md shadow-emerald-500/20">
+              <i data-lucide="shield-alert" class="w-5 h-5 text-[#0F172A]"></i>
+            </div>
+            <span class="font-heading font-extrabold text-lg leading-none text-white hidden sm:inline">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+          </a>
+        </div>
+
+        <!-- Center Weather Warning Widget -->
+        <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+          <i data-lucide="cloud-rain" class="w-4 h-4 animate-bounce"></i>
+          <span>Silver Valley Sector: Flash Flood Warning (Active)</span>
+        </div>
+
+        <!-- Right Header Items -->
+        <div class="flex items-center gap-3">
+          <!-- Live Map Shortcut -->
+          <a
+            href="/map2.html"
+            class="px-3 py-1.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-xl text-xs font-bold hover:bg-sky-500/20 transition flex items-center gap-1.5"
+          >
+            <i data-lucide="map" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Live Map</span>
+          </a>
+
+          <!-- Notification Bell -->
+          <button
+            onclick="toggleDashNotifications()"
+            class="relative p-2.5 rounded-xl text-slate-300 hover:bg-white/5 transition cursor-pointer"
+          >
+            <i data-lucide="bell" class="w-5 h-5"></i>
+            <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+          </button>
+
+          <!-- User Avatar Dropdown -->
+          <div class="relative">
+            <button
+              onclick="toggleUserMenu()"
+              class="flex items-center gap-2 p-1.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition cursor-pointer"
+            >
+              <div class="w-8 h-8 rounded-lg bg-[#10B981] text-[#0F172A] font-extrabold flex items-center justify-center text-xs" id="nav-user-avatar">
+                AJ
+              </div>
+              <span class="text-xs font-bold text-slate-200 hidden sm:inline" id="nav-user-name">Alex Johnson</span>
+              <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400"></i>
+            </button>
+
+            <!-- User Menu Popup -->
+            <div
+              id="user-dropdown-menu"
+              class="hidden absolute right-0 mt-2 w-56 bg-[#0F172A] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 text-xs space-y-1"
+            >
+              <div class="p-2 border-b border-white/10">
+                <div class="font-bold text-white" id="menu-user-fullname">Alex Johnson</div>
+                <div class="text-[10px] text-emerald-400 uppercase font-mono font-bold" id="menu-user-role">Role: Volunteer</div>
+              </div>
+              <button onclick="switchDashView('profile')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/5 text-slate-200 flex items-center gap-2">
+                <i data-lucide="user" class="w-4 h-4 text-slate-400"></i> My Profile & Contacts
+              </button>
+              <button onclick="switchDashView('settings')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-white/5 text-slate-200 flex items-center gap-2">
+                <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Account Settings
+              </button>
+              <button onclick="handleUserLogout()" class="w-full text-left px-3 py-2 rounded-xl hover:bg-red-500/10 text-red-400 font-bold flex items-center gap-2">
+                <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Workspace -->
+      <div class="flex-1 flex overflow-hidden relative">
+        <!-- Collapsible Left Sidebar -->
+        <aside
+          id="dash-sidebar"
+          class="w-64 bg-[#0F172A]/95 backdrop-blur-2xl border-r border-white/10 flex flex-col justify-between shrink-0 z-30 transition-all duration-300"
+        >
+          <div class="p-4 space-y-6 overflow-y-auto">
+            <div>
+              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2 px-2">
+                Command Workspace
+              </div>
+              <nav class="space-y-1 text-xs font-semibold">
+                <button
+                  onclick="switchDashView('overview')"
+                  id="snav-overview"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#10B981]/15 text-[#10B981] transition cursor-pointer"
+                >
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <span>Dashboard Overview</span>
+                </button>
+
+                <a
+                  href="/map2.html"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition"
+                >
+                  <i data-lucide="map-pin" class="w-4 h-4 text-sky-400"></i>
+                  <span>Live Intelligence Map</span>
+                </a>
+
+                <button
+                  onclick="switchDashView('reports')"
+                  id="snav-reports"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer"
+                >
+                  <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
+                  <span>My Hazard Reports</span>
+                </button>
+
+                <button
+                  onclick="switchDashView('safecheck')"
+                  id="snav-safecheck"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer"
+                >
+                  <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Safe Check-In Beacon</span>
+                </button>
+
+                <button
+                  onclick="switchDashView('role-workspace')"
+                  id="snav-role"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer"
+                >
+                  <i data-lucide="heart-handshake" class="w-4 h-4 text-purple-400"></i>
+                  <span id="snav-role-title">Volunteer Ops</span>
+                </button>
+
+                <a
+                  href="/prepare.html"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition"
+                >
+                  <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i>
+                  <span>Safety Academy</span>
+                </a>
+
+                <button
+                  onclick="switchDashView('profile')"
+                  id="snav-profile"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer"
+                >
+                  <i data-lucide="user" class="w-4 h-4 text-slate-400"></i>
+                  <span>Profile & Emergency Contacts</span>
+                </button>
+              </nav>
+            </div>
+
+            <!-- Emergency Dispatch Status Card -->
+            <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs space-y-1">
+              <div class="flex items-center gap-2 text-emerald-400 font-bold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>Dispatch Sync Active</span>
+              </div>
+              <p class="text-[10px] text-slate-300">Connected to Regional Emergency Control Mesh.</p>
+            </div>
+          </div>
+
+          <div class="p-4 border-t border-white/10">
+            <button
+              onclick="handleUserLogout()"
+              class="w-full py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="log-out" class="w-4 h-4"></i> Sign Out
+            </button>
+          </div>
+        </aside>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-8 space-y-8">
+          
+          <!-- VIEW 1: DASHBOARD OVERVIEW -->
+          <div id="dview-overview" class="space-y-8">
+            
+            <!-- Hero Greeting Banner -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div class="space-y-2 relative z-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold">
+                  <i data-lucide="check-circle-2" class="w-4 h-4"></i> Command Session Live
+                </div>
+                <h1 class="font-heading font-black text-2xl sm:text-3xl text-white">
+                  Good Day, <span id="dash-greeting-name" class="text-emerald-400">Alex Johnson</span> 👋
+                </h1>
+                <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
+                  Here is your personalized disaster intelligence center for <strong id="dash-user-location" class="text-white">Silver Valley, Los Angeles</strong>.
+                </p>
+              </div>
+
+              <!-- Quick Safe Check Status Trigger Box -->
+              <div class="p-4 rounded-2xl bg-slate-900/90 border border-white/10 flex items-center gap-4 shrink-0 relative z-10">
+                <div>
+                  <div class="text-[10px] uppercase font-bold text-slate-400">Safe Check Status</div>
+                  <div id="quick-safe-label" class="font-heading font-bold text-sm text-emerald-400">Status: SAFE</div>
+                </div>
+                <button
+                  onclick="quickToggleSafeStatus()"
+                  id="quick-safe-btn"
+                  class="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl transition cursor-pointer shadow-md"
+                >
+                  I'm Safe
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Analytics Counter Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div class="glass-card glass-card-hover rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase text-slate-400">My Reports</span>
+                  <i data-lucide="file-text" class="w-4 h-4 text-amber-400"></i>
+                </div>
+                <div class="font-heading font-black text-2xl text-white mt-1" id="stat-user-reports">3</div>
+                <div class="text-[10px] text-emerald-400 mt-0.5">2 Verified by AI</div>
+              </div>
+
+              <div class="glass-card glass-card-hover rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase text-slate-400">Nearby Incidents</span>
+                  <i data-lucide="alert-triangle" class="w-4 h-4 text-red-400"></i>
+                </div>
+                <div class="font-heading font-black text-2xl text-white mt-1">4 Active</div>
+                <div class="text-[10px] text-red-400 mt-0.5">Closest: 1.2 miles away</div>
+              </div>
+
+              <div class="glass-card glass-card-hover rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase text-slate-400">Open Shelters</span>
+                  <i data-lucide="home" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div class="font-heading font-black text-2xl text-white mt-1">3 Nearby</div>
+                <div class="text-[10px] text-emerald-400 mt-0.5">1,240 cots free</div>
+              </div>
+
+              <div class="glass-card glass-card-hover rounded-2xl p-4 border border-white/10">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase text-slate-400">Community Rank</span>
+                  <i data-lucide="award" class="w-4 h-4 text-purple-400"></i>
+                </div>
+                <div class="font-heading font-black text-2xl text-white mt-1">Tier 2 Shield</div>
+                <div class="text-[10px] text-purple-400 mt-0.5">450 Safety Points</div>
+              </div>
+            </div>
+
+            <!-- Live Mini-Map & Nearby Incident Table -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <!-- Mini Map -->
+              <div class="lg:col-span-7 glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4 text-sky-400"></i>
+                    <h3 class="font-heading font-bold text-sm text-white">Live Regional Hazard Map</h3>
+                  </div>
+                  <a href="live.html" class="text-xs text-emerald-400 font-bold hover:underline">Full Map Screen &rarr;</a>
+                </div>
+                <div id="dash-mini-map"></div>
+              </div>
+
+              <!-- AI Telemetry Summary Panel -->
+              <div class="lg:col-span-5 glass-card rounded-3xl p-5 border border-white/15 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+                    <h3 class="font-heading font-bold text-sm text-white">AI Safety Intelligence</h3>
+                  </div>
+                  <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-mono font-bold">LIVE TELEMETRY</span>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-slate-900/80 border border-white/5 space-y-2 text-xs">
+                  <div class="font-bold text-amber-400">Advisory for Silver Valley:</div>
+                  <p class="text-slate-300 leading-relaxed text-[11px]">
+                    Flash flood cresting near West River Bridge. High water expected through 18:00 hrs. Avoid West River Parkway.
+                  </p>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                  <div class="text-xs font-bold text-white">Recommended Actions:</div>
+                  <div class="space-y-1.5 text-xs text-slate-300">
+                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5">
+                      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                      <span>Ensure emergency bag is packed.</span>
+                    </div>
+                    <div class="flex items-center gap-2 p-2 rounded-xl bg-white/5">
+                      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                      <span>Confirm family safe status via check-in.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emergency Quick Actions Floating Bar -->
+            <div class="glass-card rounded-3xl p-6 border border-white/15 space-y-4">
+              <h3 class="font-heading font-bold text-base text-white">Emergency Fast Actions</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-bold">
+                <button
+                  onclick="openDashReportModal()"
+                  class="p-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white transition flex flex-col items-center gap-2 text-center cursor-pointer shadow-lg"
+                >
+                  <i data-lucide="siren" class="w-6 h-6 animate-pulse"></i>
+                  <span>Report Hazard</span>
+                </button>
+
+                <a
+                  href="/map2.html"
+                  class="p-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white transition flex flex-col items-center gap-2 text-center cursor-pointer shadow-lg"
+                >
+                  <i data-lucide="home" class="w-6 h-6"></i>
+                  <span>Find Shelter</span>
+                </a>
+
+                <a
+                  href="tel:911"
+                  class="p-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white transition flex flex-col items-center gap-2 text-center cursor-pointer shadow-lg"
+                >
+                  <i data-lucide="phone-call" class="w-6 h-6"></i>
+                  <span>Call 911 Hotline</span>
+                </a>
+
+                <a
+                  href="/prepare.html"
+                  class="p-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white transition flex flex-col items-center gap-2 text-center cursor-pointer shadow-lg"
+                >
+                  <i data-lucide="book-open" class="w-6 h-6"></i>
+                  <span>First Aid Manual</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- VIEW 2: MY HAZARD REPORTS -->
+          <div id="dview-reports" class="hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+              <div>
+                <h2 class="font-heading font-black text-2xl text-white">My Hazard Reports</h2>
+                <p class="text-xs text-slate-400">Track, manage, and update hazards you have submitted to DisasterOS.</p>
+              </div>
+              <button
+                onclick="openDashReportModal()"
+                class="px-4 py-2.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-2 shadow-lg"
+              >
+                <i data-lucide="plus" class="w-4 h-4"></i> Submit New Report
+              </button>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 border border-white/15 overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono text-[10px] border-b border-white/10">
+                  <tr>
+                    <th class="p-3">Incident Title</th>
+                    <th class="p-3">Type</th>
+                    <th class="p-3">Severity</th>
+                    <th class="p-3">AI Status</th>
+                    <th class="p-3">Time</th>
+                    <th class="p-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="user-reports-table-body" class="divide-y divide-white/5 font-medium">
+                  <!-- Dynamically populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- VIEW 3: SAFE CHECK-IN BEACON -->
+          <div id="dview-safecheck" class="hidden space-y-6">
+            <div class="border-b border-white/10 pb-4">
+              <h2 class="font-heading font-black text-2xl text-white">Safe Check-In Status Beacon</h2>
+              <p class="text-xs text-slate-400">Broadcast your current safety status to family members and emergency response dispatch.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="glass-card rounded-3xl p-8 border border-white/15 text-center space-y-6">
+                <div class="w-20 h-20 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center animate-pulse">
+                  <i data-lucide="shield-check" class="w-10 h-10"></i>
+                </div>
+
+                <div>
+                  <div class="text-xs font-bold text-slate-400 uppercase">Current Status</div>
+                  <div id="beacon-status-text" class="font-heading font-black text-3xl text-emerald-400 mt-1">SAFE & SOUND</div>
+                  <p class="text-xs text-slate-300 mt-2">Last broadcasted: Today, 10:24 AM</p>
+                </div>
+
+                <div class="flex gap-3 pt-2">
+                  <button
+                    onclick="setBeaconStatus('SAFE')"
+                    class="flex-1 py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl transition cursor-pointer"
+                  >
+                    I'm Safe
+                  </button>
+                  <button
+                    onclick="setBeaconStatus('HELP')"
+                    class="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl transition cursor-pointer"
+                  >
+                    Need Help SOS
+                  </button>
+                </div>
+              </div>
+
+              <!-- Family Contacts Quick View -->
+              <div class="glass-card rounded-3xl p-6 border border-white/15 space-y-4">
+                <h3 class="font-heading font-bold text-base text-white">Emergency Family Circle</h3>
+                <div class="space-y-3 text-xs">
+                  <div class="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
+                    <div>
+                      <div class="font-bold text-white">Sarah Johnson (Spouse)</div>
+                      <div class="text-[10px] text-emerald-400 font-mono">Status: Safe at Home</div>
+                    </div>
+                    <a href="tel:5550192" class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl font-bold">Call</a>
+                  </div>
+
+                  <div class="p-3 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
+                    <div>
+                      <div class="font-bold text-white">David Johnson (Father)</div>
+                      <div class="text-[10px] text-emerald-400 font-mono">Status: Checked In</div>
+                    </div>
+                    <a href="tel:5550193" class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl font-bold">Call</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- VIEW 4: ROLE WORKSPACE (VOLUNTEER / NGO / CITIZEN) -->
+          <div id="dview-role-workspace" class="hidden space-y-6">
+            <div class="border-b border-white/10 pb-4">
+              <h2 class="font-heading font-black text-2xl text-white" id="role-ws-title">Volunteer Mission Control</h2>
+              <p class="text-xs text-slate-400">Role-specific operations panel and emergency dispatch coordinator.</p>
+            </div>
+
+            <!-- Content dynamically rendered based on user.role -->
+            <div id="role-ws-content" class="space-y-6"></div>
+          </div>
+
+
+          <!-- VIEW 5: PROFILE & EMERGENCY CONTACTS -->
+          <div id="dview-profile" class="hidden space-y-6">
+            <div class="border-b border-white/10 pb-4">
+              <h2 class="font-heading font-black text-2xl text-white">Profile & Security Settings</h2>
+              <p class="text-xs text-slate-400">Manage your user details, operational role, and emergency contacts.</p>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 sm:p-8 border border-white/15 max-w-2xl space-y-6">
+              <form onsubmit="handleProfileUpdate(event)" class="space-y-4 text-xs">
+                <div>
+                  <label class="block font-semibold text-slate-300 mb-1">Full Legal Name</label>
+                  <input type="text" id="prof-name" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="prof-email" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                  </div>
+                  <div>
+                    <label class="block font-semibold text-slate-300 mb-1">Phone Number</label>
+                    <input type="tel" id="prof-phone" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-300 mb-1">Operational Role</label>
+                  <select id="prof-role" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white">
+                    <option value="citizen">Citizen</option>
+                    <option value="volunteer">Volunteer Responder</option>
+                    <option value="ngo">NGO Relief Rep</option>
+                    <option value="org">Government / Organization Rep</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block font-semibold text-slate-300 mb-1">District / City Location</label>
+                  <input type="text" id="prof-location" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white" />
+                </div>
+
+                <button
+                  type="submit"
+                  class="px-6 py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl shadow-lg transition cursor-pointer"
+                >
+                  Save Profile Changes
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- SUBMIT HAZARD MODAL (DASHBOARD)            -->
+    <!-- ========================================== -->
+    <div
+      id="dash-report-modal"
+      class="fixed inset-0 bg-black/70 backdrop-blur-md z-50 hidden flex items-center justify-center p-4"
+    >
+      <div class="bg-[#0F172A] border border-white/10 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4 animate-fadeInUp">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="siren" class="w-5 h-5 text-red-500"></i>
+            <h3 class="font-heading font-bold text-base text-white">Submit Geo-Hazard Report</h3>
+          </div>
+          <button onclick="closeDashReportModal()" class="text-slate-400 hover:text-white cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleDashReportSubmit(event)" class="space-y-3.5 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Incident Title</label>
+            <input type="text" id="dreport-title" placeholder="e.g. River Inundation on 5th Ave" required class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-white" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Disaster Type</label>
+              <select id="dreport-type" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-white">
+                <option value="flood">Flash Flood</option>
+                <option value="fire">Wildfire</option>
+                <option value="earthquake">Earthquake</option>
+                <option value="landslide">Landslide</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Severity Priority</label>
+              <select id="dreport-severity" class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-white">
+                <option value="P1">P1 - Critical Danger</option>
+                <option value="P2">P2 - High Risk</option>
+                <option value="P3">P3 - Moderate Caution</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Details & Water Depth / Road Block</label>
+            <textarea id="dreport-desc" rows="2" placeholder="Describe current situation..." required class="w-full px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-white"></textarea>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl transition cursor-pointer shadow-lg"
+          >
+            Submit & Verify on Live Map
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT APP LOGIC                       -->
+    <!-- ========================================== -->
+    <script>
+      // Global State
+      let currentUser = null;
+      let regStep = 1;
+      let selectedRegRole = 'citizen';
+      let dashMiniMap = null;
+
+      // Local Database Initializer
+      function initDatabase() {
+        if (!localStorage.getItem('disasteros_users')) {
+          const demoUsers = [
+            {
+              email: 'user@disasteros.org',
+              password: 'password123',
+              name: 'Alex Johnson',
+              phone: '+1 (555) 019-2831',
+              role: 'volunteer',
+              location: 'Silver Valley, Los Angeles',
+              safeStatus: 'SAFE'
+            }
+          ];
+          localStorage.setItem('disasteros_users', JSON.stringify(demoUsers));
+        }
+
+        if (!localStorage.getItem('disasteros_user_reports')) {
+          const demoReports = [
+            {
+              id: 'rep-101',
+              title: 'Flash Flood near West River Bridge',
+              type: 'flood',
+              severity: 'P1',
+              status: 'Verified',
+              time: '15m ago',
+              desc: 'Water level risen 3ft over road surface. Evacuation in progress.'
+            },
+            {
+              id: 'rep-102',
+              title: 'Blocked Culvert on 8th Street',
+              type: 'flood',
+              severity: 'P2',
+              status: 'Verified',
+              time: '1h ago',
+              desc: 'Debris blocking drainage pipe causing street runoff.'
+            }
+          ];
+          localStorage.setItem('disasteros_user_reports', JSON.stringify(demoReports));
+        }
+
+        // Check if session exists
+        const savedSession = localStorage.getItem('disasteros_current_user');
+        if (savedSession) {
+          currentUser = JSON.parse(savedSession);
+          showDashboardView();
+        } else {
+          showAuthView();
+        }
+      }
+
+      // Toast Notifications
+      function showToast(msg, type = 'success') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        const isError = type === 'error';
+        toast.className = `p-4 rounded-2xl ${
+          isError ? 'bg-red-600 text-white' : 'bg-[#10B981] text-[#0F172A]'
+        } font-bold text-xs shadow-2xl flex items-center justify-between gap-3 pointer-events-auto transition-all duration-300 animate-fadeInUp`;
+
+        toast.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i data-lucide="${isError ? 'alert-triangle' : 'check-circle'}" class="w-4 h-4"></i>
+            <span>${msg}</span>
+          </div>
+          <button onclick="this.parentElement.remove()" class="opacity-75 hover:opacity-100 cursor-pointer">✕</button>
+        `;
+
+        container.appendChild(toast);
+        if (window.lucide) lucide.createIcons();
+        setTimeout(() => toast.remove(), 4000);
+      }
+
+      // Theme Toggle
+      function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+      }
+
+      // Auth View Switchers
+      function switchAuthTab(tab) {
+        document.getElementById('view-login').classList.add('hidden');
+        document.getElementById('view-register').classList.add('hidden');
+        document.getElementById('view-otp').classList.add('hidden');
+        document.getElementById('view-forgot').classList.add('hidden');
+
+        const tabLoginBtn = document.getElementById('tab-login');
+        const tabRegBtn = document.getElementById('tab-register');
+
+        if (tabLoginBtn && tabRegBtn) {
+          tabLoginBtn.className = 'px-4 py-2 rounded-xl bg-white/5 text-slate-300 hover:bg-white/10 transition cursor-pointer';
+          tabRegBtn.className = 'px-4 py-2 rounded-xl bg-white/5 text-slate-300 hover:bg-white/10 transition cursor-pointer';
+        }
+
+        if (tab === 'login') {
+          document.getElementById('view-login').classList.remove('hidden');
+          if (tabLoginBtn) tabLoginBtn.className = 'px-4 py-2 rounded-xl bg-[#10B981] text-[#0F172A] font-bold transition cursor-pointer';
+        } else if (tab === 'register') {
+          document.getElementById('view-register').classList.remove('hidden');
+          if (tabRegBtn) tabRegBtn.className = 'px-4 py-2 rounded-xl bg-[#10B981] text-[#0F172A] font-bold transition cursor-pointer';
+        } else if (tab === 'otp') {
+          document.getElementById('view-otp').classList.remove('hidden');
+        } else if (tab === 'forgot') {
+          document.getElementById('view-forgot').classList.remove('hidden');
+        }
+      }
+
+      // Demo Account Fill
+      function fillDemoAccount() {
+        document.getElementById('login-email').value = 'user@disasteros.org';
+        document.getElementById('login-password').value = 'password123';
+        showToast('Demo account credentials auto-filled!');
+      }
+
+      // Login Handler
+      function handleLoginSubmit(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const pass = document.getElementById('login-password').value;
+
+        const users = JSON.parse(localStorage.getItem('disasteros_users') || '[]');
+        const user = users.find(u => (u.email === email || u.phone === email) && u.password === pass);
+
+        if (user) {
+          currentUser = user;
+          localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+          showToast(`Welcome back, ${user.name}!`);
+          showDashboardView();
+        } else {
+          showToast('Invalid credentials. Use quick demo button below.', 'error');
+        }
+      }
+
+      // Google OAuth Simulator
+      function triggerGoogleAuth() {
+        showToast('Google OAuth 2.0 Authenticated!');
+        const googleUser = {
+          email: 'alex.google@disasteros.org',
+          name: 'Alex Johnson (Google)',
+          phone: '+1 (555) 019-2831',
+          role: 'volunteer',
+          location: 'Silver Valley District',
+          safeStatus: 'SAFE'
+        };
+        currentUser = googleUser;
+        localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+        showDashboardView();
+      }
+
+      // OTP Verification Logic
+      function sendOtpCode() {
+        document.getElementById('otp-phone-input-step').classList.add('hidden');
+        document.getElementById('otp-code-input-step').classList.remove('hidden');
+        showToast('OTP SMS Code sent: 748209');
+      }
+
+      function verifyOtpCode() {
+        showToast('Phone number verified successfully!');
+        const phoneUser = {
+          email: 'mobile.user@disasteros.org',
+          name: 'Mobile Responder',
+          phone: document.getElementById('otp-phone').value,
+          role: 'citizen',
+          location: 'Silver Valley',
+          safeStatus: 'SAFE'
+        };
+        currentUser = phoneUser;
+        localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+        showDashboardView();
+      }
+
+      // Password Reset
+      function sendResetLink() {
+        const email = document.getElementById('reset-email').value;
+        if (!email) {
+          showToast('Please enter an email address', 'error');
+          return;
+        }
+        showToast(`Reset link sent to ${email}`);
+        switchAuthTab('login');
+      }
+
+      // Register Multi-Step Logic
+      function selectRegisterRole(role) {
+        selectedRegRole = role;
+        const roles = ['citizen', 'volunteer', 'ngo', 'org'];
+        roles.forEach(r => {
+          const card = document.getElementById(`role-card-${r}`);
+          if (card) {
+            if (r === role) {
+              card.className = 'p-3 rounded-2xl bg-white/10 border border-[#10B981] shadow-glow cursor-pointer space-y-1';
+            } else {
+              card.className = 'p-3 rounded-2xl bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition space-y-1';
+            }
+          }
+        });
+      }
+
+      function nextRegStep() {
+        if (regStep === 1) {
+          const name = document.getElementById('reg-name').value;
+          const email = document.getElementById('reg-email').value;
+          if (!name || !email) {
+            showToast('Please complete name and email', 'error');
+            return;
+          }
+        }
+
+        if (regStep < 4) {
+          document.getElementById(`reg-step-${regStep}`).classList.add('hidden');
+          regStep++;
+          document.getElementById(`reg-step-${regStep}`).classList.remove('hidden');
+
+          document.getElementById('reg-step-num').textContent = regStep;
+          document.getElementById('reg-prev-btn').classList.remove('hidden');
+
+          const titles = ['', 'Personal Information', 'Choose Operational Role', 'Location & Preferences', 'Final Confirmation'];
+          document.getElementById('reg-step-title').textContent = titles[regStep];
+
+          if (regStep === 4) {
+            document.getElementById('reg-next-btn').textContent = 'Create Account';
+          }
+        } else {
+          // Final Submit
+          const newUser = {
+            name: document.getElementById('reg-name').value,
+            email: document.getElementById('reg-email').value,
+            phone: document.getElementById('reg-phone').value || '+1 555-0192',
+            password: document.getElementById('reg-pass').value || 'password123',
+            role: selectedRegRole,
+            location: document.getElementById('reg-city').value || 'Silver Valley',
+            safeStatus: 'SAFE'
+          };
+
+          const users = JSON.parse(localStorage.getItem('disasteros_users') || '[]');
+          users.push(newUser);
+          localStorage.setItem('disasteros_users', JSON.stringify(users));
+
+          currentUser = newUser;
+          localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+          showToast('Account Created Successfully!');
+          showDashboardView();
+        }
+      }
+
+      function prevRegStep() {
+        if (regStep > 1) {
+          document.getElementById(`reg-step-${regStep}`).classList.add('hidden');
+          regStep--;
+          document.getElementById(`reg-step-${regStep}`).classList.remove('hidden');
+
+          document.getElementById('reg-step-num').textContent = regStep;
+          if (regStep === 1) document.getElementById('reg-prev-btn').classList.add('hidden');
+
+          document.getElementById('reg-next-btn').textContent = 'Continue';
+        }
+      }
+
+      // SHOW / HIDE VIEWS
+      function showAuthView() {
+        document.getElementById('auth-container').classList.remove('hidden');
+        document.getElementById('dashboard-container').classList.add('hidden');
+      }
+
+      function showDashboardView() {
+        document.getElementById('auth-container').classList.add('hidden');
+        document.getElementById('dashboard-container').classList.remove('hidden');
+
+        // Populate User Info
+        if (currentUser) {
+          document.getElementById('nav-user-name').textContent = currentUser.name;
+          document.getElementById('menu-user-fullname').textContent = currentUser.name;
+          document.getElementById('menu-user-role').textContent = `Role: ${currentUser.role.toUpperCase()}`;
+          document.getElementById('dash-greeting-name').textContent = currentUser.name;
+          document.getElementById('dash-user-location').textContent = currentUser.location || 'Silver Valley, Los Angeles';
+
+          const initials = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+          document.getElementById('nav-user-avatar').textContent = initials;
+
+          // Side menu role title
+          document.getElementById('snav-role-title').textContent = `${currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1)} Workspace`;
+        }
+
+        renderUserReportsTable();
+        renderRoleWorkspace();
+        initDashMiniMap();
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function handleUserLogout() {
+        localStorage.removeItem('disasteros_current_user');
+        currentUser = null;
+        showToast('Signed out safely.');
+        showAuthView();
+      }
+
+      // DASHBOARD VIEW SWITCHER
+      function switchDashView(view) {
+        const views = ['overview', 'reports', 'safecheck', 'role-workspace', 'profile'];
+        views.forEach(v => {
+          const el = document.getElementById(`dview-${v}`);
+          const navBtn = document.getElementById(`snav-${v === 'role-workspace' ? 'role' : v}`);
+          if (el) el.classList.add('hidden');
+          if (navBtn) {
+            navBtn.className = 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-white transition cursor-pointer';
+          }
+        });
+
+        const targetEl = document.getElementById(`dview-${view}`);
+        const targetBtn = document.getElementById(`snav-${view === 'role-workspace' ? 'role' : view}`);
+
+        if (targetEl) targetEl.classList.remove('hidden');
+        if (targetBtn) {
+          targetBtn.className = 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#10B981]/15 text-[#10B981] font-bold transition cursor-pointer';
+        }
+
+        if (view === 'overview' && dashMiniMap) {
+          setTimeout(() => dashMiniMap.invalidateSize(), 200);
+        }
+
+        if (view === 'profile' && currentUser) {
+          document.getElementById('prof-name').value = currentUser.name || '';
+          document.getElementById('prof-email').value = currentUser.email || '';
+          document.getElementById('prof-phone').value = currentUser.phone || '';
+          document.getElementById('prof-role').value = currentUser.role || 'citizen';
+          document.getElementById('prof-location').value = currentUser.location || '';
+        }
+      }
+
+      // DASHBOARD MINI MAP
+      function initDashMiniMap() {
+        const mapContainer = document.getElementById('dash-mini-map');
+        if (!mapContainer || dashMiniMap) return;
+
+        dashMiniMap = L.map('dash-mini-map', { zoomControl: false }).setView([34.0522, -118.2437], 13);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+          maxZoom: 19
+        }).addTo(dashMiniMap);
+
+        // Custom Pin
+        const floodIcon = L.divIcon({
+          className: 'custom-pin',
+          html: '<div style="background:#ef4444; width:16px; height:16px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 10px #ef4444;"></div>',
+          iconSize: [16, 16]
+        });
+
+        L.marker([34.0522, -118.2437], { icon: floodIcon })
+          .addTo(dashMiniMap)
+          .bindPopup('<b>West River Bridge Flash Flood</b><br>Critical Danger Zone');
+
+        const shelterIcon = L.divIcon({
+          className: 'custom-pin-shelter',
+          html: '<div style="background:#10b981; width:16px; height:16px; border-radius:50%; border:2px solid #fff; box-shadow:0 0 10px #10b981;"></div>',
+          iconSize: [16, 16]
+        });
+
+        L.marker([34.0211, -118.1922], { icon: shelterIcon })
+          .addTo(dashMiniMap)
+          .bindPopup('<b>Civic Center Shelter #3</b><br>450 Cots Free');
+      }
+
+      // SAFE CHECK STATUS TOGGLE
+      function quickToggleSafeStatus() {
+        if (!currentUser) return;
+        const newStatus = currentUser.safeStatus === 'SAFE' ? 'HELP' : 'SAFE';
+        currentUser.safeStatus = newStatus;
+        localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+
+        const label = document.getElementById('quick-safe-label');
+        if (newStatus === 'SAFE') {
+          label.textContent = 'Status: SAFE';
+          label.className = 'font-heading font-bold text-sm text-emerald-400';
+          showToast('Status set to SAFE. Emergency contacts notified.');
+        } else {
+          label.textContent = 'Status: NEED HELP';
+          label.className = 'font-heading font-bold text-sm text-red-500 animate-pulse';
+          showToast('SOS Beacon Broadcasted to Dispatch!', 'error');
+        }
+      }
+
+      function setBeaconStatus(status) {
+        if (!currentUser) return;
+        currentUser.safeStatus = status;
+        localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+
+        const txt = document.getElementById('beacon-status-text');
+        if (txt) {
+          txt.textContent = status === 'SAFE' ? 'SAFE & SOUND' : 'NEED EMERGENCY HELP';
+          txt.className = status === 'SAFE' ? 'font-heading font-black text-3xl text-emerald-400 mt-1' : 'font-heading font-black text-3xl text-red-500 mt-1 animate-pulse';
+        }
+        showToast(`Beacon updated: ${status}`);
+      }
+
+      // REPORTS MANAGEMENT
+      function renderUserReportsTable() {
+        const tbody = document.getElementById('user-reports-table-body');
+        if (!tbody) return;
+
+        const reports = JSON.parse(localStorage.getItem('disasteros_user_reports') || '[]');
+        document.getElementById('stat-user-reports').textContent = reports.length;
+
+        if (reports.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">No reports submitted yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = reports.map(r => `
+          <tr class="hover:bg-white/5 transition">
+            <td class="p-3 font-bold text-white">${r.title}</td>
+            <td class="p-3 uppercase font-mono text-[10px] text-sky-400">${r.type}</td>
+            <td class="p-3 font-bold text-red-400">${r.severity}</td>
+            <td class="p-3"><span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">${r.status}</span></td>
+            <td class="p-3 text-slate-400">${r.time}</td>
+            <td class="p-3 text-right">
+              <button onclick="deleteUserReport('${r.id}')" class="text-red-400 hover:underline">Delete</button>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      function deleteUserReport(id) {
+        let reports = JSON.parse(localStorage.getItem('disasteros_user_reports') || '[]');
+        reports = reports.filter(r => r.id !== id);
+        localStorage.setItem('disasteros_user_reports', JSON.stringify(reports));
+        showToast('Report deleted.');
+        renderUserReportsTable();
+      }
+
+      function openDashReportModal() {
+        document.getElementById('dash-report-modal').classList.remove('hidden');
+      }
+
+      function closeDashReportModal() {
+        document.getElementById('dash-report-modal').classList.add('hidden');
+      }
+
+      function handleDashReportSubmit(e) {
+        e.preventDefault();
+        const title = document.getElementById('dreport-title').value;
+        const type = document.getElementById('dreport-type').value;
+        const severity = document.getElementById('dreport-severity').value;
+        const desc = document.getElementById('dreport-desc').value;
+
+        const newRep = {
+          id: 'rep-' + Date.now(),
+          title,
+          type,
+          severity,
+          status: 'AI Verified',
+          time: 'Just now',
+          desc
+        };
+
+        const reports = JSON.parse(localStorage.getItem('disasteros_user_reports') || '[]');
+        reports.unshift(newRep);
+        localStorage.setItem('disasteros_user_reports', JSON.stringify(reports));
+
+        showToast('Geo-hazard report submitted and AI verified!');
+        closeDashReportModal();
+        renderUserReportsTable();
+      }
+
+      // ROLE WORKSPACE DYNAMIC RENDER
+      function renderRoleWorkspace() {
+        const box = document.getElementById('role-ws-content');
+        if (!box || !currentUser) return;
+
+        const role = currentUser.role || 'citizen';
+
+        if (role === 'volunteer') {
+          box.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="glass-card rounded-2xl p-5 border border-purple-500/30 space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-white text-sm">Rescue Mission #402</span>
+                  <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 font-bold text-[10px]">DISPATCH READY</span>
+                </div>
+                <p class="text-xs text-slate-300">Deliver emergency water cots to Civic Shelter #3. 1.8 miles away.</p>
+                <button onclick="showToast('Mission Accepted! Route dispatched to GPS.')" class="w-full py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-xl transition cursor-pointer">
+                  Accept Rescue Mission
+                </button>
+              </div>
+
+              <div class="glass-card rounded-2xl p-5 border border-white/10 space-y-3">
+                <div class="font-bold text-white text-sm">Volunteer Stats</div>
+                <div class="text-2xl font-black text-emerald-400">14 Missions Completed</div>
+                <div class="text-xs text-slate-400">Tier 2 First Responder Certification Active</div>
+              </div>
+            </div>
+          `;
+        } else if (role === 'ngo') {
+          box.innerHTML = `
+            <div class="glass-card rounded-2xl p-5 border border-sky-500/30 space-y-4">
+              <h3 class="font-bold text-white text-base">NGO Relief Supplies Stock</h3>
+              <div class="grid grid-cols-3 gap-3 text-xs text-center">
+                <div class="p-3 bg-white/5 rounded-xl"><div class="font-bold text-sky-400 text-lg">1,400</div>Bottled Water</div>
+                <div class="p-3 bg-white/5 rounded-xl"><div class="font-bold text-emerald-400 text-lg">850</div>Medical Kits</div>
+                <div class="p-3 bg-white/5 rounded-xl"><div class="font-bold text-amber-400 text-lg">450</div>Cots & Blankets</div>
+              </div>
+            </div>
+          `;
+        } else {
+          box.innerHTML = `
+            <div class="glass-card rounded-2xl p-5 border border-white/10 space-y-3">
+              <h3 class="font-bold text-white text-base">Citizen Safety Readiness</h3>
+              <p class="text-xs text-slate-300">Your emergency contacts and evacuation guides are synchronized with DisasterOS control network.</p>
+            </div>
+          `;
+        }
+      }
+
+      // PROFILE UPDATE
+      function handleProfileUpdate(e) {
+        e.preventDefault();
+        if (!currentUser) return;
+
+        currentUser.name = document.getElementById('prof-name').value;
+        currentUser.email = document.getElementById('prof-email').value;
+        currentUser.phone = document.getElementById('prof-phone').value;
+        currentUser.role = document.getElementById('prof-role').value;
+        currentUser.location = document.getElementById('prof-location').value;
+
+        localStorage.setItem('disasteros_current_user', JSON.stringify(currentUser));
+        showToast('Profile updated!');
+        showDashboardView();
+      }
+
+      function toggleDashSidebar() {
+        const sb = document.getElementById('dash-sidebar');
+        if (sb) sb.classList.toggle('-ml-64');
+      }
+
+      function toggleUserMenu() {
+        const menu = document.getElementById('user-dropdown-menu');
+        if (menu) menu.classList.toggle('hidden');
+      }
+
+      function toggleDashNotifications() {
+        showToast('3 new weather telemetry alerts received.');
+      }
+
+      // Initialize App on DOM Ready
+      document.addEventListener('DOMContentLoaded', () => {
+        initDatabase();
+        if (window.lucide) lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+  <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K2SBFSH1EF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K2SBFSH1EF');
+</script>
+        <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterOS – Safety Learning Center & Preparedness Hub</title>
+    <meta
+      name="description"
+      content="Interactive emergency preparedness academy, first aid guides, interactive disaster simulators, safety quizzes, emergency kit checklists, and AI safety assistant."
+    />
+
+    <!-- Google Fonts: Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              forest: '#166534',
+              verified: '#22C55E',
+              flood: '#3B82F6',
+              cyclone: '#8B5CF6',
+              landslide: '#A16207',
+              fire: '#EF4444',
+              earthquake: '#F97316',
+              storm: '#475569',
+              warning: '#F59E0B',
+              danger: '#DC2626',
+              safezone: '#10B981',
+              brand: {
+                dark: '#0F172A',
+                light: '#F8FAFC',
+              },
+            },
+            boxShadow: {
+              glass: '0 8px 32px 0 rgba(15, 23, 42, 0.12)',
+              'glass-dark': '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
+              glow: '0 0 25px rgba(16, 185, 129, 0.35)',
+              'glow-blue': '0 0 25px rgba(59, 130, 246, 0.35)',
+            },
+            keyframes: {
+              floatLeaves: {
+                '0%, 100%': { transform: 'translateY(0px) rotate(0deg)', opacity: '0.6' },
+                '50%': { transform: 'translateY(-20px) rotate(10deg)', opacity: '0.9' },
+              },
+              waveFlow: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
+              },
+              pulseGlow: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.08)', opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { transform: 'translateY(16px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+            },
+            animation: {
+              floatLeaves: 'floatLeaves 6s ease-in-out infinite',
+              waveFlow: 'waveFlow 20s linear infinite',
+              pulseGlow: 'pulseGlow 2.5s ease-in-out infinite',
+              fadeInUp: 'fadeInUp 0.3s ease-out forwards',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.4);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #10b981;
+      }
+
+      /* Glassmorphism Styles */
+      .glass-card {
+        background: rgba(15, 23, 42, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      html:not(.dark) .glass-card {
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+      }
+
+      .glass-card-hover {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .glass-card-hover:hover {
+        transform: translateY(-6px);
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.2);
+      }
+
+      /* Animated Background Elements */
+      .bg-particle {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(40px);
+        opacity: 0.15;
+      }
+
+      /* Metronome Visualizer for CPR */
+      .metronome-beat {
+        animation: pulseBeat 0.54s infinite alternate ease-in-out;
+      }
+      @keyframes pulseBeat {
+        from { transform: scale(0.95); opacity: 0.6; }
+        to { transform: scale(1.15); opacity: 1; }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0B1120] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-[#10B981] selection:text-[#0F172A] transition-colors duration-300"
+    id="app-body"
+  >
+    <!-- Toast Notification Container -->
+    <div
+      id="toast-container"
+      class="fixed top-20 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+    ></div>
+
+    <!-- Header Navigation Bar -->
+    <header
+      class="sticky top-0 z-40 bg-[#0F172A]/90 dark:bg-[#0F172A]/95 backdrop-blur-xl border-b border-white/10 px-4 sm:px-8 py-3.5 flex items-center justify-between transition-colors"
+    >
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <div
+            class="w-10 h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform"
+          >
+            <i data-lucide="book-open-check" class="w-6 h-6 text-[#0F172A]"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-extrabold text-xl leading-none tracking-tight text-white">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+            <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">
+              Safety Learning Academy
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Center Navigation Links -->
+      <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-300">
+        <a href="index.html" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="home" class="w-4 h-4"></i> Home
+        </a>
+        <a href="live.html" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="map" class="w-4 h-4 text-sky-400"></i> Live Hazard Map
+        </a>
+        <a href="#learning-guides" class="text-white hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="graduation-cap" class="w-4 h-4 text-emerald-400"></i> Guides
+        </a>
+        <a href="#first-aid" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="heart-pulse" class="w-4 h-4 text-red-400"></i> First Aid Hub
+        </a>
+        <a href="#emergency-kit" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="briefcase" class="w-4 h-4 text-amber-400"></i> Kit Checklist
+        </a>
+        <a href="#simulator" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="gamepad-2" class="w-4 h-4 text-purple-400"></i> Simulator
+        </a>
+        <a href="#download-center" class="hover:text-emerald-400 transition flex items-center gap-1.5">
+          <i data-lucide="file-text" class="w-4 h-4 text-emerald-400"></i> PDF Downloads
+        </a>
+      </nav>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Progress Widget Badge -->
+        <div
+          class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold"
+        >
+          <i data-lucide="trophy" class="w-4 h-4"></i>
+          <span>Academy Level: <strong id="header-user-level" class="text-white">Prep Cadet</strong></span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button
+          onclick="toggleTheme()"
+          class="p-2.5 rounded-xl text-slate-300 hover:bg-white/5 transition cursor-pointer"
+          title="Toggle Theme"
+        >
+          <i data-lucide="sun" class="w-5 h-5 text-amber-400"></i>
+        </button>
+
+        <!-- Emergency SOS Button -->
+        <button
+          onclick="openSosModal()"
+          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-red-500/20 transition flex items-center gap-2 cursor-pointer"
+        >
+          <i data-lucide="siren" class="w-4 h-4 animate-pulse"></i>
+          <span>SOS Call</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO SECTION WITH PARTICLES & FLOATING NATURE ELEMENTS -->
+    <section class="relative overflow-hidden pt-12 pb-20 px-4 sm:px-8 border-b border-white/10 bg-gradient-to-b from-[#0F172A] via-[#0B1120] to-[#0F172A]">
+      <!-- Background Ambient Blur Spheres -->
+      <div class="bg-particle w-96 h-96 bg-emerald-500 -top-20 -left-20"></div>
+      <div class="bg-particle w-96 h-96 bg-sky-500 top-1/2 -right-20"></div>
+      <div class="bg-particle w-80 h-80 bg-purple-500 bottom-0 left-1/3"></div>
+
+      <div class="max-w-6xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Hero Text -->
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="shield-check" class="w-4 h-4"></i> Official Disaster Preparedness Academy
+          </div>
+
+          <h1 class="font-heading font-black text-4xl sm:text-5xl lg:text-6xl text-white tracking-tight leading-[1.15]">
+            Prepare Today.<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] via-emerald-400 to-sky-400">
+              Stay Safe Tomorrow.
+            </span>
+          </h1>
+
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto lg:mx-0">
+            Learn how to protect yourself, your loved ones, and your community before emergencies strike. Access expert interactive guides, emergency kit builders, AI assistance, first aid tutorials, and downloadable official PDF manuals.
+          </p>
+
+          <!-- Hero Action CTAs -->
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <a
+              href="#learning-guides"
+              class="w-full sm:w-auto px-7 py-3.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl text-sm shadow-xl shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            >
+              <i data-lucide="play-circle" class="w-5 h-5"></i> Start Learning Modules
+            </a>
+            <button
+              onclick="downloadKitPdf()"
+              class="w-full sm:w-auto px-7 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-sm border border-white/10 backdrop-blur-md transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="download" class="w-5 h-5 text-emerald-400"></i> Download Emergency Kit PDF
+            </button>
+            <a
+              href="#simulator"
+              class="w-full sm:w-auto px-6 py-3.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 font-bold rounded-xl text-sm transition flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <i data-lucide="gamepad-2" class="w-5 h-5"></i> Try Simulator
+            </a>
+          </div>
+
+          <!-- Quick Stats Pill Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-white/10 text-xs">
+            <div class="p-3 rounded-2xl glass-card text-center lg:text-left">
+              <div class="font-heading font-extrabold text-xl text-white">12+</div>
+              <div class="text-[11px] text-slate-400 font-medium">Interactive Guides</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card text-center lg:text-left">
+              <div class="font-heading font-extrabold text-xl text-emerald-400">100%</div>
+              <div class="text-[11px] text-slate-400 font-medium">Offline PDF Ready</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card text-center lg:text-left">
+              <div class="font-heading font-extrabold text-xl text-sky-400">8</div>
+              <div class="text-[11px] text-slate-400 font-medium">First Aid Modules</div>
+            </div>
+            <div class="p-3 rounded-2xl glass-card text-center lg:text-left">
+              <div class="font-heading font-extrabold text-xl text-amber-400">24/7</div>
+              <div class="text-[11px] text-slate-400 font-medium">AI Safety Assistant</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Visual Illustration Card -->
+        <div class="lg:col-span-5 relative">
+          <div class="glass-card rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-white/15">
+            <!-- Simulated Animated Nature Graphic -->
+            <div class="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+              <div class="flex items-center gap-2.5">
+                <div class="w-3 h-3 rounded-full bg-red-500 animate-ping"></div>
+                <span class="font-heading font-bold text-xs uppercase tracking-wider text-slate-300">
+                  Live Emergency Simulator
+                </span>
+              </div>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2.5 py-1 rounded-full font-mono font-bold">
+                FAMILY PREP READY
+              </span>
+            </div>
+
+            <!-- Animated Family & Kit Card Visual -->
+            <div class="bg-slate-900/80 rounded-2xl p-5 border border-white/5 space-y-4 relative">
+              <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                  <i data-lucide="shield-alert" class="w-8 h-8 animate-bounce"></i>
+                </div>
+                <div>
+                  <h4 class="font-heading font-bold text-sm text-white">Family Survival Checklist</h4>
+                  <p class="text-xs text-slate-400">72-Hour Survival Kit & Safe Evacuation Corridor</p>
+                </div>
+              </div>
+
+              <!-- Animated Progress Bar -->
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-mono">
+                  <span class="text-slate-400">Kit Packing Status</span>
+                  <span class="text-emerald-400 font-bold">85% Complete</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden p-0.5">
+                  <div class="h-full bg-gradient-to-r from-emerald-500 to-sky-400 rounded-full w-[85%] transition-all duration-1000"></div>
+                </div>
+              </div>
+
+              <!-- Interactive Quick Items -->
+              <div class="grid grid-cols-2 gap-2 text-[11px] font-medium pt-1">
+                <div class="p-2 rounded-xl bg-white/5 flex items-center gap-2 text-emerald-300">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                  <span>3 Gallons Water / Person</span>
+                </div>
+                <div class="p-2 rounded-xl bg-white/5 flex items-center gap-2 text-emerald-300">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                  <span>Trauma First Aid Kit</span>
+                </div>
+                <div class="p-2 rounded-xl bg-white/5 flex items-center gap-2 text-emerald-300">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                  <span>Hand-Crank Radio</span>
+                </div>
+                <div class="p-2 rounded-xl bg-white/5 flex items-center gap-2 text-amber-300">
+                  <i data-lucide="clock" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                  <span>Important Documents</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Callout -->
+            <div class="mt-4 p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-300 flex items-center gap-2.5">
+              <i data-lucide="sparkles" class="w-5 h-5 text-sky-400 shrink-0"></i>
+              <span>AI recommends updating water & medication every 6 months.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEARCH & REAL-TIME FILTER SECTION -->
+    <section class="py-8 px-4 sm:px-8 border-b border-white/10 bg-[#0F172A]/80 backdrop-blur-md">
+      <div class="max-w-4xl mx-auto space-y-4">
+        <div class="relative">
+          <i data-lucide="search" class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input
+            type="text"
+            id="search-input"
+            onkeyup="filterGuidesBySearch()"
+            placeholder="What disaster or safety skill would you like to learn today? (e.g., 'Flood', 'CPR', 'Earthquake', 'Burns', 'Evacuation')..."
+            class="w-full pl-12 pr-12 py-3.5 rounded-2xl bg-slate-900 border border-white/15 text-sm font-medium text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981] transition shadow-inner"
+          />
+          <button
+            onclick="clearSearch()"
+            id="clear-search-btn"
+            class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition cursor-pointer"
+          >
+            <i data-lucide="x-circle" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Popular Keyword Tags -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs text-slate-300 font-medium">
+          <span class="text-slate-400 shrink-0 font-bold">Popular Topics:</span>
+          <button onclick="setSearchQuery('Flood')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 transition cursor-pointer shrink-0">
+            🌊 Flash Flood
+          </button>
+          <button onclick="setSearchQuery('CPR')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 transition cursor-pointer shrink-0">
+            ❤️ CPR Protocol
+          </button>
+          <button onclick="setSearchQuery('Earthquake')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 transition cursor-pointer shrink-0">
+            🌋 Earthquake Drop & Hold
+          </button>
+          <button onclick="setSearchQuery('Fire')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 transition cursor-pointer shrink-0">
+            🔥 Home Fire
+          </button>
+          <button onclick="setSearchQuery('Bleeding')" class="px-3 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 transition cursor-pointer shrink-0">
+            🩸 Stop Bleeding
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LEARNING CATEGORIES & DISASTER GUIDES GRID -->
+    <section id="learning-guides" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto w-full space-y-10">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-6">
+        <div>
+          <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+            <i data-lucide="book-open" class="w-4 h-4"></i> Comprehensive Preparedness Modules
+          </div>
+          <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">Disaster Safety Guides</h2>
+        </div>
+
+        <!-- Filter Category Tabs -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-bold">
+          <button onclick="filterCategory('all')" id="cat-all" class="px-4 py-2 rounded-xl bg-[#10B981] text-[#0F172A] cursor-pointer">
+            All Guides
+          </button>
+          <button onclick="filterCategory('flood')" id="cat-flood" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 cursor-pointer">
+            🌊 Floods
+          </button>
+          <button onclick="filterCategory('fire')" id="cat-fire" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 cursor-pointer">
+            🔥 Fires
+          </button>
+          <button onclick="filterCategory('earthquake')" id="cat-earthquake" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 cursor-pointer">
+            🌋 Earthquakes
+          </button>
+          <button onclick="filterCategory('cyclone')" id="cat-cyclone" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 cursor-pointer">
+            🌪️ Storms
+          </button>
+        </div>
+      </div>
+
+      <!-- Guides Cards Grid Container -->
+      <div id="guides-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Dynamically rendered or static fallback cards -->
+      </div>
+    </section>
+
+    <!-- FIRST AID INTERACTIVE CENTER -->
+    <section id="first-aid" class="py-16 px-4 sm:px-8 bg-slate-900/90 border-y border-white/10 relative">
+      <div class="max-w-7xl mx-auto space-y-10">
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-widest">
+            <i data-lucide="heart-pulse" class="w-4 h-4 animate-pulse"></i> Critical Life Support
+          </div>
+          <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">Emergency First Aid Hub</h2>
+          <p class="text-slate-300 text-sm">
+            Step-by-step interactive first aid guides for trauma, cardiac arrest, burns, and environmental hazards.
+          </p>
+        </div>
+
+        <!-- First Aid Interactive Tabs Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Module Selector List -->
+          <div class="lg:col-span-4 space-y-2" id="firstaid-menu-list">
+            <!-- Populated via JavaScript -->
+          </div>
+
+          <!-- Right Active First Aid Detail Visual Canvas -->
+          <div class="lg:col-span-8 glass-card rounded-3xl p-6 sm:p-8 space-y-6 border border-white/15" id="firstaid-detail-box">
+            <!-- Active step content generated by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMERGENCY KIT INTERACTIVE CHECKLIST -->
+    <section id="emergency-kit" class="py-16 px-4 sm:px-8 max-w-7xl mx-auto w-full space-y-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <!-- Left Banner & Progress Gauge -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="briefcase" class="w-4 h-4"></i> 72-Hour Survival Bag
+          </div>
+
+          <h2 class="font-heading font-black text-3xl sm:text-4xl text-white leading-tight">
+            Interactive Emergency Kit Checklist
+          </h2>
+
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Check off items as you gather them in your go-bag. Your progress is automatically saved locally. Print or download the full checklist anytime.
+          </p>
+
+          <!-- Circular Progress Circle -->
+          <div class="glass-card rounded-3xl p-6 flex items-center gap-6 border border-white/15">
+            <div class="relative w-24 h-24 shrink-0 flex items-center justify-center">
+              <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                <path
+                  class="text-slate-800"
+                  stroke-width="3.5"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
+                  id="kit-progress-circle"
+                  class="text-[#10B981] transition-all duration-700"
+                  stroke-dasharray="0, 100"
+                  stroke-width="3.5"
+                  stroke-linecap="round"
+                  stroke="currentColor"
+                  fill="none"
+                  d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <span id="kit-progress-percent" class="absolute font-heading font-black text-xl text-white">0%</span>
+            </div>
+
+            <div class="space-y-1">
+              <div id="kit-status-badge" class="font-heading font-bold text-base text-amber-400">Kit Incomplete</div>
+              <p id="kit-status-sub" class="text-xs text-slate-400">Pack essential items to reach 100% readiness.</p>
+              <div class="pt-2 flex gap-2">
+                <button
+                  onclick="printKitChecklist()"
+                  class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition cursor-pointer flex items-center gap-1.5"
+                >
+                  <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print List
+                </button>
+                <button
+                  onclick="resetKitChecklist()"
+                  class="px-3 py-1.5 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 text-xs font-bold transition cursor-pointer"
+                >
+                  Reset
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Interactive Checklist Grid -->
+        <div class="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 space-y-4 border border-white/15">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <h3 class="font-heading font-bold text-base text-white">72-Hour Essentials List</h3>
+            <span class="text-xs text-slate-400 font-mono" id="kit-items-count">0 / 12 Checked</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="kit-checkboxes-container">
+            <!-- Dynamically populated checklist -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE DISASTER SIMULATOR -->
+    <section id="simulator" class="py-16 px-4 sm:px-8 bg-slate-900/90 border-y border-white/10">
+      <div class="max-w-5xl mx-auto space-y-8">
+        <div class="text-center space-y-3">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 text-xs font-bold uppercase tracking-wider">
+            <i data-lucide="gamepad-2" class="w-4 h-4"></i> Interactive Scenario Engine
+          </div>
+          <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">Disaster Decision Simulator</h2>
+          <p class="text-slate-300 text-sm max-w-2xl mx-auto">
+            Test your survival instincts under pressure. Make choices during real-world emergency scenarios and see the outcomes.
+          </p>
+        </div>
+
+        <div class="glass-card rounded-3xl p-6 sm:p-10 border border-purple-500/20 shadow-2xl space-y-6" id="sim-box">
+          <!-- Populated via JavaScript -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SAFETY QUIZ & CERTIFICATION SECTION -->
+    <section id="quiz" class="py-16 px-4 sm:px-8 max-w-5xl mx-auto w-full space-y-8">
+      <div class="text-center space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-400 text-xs font-bold uppercase tracking-wider">
+          <i data-lucide="award" class="w-4 h-4"></i> Test Your Knowledge
+        </div>
+        <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">Safety Mastery Quiz</h2>
+        <p class="text-slate-300 text-sm">Earn your DisasterOS Preparedness Badge by answering these key questions.</p>
+      </div>
+
+      <div class="glass-card rounded-3xl p-6 sm:p-10 border border-white/15 space-y-6" id="quiz-container">
+        <!-- Quiz step injected here -->
+      </div>
+    </section>
+
+    <!-- DOWNLOAD CENTER (OFFICIAL PDF RESOURCES) -->
+    <section id="download-center" class="py-16 px-4 sm:px-8 bg-slate-900/90 border-y border-white/10">
+      <div class="max-w-7xl mx-auto space-y-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/10 pb-6">
+          <div>
+            <div class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1 flex items-center gap-1.5">
+              <i data-lucide="download" class="w-4 h-4"></i> Printable Offline Resources
+            </div>
+            <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">Download Center</h2>
+          </div>
+          <button
+            onclick="downloadKitPdf()"
+            class="px-5 py-2.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold text-xs rounded-xl transition cursor-pointer flex items-center gap-2"
+          >
+            <i data-lucide="file-check" class="w-4 h-4"></i> Download Full Survival Manual (PDF)
+          </button>
+        </div>
+
+        <!-- Download Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <!-- Item 1 -->
+          <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between border border-white/10">
+            <div class="space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                <i data-lucide="file-text" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider font-mono">PDF • 2.4 MB</span>
+                <h3 class="font-heading font-bold text-base text-white mt-1">Official Flood Action Plan</h3>
+                <p class="text-xs text-slate-400 mt-1">Evacuation steps, water hazard safety, and home protection protocol.</p>
+              </div>
+            </div>
+            <button
+              onclick="triggerPdfDownload('Flood Action Plan', 'Official guidance for flash floods and river inundation.')"
+              class="mt-6 w-full py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i> Download PDF
+            </button>
+          </div>
+
+          <!-- Item 2 -->
+          <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between border border-white/10">
+            <div class="space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center">
+                <i data-lucide="heart-pulse" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider font-mono">PDF • 1.8 MB</span>
+                <h3 class="font-heading font-bold text-base text-white mt-1">First Aid Pocket Manual</h3>
+                <p class="text-xs text-slate-400 mt-1">Quick-reference CPR, tourniquet, burn treatment, and fracture stabilization.</p>
+              </div>
+            </div>
+            <button
+              onclick="triggerPdfDownload('First Aid Pocket Manual', 'Step-by-step life support and trauma treatment directions.')"
+              class="mt-6 w-full py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i> Download PDF
+            </button>
+          </div>
+
+          <!-- Item 3 -->
+          <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between border border-white/10">
+            <div class="space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                <i data-lucide="briefcase" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider font-mono">PDF • 1.2 MB</span>
+                <h3 class="font-heading font-bold text-base text-white mt-1">Emergency Kit Master Checklist</h3>
+                <p class="text-xs text-slate-400 mt-1">Printable checklist for food, water, medical supplies, and documents.</p>
+              </div>
+            </div>
+            <button
+              onclick="triggerPdfDownload('Emergency Kit Master Checklist', 'Master inventory list for family 72-hour survival bag.')"
+              class="mt-6 w-full py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i> Download PDF
+            </button>
+          </div>
+
+          <!-- Item 4 -->
+          <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between border border-white/10">
+            <div class="space-y-4">
+              <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                <i data-lucide="users" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-purple-400 uppercase tracking-wider font-mono">PDF • 3.1 MB</span>
+                <h3 class="font-heading font-bold text-base text-white mt-1">Family & Pet Survival Guide</h3>
+                <p class="text-xs text-slate-400 mt-1">Child safety protocols, pet shelter preparation, and emergency meetups.</p>
+              </div>
+            </div>
+            <button
+              onclick="triggerPdfDownload('Family & Pet Survival Guide', 'Protocols for safeguarding children, elderly, and pets during evacuations.')"
+              class="mt-6 w-full py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4 text-emerald-400"></i> Download PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EMERGENCY CONTACTS HUB -->
+    <section class="py-16 px-4 sm:px-8 max-w-7xl mx-auto w-full space-y-8">
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider">
+          <i data-lucide="phone-call" class="w-4 h-4 animate-bounce"></i> Emergency Dispatch Directory
+        </div>
+        <h2 class="font-heading font-black text-3xl sm:text-4xl text-white">24/7 Hotline Directory</h2>
+        <p class="text-slate-300 text-sm">Direct tap-to-call numbers for emergency first responders.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Police -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center shrink-0">
+              <i data-lucide="shield" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Emergency Police Services</div>
+              <div class="text-xs text-slate-400 font-mono">Dial: 911</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('911')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300" title="Copy Number">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:911" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+
+        <!-- Fire Service -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+              <i data-lucide="flame" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Fire & Rescue Department</div>
+              <div class="text-xs text-slate-400 font-mono">Dial: 911</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('911')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300" title="Copy Number">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:911" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+
+        <!-- Ambulance -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+              <i data-lucide="ambulance" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Medical Ambulance Service</div>
+              <div class="text-xs text-slate-400 font-mono">Dial: 911</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('911')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300" title="Copy Number">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:911" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+
+        <!-- Poison Control -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+              <i data-lucide="skull" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Poison Control Hotline</div>
+              <div class="text-xs text-slate-400 font-mono">1-800-222-1222</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('1-800-222-1222')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:18002221222" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+
+        <!-- Disaster Management Center -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
+              <i data-lucide="radio" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Disaster Management Command</div>
+              <div class="text-xs text-slate-400 font-mono">1-800-621-3362</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('1-800-621-3362')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:18006213362" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+
+        <!-- Red Cross -->
+        <div class="glass-card rounded-2xl p-4 flex items-center justify-between border border-white/10">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center shrink-0">
+              <i data-lucide="cross" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="font-heading font-bold text-sm text-white">Red Cross Relief Center</div>
+              <div class="text-xs text-slate-400 font-mono">1-800-733-2767</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="copyToClipboard('1-800-733-2767')" class="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300">
+              <i data-lucide="copy" class="w-4 h-4"></i>
+            </button>
+            <a href="tel:18007332767" class="px-3 py-1.5 bg-red-600 hover:bg-red-500 text-white text-xs font-bold rounded-lg transition">
+              Call
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALL TO ACTION & NEWSLETTER -->
+    <section class="py-20 px-4 sm:px-8 bg-gradient-to-br from-[#0F172A] via-slate-900 to-[#10B981]/20 border-t border-white/10 text-center relative overflow-hidden">
+      <div class="max-w-4xl mx-auto space-y-6 relative z-10">
+        <div class="w-16 h-16 rounded-3xl bg-[#10B981]/20 text-[#10B981] mx-auto flex items-center justify-center shadow-2xl shadow-emerald-500/30">
+          <i data-lucide="users" class="w-8 h-8"></i>
+        </div>
+
+        <h2 class="font-heading font-black text-3xl sm:text-5xl text-white">
+          Prepared Communities Save Lives.
+        </h2>
+
+        <p class="text-slate-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+          Join thousands of proactive citizens using DisasterOS to stay prepared, receive real-time hazard alerts, and protect their neighborhoods.
+        </p>
+
+        <!-- Newsletter Subscription Box -->
+        <form onsubmit="handleNewsletterSubmit(event)" class="max-w-md mx-auto flex gap-2">
+          <input
+            type="email"
+            id="newsletter-email"
+            placeholder="Enter your email for emergency alerts..."
+            required
+            class="flex-1 px-4 py-3 rounded-xl bg-slate-900 border border-white/20 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+          />
+          <button
+            type="submit"
+            class="px-5 py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl shadow-lg transition cursor-pointer shrink-0"
+          >
+            Subscribe
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#0B1120] text-slate-400 border-t border-white/10 py-10 px-4 sm:px-8 text-xs">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div class="space-y-3">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 bg-[#10B981] rounded-lg flex items-center justify-center text-[#0F172A] font-bold">
+              <i data-lucide="book-open-check" class="w-4 h-4"></i>
+            </div>
+            <span class="font-heading font-extrabold text-base text-white">DisasterOS</span>
+          </div>
+          <p class="text-[11px] leading-relaxed">
+            AI-powered emergency response and disaster preparedness academy empowering individuals and first responders worldwide.
+          </p>
+        </div>
+
+        <div>
+          <div class="font-heading font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Core Navigation</div>
+          <ul class="space-y-2 text-[11px]">
+            <li><a href="/index.html" class="hover:text-emerald-400 transition">Main Landing Page</a></li>
+            <li><a href="/map2.html" class="hover:text-emerald-400 transition">Live Hazard Map Dashboard</a></li>
+            <li><a href="#learning-guides" class="hover:text-emerald-400 transition">Preparedness Guides</a></li>
+            <li><a href="#first-aid" class="hover:text-emerald-400 transition">First Aid Center</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="font-heading font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Interactive Tools</div>
+          <ul class="space-y-2 text-[11px]">
+            <li><a href="#emergency-kit" class="hover:text-emerald-400 transition">72-Hour Kit Checklist</a></li>
+            <li><a href="#simulator" class="hover:text-emerald-400 transition">Scenario Simulator</a></li>
+            <li><a href="#quiz" class="hover:text-emerald-400 transition">Safety Knowledge Quiz</a></li>
+            <li><a href="#download-center" class="hover:text-emerald-400 transition">Official PDF Downloads</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="font-heading font-bold text-white mb-3 uppercase tracking-wider text-[11px]">Emergency Hotline</div>
+          <div class="p-3 rounded-xl bg-white/5 border border-white/5 space-y-1">
+            <div class="text-xs text-red-400 font-bold">National Emergency Line</div>
+            <div class="text-lg font-mono font-black text-white">911</div>
+            <div class="text-[10px] text-slate-400">Available 24/7 across all regions</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+        <div>© 2026 DisasterOS. All rights reserved. Safety & Preparedness Academy.</div>
+        <div class="flex gap-4">
+          <a href="/map2.html" class="hover:text-white transition">Live Map</a>
+          <a href="#" class="hover:text-white transition">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition">Terms of Service</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- FLOATING AI SAFETY ASSISTANT WIDGET -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <!-- Chat trigger button -->
+      <button
+        onclick="toggleAiChat()"
+        id="ai-chat-btn"
+        class="w-14 h-14 rounded-full bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] flex items-center justify-center shadow-2xl shadow-emerald-500/40 cursor-pointer transform hover:scale-105 transition group"
+        title="Ask AI Safety Assistant"
+      >
+        <i data-lucide="bot" class="w-7 h-7"></i>
+      </button>
+
+      <!-- Chat Window Panel -->
+      <div
+        id="ai-chat-box"
+        class="hidden absolute bottom-16 right-0 w-80 sm:w-96 glass-card rounded-3xl shadow-2xl border border-white/15 overflow-hidden flex flex-col h-[460px] animate-fadeInUp"
+      >
+        <!-- Chat Header -->
+        <div class="p-4 bg-[#0F172A] border-b border-white/10 flex items-center justify-between shrink-0">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-[#10B981] text-[#0F172A] flex items-center justify-center font-bold">
+              <i data-lucide="bot" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h4 class="font-heading font-bold text-sm text-white">AI Safety Assistant</h4>
+              <span class="text-[9px] text-emerald-400 font-mono font-semibold">ONLINE • Instant Response</span>
+            </div>
+          </div>
+          <button onclick="toggleAiChat()" class="text-slate-400 hover:text-white cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chat-messages" class="p-4 flex-1 overflow-y-auto space-y-3 text-xs">
+          <!-- Initial Welcome Message -->
+          <div class="flex gap-2.5 items-start">
+            <div class="w-6 h-6 rounded-lg bg-[#10B981] text-[#0F172A] flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="bot" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="p-3 rounded-2xl bg-slate-800 text-slate-200 border border-white/5 space-y-1">
+              <p>Hello! I am your AI Safety Assistant. Ask me anything about disaster survival, CPR steps, emergency kits, or shelter guidelines.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prompt Suggestions Chips -->
+        <div class="px-3 py-2 bg-slate-900/90 border-t border-white/5 flex gap-1.5 overflow-x-auto text-[10px] font-medium shrink-0">
+          <button onclick="sendAiPrompt('What should I do during a flash flood?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 text-slate-300 transition shrink-0 cursor-pointer">
+            🌊 Flash Flood Steps?
+          </button>
+          <button onclick="sendAiPrompt('How do I perform CPR on an adult?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 text-slate-300 transition shrink-0 cursor-pointer">
+            ❤️ CPR Instructions?
+          </button>
+          <button onclick="sendAiPrompt('What belongs in a 72-hour survival kit?')" class="px-2.5 py-1 rounded-full bg-white/5 hover:bg-emerald-500/20 hover:text-emerald-400 text-slate-300 transition shrink-0 cursor-pointer">
+            🎒 Emergency Kit Items?
+          </button>
+        </div>
+
+        <!-- Chat Input Form -->
+        <form onsubmit="handleAiChatSubmit(event)" class="p-3 bg-[#0F172A] border-t border-white/10 flex gap-2 shrink-0">
+          <input
+            type="text"
+            id="ai-input"
+            placeholder="Ask a safety question..."
+            required
+            class="flex-1 px-3 py-2 rounded-xl bg-slate-800 border border-white/10 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981]"
+          />
+          <button
+            type="submit"
+            class="w-9 h-9 rounded-xl bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] flex items-center justify-center font-bold transition cursor-pointer shrink-0"
+          >
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL: DETAILED DISASTER GUIDE MODAL -->
+    <div
+      id="guide-modal"
+      class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-[#0F172A] border border-white/15 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-5 animate-fadeInUp max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div class="flex items-center gap-3">
+            <div id="modal-guide-icon" class="w-10 h-10 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+              <i data-lucide="waves" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <span id="modal-guide-badge" class="text-[10px] font-bold text-blue-400 uppercase tracking-widest font-mono">
+                CRITICAL GUIDE
+              </span>
+              <h3 id="modal-guide-title" class="font-heading font-extrabold text-xl text-white">
+                Flash Flood Survival Master Guide
+              </h3>
+            </div>
+          </div>
+          <button onclick="closeGuideModal()" class="text-slate-400 hover:text-white cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <!-- Before / During / After Tab Controls -->
+        <div class="grid grid-cols-3 gap-2 bg-slate-900 p-1 rounded-2xl text-xs font-bold">
+          <button onclick="switchGuideTab('before')" id="tab-btn-before" class="py-2 rounded-xl bg-[#10B981] text-[#0F172A] transition cursor-pointer">
+            Before Flood
+          </button>
+          <button onclick="switchGuideTab('during')" id="tab-btn-during" class="py-2 rounded-xl text-slate-400 hover:text-white transition cursor-pointer">
+            During Flood
+          </button>
+          <button onclick="switchGuideTab('after')" id="tab-btn-after" class="py-2 rounded-xl text-slate-400 hover:text-white transition cursor-pointer">
+            After Flood
+          </button>
+        </div>
+
+        <!-- Tab Content Viewport -->
+        <div id="guide-tab-content" class="space-y-4 text-xs text-slate-300 leading-relaxed min-h-[220px]">
+          <!-- Injected via JS -->
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1.5">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i> Verified by Red Cross & FEMA Standards
+          </div>
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button
+              onclick="triggerPdfDownload('Flash Flood Master Guide', 'Full protocol for flash floods.')"
+              class="flex-1 sm:flex-none px-4 py-2.5 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-bold rounded-xl text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i> Save PDF
+            </button>
+            <button
+              onclick="closeGuideModal()"
+              class="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl text-xs transition cursor-pointer"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: EMERGENCY SOS SPEED MODAL -->
+    <div
+      id="sos-modal"
+      class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4"
+    >
+      <div class="bg-[#0F172A] border border-red-500/40 rounded-3xl max-w-sm w-full p-6 shadow-2xl text-center space-y-5 animate-fadeInUp">
+        <div class="w-16 h-16 rounded-full bg-red-500/20 text-red-500 mx-auto flex items-center justify-center animate-bounce">
+          <i data-lucide="siren" class="w-8 h-8"></i>
+        </div>
+
+        <div>
+          <h3 class="font-heading font-black text-xl text-white">Emergency Hotline Beacon</h3>
+          <p class="text-xs text-slate-400 mt-1">Directly connect with 911 or broadcast emergency distress signal.</p>
+        </div>
+
+        <div class="space-y-2.5 text-xs font-bold">
+          <a
+            href="tel:911"
+            class="w-full py-3 bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <i data-lucide="phone-call" class="w-4 h-4"></i> Dial 911 Emergency Immediately
+          </a>
+          <button
+            onclick="triggerSosBeacon()"
+            class="w-full py-3 bg-white/10 text-white rounded-xl flex items-center justify-center gap-2 cursor-pointer hover:bg-white/20 transition"
+          >
+            <i data-lucide="radio" class="w-4 h-4 text-emerald-400"></i> Broadcast GPS Distress Beacon
+          </button>
+        </div>
+
+        <button onclick="closeSosModal()" class="text-xs text-slate-400 hover:underline cursor-pointer">
+          Cancel & Close
+        </button>
+      </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+      // Global State
+      let userGuidesProgress = JSON.parse(localStorage.getItem('disasteros_guides_read') || '[]');
+      let activeCategory = 'all';
+      let activeGuideData = null;
+      let currentSimStep = 0;
+      let simScore = 0;
+      let activeSimScenario = null;
+
+      // Disaster Guides Master Database
+      const guidesData = [
+        {
+          id: 'guide-flood',
+          category: 'flood',
+          title: 'Flash Flood Survival Master Guide',
+          desc: 'How to survive rapid flood inundations, rising river surges, and vehicle stall emergencies.',
+          time: '5 min read',
+          difficulty: 'Intermediate',
+          icon: 'waves',
+          color: 'blue',
+          before: [
+            'Build a 72-hour emergency kit with bottled water (1 gal/person/day) and non-perishables.',
+            'Know your local flood risk zone and high-ground evacuation routes.',
+            'Install backflow valves on sewage traps to prevent floodwater backup.',
+            'Keep critical documents sealed in waterproof plastic pouches.'
+          ],
+          during: [
+            'NEVER walk, swim, or drive through flowing floodwaters! 6 inches can knock you down; 2 feet floats a car.',
+            'If trapped in a building, move to higher floors or roof. Do NOT enter an enclosed attic.',
+            'Disconnect electrical appliances if safe to do so before water reaches outlets.',
+            'Listen continuously to local NOAA emergency weather broadcasts.'
+          ],
+          after: [
+            'Avoid floodwaters—they may be contaminated with sewage or electrically charged by downed powerlines.',
+            'Return home only when local emergency authorities declare the sector safe.',
+            'Photograph property damage immediately for insurance documentation.',
+            'Discard any food that came into contact with floodwaters.'
+          ]
+        },
+        {
+          id: 'guide-fire',
+          category: 'fire',
+          title: 'Home & Wildfire Safety Manual',
+          desc: 'Fire prevention techniques, PASS extinguisher usage, smoke escape planning, and burn care.',
+          time: '4 min read',
+          difficulty: 'Essential',
+          icon: 'flame',
+          color: 'red',
+          before: [
+            'Install dual-sensor smoke alarms on every level of your home and test monthly.',
+            'Establish 2 exit paths from every room and pick a family outdoor meeting point.',
+            'Maintain a 30-foot defensible clear space around your home (clear dry brush & leaves).',
+            'Keep ABC-class fire extinguishers in kitchen, garage, and near bedrooms.'
+          ],
+          during: [
+            'GET OUT, STAY OUT! Never re-enter a burning building for pets or possessions.',
+            'Crawl low under smoke where air is cleaner and cooler.',
+            'Feel doors with the back of your hand before opening. If hot, do NOT open.',
+            'Use PASS method for fire extinguisher: Pull pin, Aim low, Squeeze lever, Sweep side-to-side.'
+          ],
+          after: [
+            'Cool minor burns immediately with cool (not ice) running water for 10-15 minutes.',
+            'Do not enter structure until fire department certifies structural stability.',
+            'Wear N95 masks when cleaning up ash to prevent smoke particle inhalation.'
+          ]
+        },
+        {
+          id: 'guide-earthquake',
+          category: 'earthquake',
+          title: 'Earthquake Tremor Safety Protocol',
+          desc: 'Drop, Cover, and Hold On rules during seismic activity and structural collapse prevention.',
+          time: '3 min read',
+          difficulty: 'Essential',
+          icon: 'mountain',
+          color: 'orange',
+          before: [
+            'Anchor heavy furniture, bookcases, TVs, and water heaters securely to wall studs.',
+            'Identify safe spots in each room: under sturdy desks/tables or against interior walls.',
+            'Store heavy items on bottom shelves to prevent falling hazard during quakes.'
+          ],
+          during: [
+            'DROP onto your hands and knees immediately.',
+            'COVER your head and neck under a sturdy table or desk.',
+            'HOLD ON until shaking stops completely.',
+            'If outdoors, move to an open field away from buildings, streetlights, and power cables.'
+          ],
+          after: [
+            'Expect aftershocks—be ready to Drop, Cover, and Hold On again.',
+            'Check gas lines for leaks. If you smell gas, turn off main valve and evacuate immediately.',
+            'Check yourself and family members for injuries before assisting neighbors.'
+          ]
+        },
+        {
+          id: 'guide-cyclone',
+          category: 'cyclone',
+          title: 'Cyclone & Windstorm Defense Guide',
+          desc: 'Hurricane shutter preparation, windstorm sheltering, and surviving severe storm surges.',
+          time: '6 min read',
+          difficulty: 'Advanced',
+          icon: 'wind',
+          color: 'purple',
+          before: [
+            'Board up windows with 5/8-inch marine plywood or close hurricane shutters.',
+            'Secure or store outdoor lawn furniture, trash cans, and unanchored decorations inside.',
+            'Fill vehicle gas tanks and store extra fuel for backup generators safely.'
+          ],
+          during: [
+            'Stay indoors in a windowless interior room, hallway, or bathroom on the lowest floor.',
+            'Do not be fooled by the calm "eye" of the hurricane—the second half of the storm follows rapidly.',
+            'Keep away from glass windows and sliding doors.'
+          ],
+          after: [
+            'Watch out for fallen power lines and dangling electrical cables.',
+            'Boil tap water before drinking until municipal water purity is confirmed.'
+          ]
+        },
+        {
+          id: 'guide-landslide',
+          category: 'landslide',
+          title: 'Landslide & Mudflow Action Plan',
+          desc: 'Recognizing slope instability, mudflow warning signs, and rapid downhill evacuation.',
+          time: '4 min read',
+          difficulty: 'Intermediate',
+          icon: 'alert-triangle',
+          color: 'amber',
+          before: [
+            'Identify steep slopes near your home vulnerable to heavy rain mudslides.',
+            'Plant deep-rooted ground cover on slopes to minimize soil erosion.'
+          ],
+          during: [
+            'Listen for unusual sounds like trees cracking or boulders knocking together.',
+            'If you suspect imminent landslide, evacuate immediately downhill perpendicular to mud path.'
+          ],
+          after: [
+            'Stay away from the slide area. There may be danger of secondary slides.'
+          ]
+        },
+        {
+          id: 'guide-heatwave',
+          category: 'cyclone',
+          title: 'Heatwave & Power Outage Protocol',
+          desc: 'Hyperthermia prevention, hydration tactics, and food preservation without electricity.',
+          time: '3 min read',
+          difficulty: 'Basic',
+          icon: 'sun',
+          color: 'amber',
+          before: [
+            'Prepare blackout kit with LED lanterns, power banks, and non-perishable canned food.',
+            'Keep refrigerator and freezer doors closed tightly during power outages.'
+          ],
+          during: [
+            'Drink plenty of water even if you do not feel thirsty. Avoid alcohol and heavy caffeine.',
+            'Stay in air-conditioned spaces or cool shaded ground floors during peak midday hours.'
+          ],
+          after: [
+            'Check perishable foods in refrigerator after 4 hours without power.'
+          ]
+        }
+      ];
+
+      // First Aid Database
+      const firstAidData = [
+        {
+          id: 'cpr',
+          name: 'CPR (Adult Cardiac Arrest)',
+          icon: 'heart-pulse',
+          tag: 'CRITICAL',
+          steps: [
+            'Call 911 or instruct a bystander to call immediately and get an AED.',
+            'Place victim on firm, flat ground. Kneel beside their chest.',
+            'Place heel of one hand in center of chest, interlock second hand on top.',
+            'Push HARD and FAST in center of chest at 100-120 beats/min (to beat of "Stayin Alive").',
+            'Allow chest to recoil completely between compressions. Continue until emergency personnel arrive.'
+          ],
+          hasMetronome: true
+        },
+        {
+          id: 'bleeding',
+          name: 'Severe Bleeding & Tourniquet',
+          icon: 'droplet',
+          tag: 'TRAUMA',
+          steps: [
+            'Apply firm direct pressure with clean cloth or sterile gauze over wound.',
+            'Maintain continuous firm pressure for 10-15 minutes without lifting cloth to check.',
+            'If bleeding soaks through, place additional cloth on top—do NOT remove original dressing.',
+            'If severe arterial limb bleeding persists, apply commercial tourniquet 2-3 inches above wound.'
+          ]
+        },
+        {
+          id: 'burns',
+          name: 'Thermal & Chemical Burns',
+          icon: 'flame',
+          tag: 'FIRST AID',
+          steps: [
+            'Cool burn immediately with cool, clean running water for at least 10-20 minutes.',
+            'Do NOT use ice, butter, grease, or toothpaste on burns!',
+            'Cover burn loosely with sterile non-stick plastic wrap or clean dry cloth.',
+            'Seek immediate medical care for third-degree burns or burns larger than victim palm.'
+          ]
+        },
+        {
+          id: 'fractures',
+          name: 'Bone Fractures & Splinting',
+          icon: 'bone',
+          tag: 'ORTHO',
+          steps: [
+            'Immobilize the injured area immediately. Do NOT try to realign or push bone back.',
+            'Apply ice packs wrapped in towel to reduce swelling for 15-20 mins.',
+            'Support joint above and below fracture with makeshift padded splint (rolled magazine or board).'
+          ]
+        },
+        {
+          id: 'snakebite',
+          name: 'Venomous Snake Bite',
+          icon: 'skull',
+          tag: 'HAZARD',
+          steps: [
+            'Keep victim calm, still, and restrict movement to slow venom spread.',
+            'Keep bitten limb BELOW heart level.',
+            'Remove tight rings, watches, or clothing near bite site before swelling starts.',
+            'Do NOT cut wound, do NOT attempt to suck venom out, and do NOT apply tourniquet or ice!'
+          ]
+        }
+      ];
+
+      // Emergency Kit Checklist Database
+      const kitItems = [
+        { id: 'item-1', name: 'Water (1 Gallon / Person / Day for 3 Days)', cat: 'Water & Food' },
+        { id: 'item-2', name: 'Non-Perishable Canned / MRE Food (3-Day Supply)', cat: 'Water & Food' },
+        { id: 'item-3', name: 'Manual Can Opener', cat: 'Water & Food' },
+        { id: 'item-4', name: 'Hand-Crank NOAA Weather Radio & Flashlight', cat: 'Power & Light' },
+        { id: 'item-5', name: '20,000mAh Solar Power Bank & Phone Cables', cat: 'Power & Light' },
+        { id: 'item-6', name: 'Trauma First Aid Kit & Prescribed Medications', cat: 'Medical & First Aid' },
+        { id: 'item-7', name: 'N95 Respirator Dust Masks & Sterile Gloves', cat: 'Medical & First Aid' },
+        { id: 'item-8', name: 'Emergency Thermal Mylar Blankets', cat: 'Hygiene & Comfort' },
+        { id: 'item-9', name: 'Waterproof Bag with ID, Cash & Insurance Documents', cat: 'Critical Documents' },
+        { id: 'item-10', name: 'High-Decibel Safety Signal Whistle', cat: 'Safety Tools' },
+        { id: 'item-11', name: 'Multi-Tool Knife & Duct Tape', cat: 'Safety Tools' },
+        { id: 'item-12', name: 'Sanitation Supplies & Disinfectant Wipes', cat: 'Hygiene & Comfort' }
+      ];
+
+      // Simulator Scenarios Database
+      const simulatorScenarios = [
+        {
+          id: 'sim-flood',
+          title: 'Scenario 1: Rapid Flash Flood Surge',
+          scenarioText: 'You are driving home during a heavy downpour. Up ahead, you see water covering the main road intersection about 1 foot deep, flowing moderately.',
+          options: [
+            {
+              text: 'A) Accelerate and drive quickly through the water before it gets higher.',
+              correct: false,
+              feedback: 'INCORRECT! Never drive through flowing water. 6 inches can stall your vehicle or cause loss of control; 1-2 feet can float your car away.'
+            },
+            {
+              text: 'B) Turn around immediately ("Turn Around, Don\'t Drown") and seek an alternate route on higher ground.',
+              correct: true,
+              feedback: 'CORRECT! Turning around is the safest decision. Flooded roads hide washed-out bridges and submerged hazards.'
+            },
+            {
+              text: 'C) Park on the shoulder of the flooded road and wait in your car.',
+              correct: false,
+              feedback: 'RISKY! Water levels can surge rapidly in minutes and submerge your vehicle.'
+            }
+          ]
+        },
+        {
+          id: 'sim-fire',
+          title: 'Scenario 2: Smoke in Apartment Hallway',
+          scenarioText: 'You wake up at night to the sound of a smoke alarm. Heavy smoke is creeping under your bedroom door.',
+          options: [
+            {
+              text: 'A) Immediately throw open the door and run down the hallway.',
+              correct: false,
+              feedback: 'INCORRECT! Opening a hot door can pull superheated oxygen-deprived flames into your room.'
+            },
+            {
+              text: 'B) Feel the door with the back of your hand. If hot, block the door gap with wet towels and signal from window.',
+              correct: true,
+              feedback: 'EXCELLENT! Feeling the door protects you from flashover flames. Crawling low keeps you beneath toxic smoke.'
+            },
+            {
+              text: 'C) Open the window and jump immediately.',
+              correct: false,
+              feedback: 'INCORRECT! Jumping from higher floors causes severe injury. Signal firefighters first.'
+            }
+          ]
+        }
+      ];
+
+      // Safety Quiz Database
+      const quizQuestions = [
+        {
+          q: 'What is the recommended minimum water supply per person for an emergency kit?',
+          choices: ['1 Cup per day', '1 Gallon per day for 3 days', '5 Gallons total', 'Half a gallon per week'],
+          answer: 1,
+          explain: 'FEMA recommends at least 1 gallon of water per person per day (half for drinking, half for sanitation) for at least 3 days.'
+        },
+        {
+          q: 'When performing CPR on an adult, what is the ideal compression rate per minute?',
+          choices: ['60 beats/min', '100 - 120 beats/min', '180 beats/min', '40 beats/min'],
+          answer: 1,
+          explain: 'Perform compressions at a rate of 100 to 120 beats per minute, which matches the rhythm of the song "Stayin\' Alive".'
+        },
+        {
+          q: 'What should you NEVER do when treating a snake bite?',
+          choices: ['Keep victim still', 'Cut the wound or try to suck venom out', 'Remove tight rings', 'Keep limb below heart'],
+          answer: 1,
+          explain: 'Cutting the wound or sucking venom increases infection risk and tissue damage without removing venom.'
+        }
+      ];
+      let currentQuizIdx = 0;
+      let quizScore = 0;
+
+      // Initialize Page
+      document.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+        renderGuidesGrid();
+        renderFirstAidTabs();
+        renderFirstAidDetail(firstAidData[0].id);
+        renderKitChecklist();
+        renderSimulatorStep(0);
+        renderQuizStep(0);
+      });
+
+      // Render Guides Grid
+      function renderGuidesGrid() {
+        const grid = document.getElementById('guides-grid');
+        grid.innerHTML = '';
+
+        const filtered = activeCategory === 'all' 
+          ? guidesData 
+          : guidesData.filter(g => g.category === activeCategory);
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400">No guides match your search or filter.</div>`;
+          return;
+        }
+
+        filtered.forEach(guide => {
+          const isRead = userGuidesProgress.includes(guide.id);
+          const card = document.createElement('div');
+          card.className = 'glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between border border-white/10 relative group';
+          card.innerHTML = `
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <div class="w-12 h-12 rounded-2xl bg-${guide.color}-500/20 text-${guide.color}-400 flex items-center justify-center font-bold">
+                  <i data-lucide="${guide.icon}" class="w-6 h-6"></i>
+                </div>
+                <span class="text-[10px] font-bold font-mono px-2.5 py-1 rounded-full bg-white/5 text-slate-300">
+                  ${guide.time}
+                </span>
+              </div>
+
+              <div>
+                <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-wider font-mono">${guide.difficulty}</span>
+                <h3 class="font-heading font-bold text-lg text-white mt-0.5 group-hover:text-emerald-400 transition">${guide.title}</h3>
+                <p class="text-xs text-slate-400 mt-2 leading-relaxed">${guide.desc}</p>
+              </div>
+            </div>
+
+            <div class="pt-6 border-t border-white/10 flex items-center justify-between">
+              <button
+                onclick="openGuideModal('${guide.id}')"
+                class="px-4 py-2 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold text-xs rounded-xl transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>Read Full Guide</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </button>
+              ${isRead ? '<span class="text-[11px] text-emerald-400 font-bold flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Read</span>' : ''}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        lucide.createIcons();
+      }
+
+      // Filter category handler
+      function filterCategory(cat) {
+        activeCategory = cat;
+        ['all', 'flood', 'fire', 'earthquake', 'cyclone'].forEach(c => {
+          const btn = document.getElementById(`cat-${c}`);
+          if (btn) {
+            if (c === cat) {
+              btn.className = 'px-4 py-2 rounded-xl bg-[#10B981] text-[#0F172A] font-bold cursor-pointer';
+            } else {
+              btn.className = 'px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-bold cursor-pointer';
+            }
+          }
+        });
+        renderGuidesGrid();
+      }
+
+      // Search functionality
+      function filterGuidesBySearch() {
+        const query = document.getElementById('search-input').value.toLowerCase().trim();
+        const clearBtn = document.getElementById('clear-search-btn');
+        clearBtn.classList.toggle('hidden', query === '');
+
+        const cards = document.getElementById('guides-grid').children;
+        guidesData.forEach((guide, idx) => {
+          const matches = guide.title.toLowerCase().includes(query) || guide.desc.toLowerCase().includes(query);
+          if (cards[idx]) {
+            cards[idx].style.display = matches ? 'flex' : 'none';
+          }
+        });
+      }
+
+      function setSearchQuery(term) {
+        document.getElementById('search-input').value = term;
+        filterGuidesBySearch();
+      }
+
+      function clearSearch() {
+        document.getElementById('search-input').value = '';
+        filterGuidesBySearch();
+      }
+
+      // Open / Close Guide Modal
+      function openGuideModal(guideId) {
+        const guide = guidesData.find(g => g.id === guideId);
+        if (!guide) return;
+        activeGuideData = guide;
+
+        // Mark as read in local storage
+        if (!userGuidesProgress.includes(guideId)) {
+          userGuidesProgress.push(guideId);
+          localStorage.setItem('disasteros_guides_read', JSON.stringify(userGuidesProgress));
+          renderGuidesGrid();
+        }
+
+        document.getElementById('modal-guide-title').innerText = guide.title;
+        document.getElementById('guide-modal').classList.remove('hidden');
+        switchGuideTab('before');
+      }
+
+      function closeGuideModal() {
+        document.getElementById('guide-modal').classList.add('hidden');
+      }
+
+      function switchGuideTab(tab) {
+        if (!activeGuideData) return;
+        ['before', 'during', 'after'].forEach(t => {
+          const btn = document.getElementById(`tab-btn-${t}`);
+          if (btn) {
+            if (t === tab) {
+              btn.className = 'py-2 rounded-xl bg-[#10B981] text-[#0F172A] font-bold cursor-pointer';
+            } else {
+              btn.className = 'py-2 rounded-xl text-slate-400 hover:text-white font-bold cursor-pointer';
+            }
+          }
+        });
+
+        const container = document.getElementById('guide-tab-content');
+        const items = activeGuideData[tab] || [];
+        container.innerHTML = `
+          <div class="font-bold text-sm text-emerald-400 uppercase tracking-wider mb-2">
+            Key Actions (${tab.toUpperCase()} Emergency):
+          </div>
+          <ul class="space-y-2.5">
+            ${items.map(item => `
+              <li class="p-3 rounded-xl bg-white/5 border border-white/5 flex items-start gap-2.5">
+                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5"></i>
+                <span class="text-slate-200">${item}</span>
+              </li>
+            `).join('')}
+          </ul>
+        `;
+        lucide.createIcons();
+      }
+
+      // First Aid Rendering
+      function renderFirstAidTabs() {
+        const list = document.getElementById('firstaid-menu-list');
+        list.innerHTML = '';
+        firstAidData.forEach(fa => {
+          const btn = document.createElement('button');
+          btn.onclick = () => renderFirstAidDetail(fa.id);
+          btn.className = `w-full text-left p-4 rounded-2xl glass-card border border-white/10 hover:border-emerald-500/50 transition cursor-pointer flex items-center justify-between group`;
+          btn.id = `fa-tab-${fa.id}`;
+          btn.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center shrink-0">
+                <i data-lucide="${fa.icon}" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <span class="text-[9px] font-bold text-red-400 uppercase tracking-wider font-mono">${fa.tag}</span>
+                <h4 class="font-heading font-bold text-sm text-white group-hover:text-emerald-400 transition">${fa.name}</h4>
+              </div>
+            </div>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition"></i>
+          `;
+          list.appendChild(btn);
+        });
+        lucide.createIcons();
+      }
+
+      function renderFirstAidDetail(id) {
+        const fa = firstAidData.find(item => item.id === id);
+        if (!fa) return;
+
+        const box = document.getElementById('firstaid-detail-box');
+        box.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center">
+                <i data-lucide="${fa.icon}" class="w-6 h-6"></i>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-red-400 uppercase tracking-widest font-mono">EMERGENCY PROTOCOL</span>
+                <h3 class="font-heading font-black text-xl text-white">${fa.name}</h3>
+              </div>
+            </div>
+            <a href="tel:911" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5">
+              <i data-lucide="phone-call" class="w-4 h-4"></i> Dial 911
+            </a>
+          </div>
+
+          ${fa.hasMetronome ? `
+            <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 text-xs flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center font-bold metronome-beat">
+                  ❤️
+                </div>
+                <div>
+                  <div class="font-bold text-white">100-120 BPM CPR Compression Rhythm</div>
+                  <div class="text-[11px] text-slate-300">Push to rhythm of "Stayin' Alive" by Bee Gees</div>
+                </div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="space-y-3">
+            <div class="font-bold text-xs text-slate-400 uppercase tracking-wider">Step-by-Step Instructions:</div>
+            <div class="space-y-2.5">
+              ${fa.steps.map((step, idx) => `
+                <div class="p-3.5 rounded-xl bg-slate-900 border border-white/5 flex items-start gap-3 text-xs text-slate-200">
+                  <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 font-bold font-mono text-[11px] flex items-center justify-center shrink-0">
+                    ${idx + 1}
+                  </span>
+                  <span class="leading-relaxed mt-0.5">${step}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        lucide.createIcons();
+      }
+
+      // Emergency Kit Checklist Logic
+      function renderKitChecklist() {
+        const saved = JSON.parse(localStorage.getItem('disasteros_kit_items') || '{}');
+        const container = document.getElementById('kit-checkboxes-container');
+        container.innerHTML = '';
+
+        let checkedCount = 0;
+        kitItems.forEach(item => {
+          const isChecked = !!saved[item.id];
+          if (isChecked) checkedCount++;
+
+          const label = document.createElement('label');
+          label.className = `p-3 rounded-xl border transition cursor-pointer flex items-start gap-3 text-xs ${
+            isChecked ? 'bg-emerald-500/10 border-emerald-500/30 text-white' : 'bg-slate-900/80 border-white/5 text-slate-300 hover:bg-white/5'
+          }`;
+          label.innerHTML = `
+            <input
+              type="checkbox"
+              ${isChecked ? 'checked' : ''}
+              onchange="toggleKitItem('${item.id}')"
+              class="mt-0.5 accent-[#10B981] rounded cursor-pointer"
+            />
+            <div>
+              <div class="font-medium">${item.name}</div>
+              <span class="text-[10px] text-slate-400 font-mono">${item.cat}</span>
+            </div>
+          `;
+          container.appendChild(label);
+        });
+
+        const percent = Math.round((checkedCount / kitItems.length) * 100);
+        document.getElementById('kit-progress-percent').innerText = `${percent}%`;
+        document.getElementById('kit-items-count').innerText = `${checkedCount} / ${kitItems.length} Checked`;
+
+        const circle = document.getElementById('kit-progress-circle');
+        circle.setAttribute('stroke-dasharray', `${percent}, 100`);
+
+        const badge = document.getElementById('kit-status-badge');
+        const sub = document.getElementById('kit-status-sub');
+        if (percent === 100) {
+          badge.innerText = '🎉 100% Ready!';
+          badge.className = 'font-heading font-extrabold text-base text-emerald-400';
+          sub.innerText = 'Your 72-Hour Survival Go-Bag is completely prepared!';
+        } else {
+          badge.innerText = 'Kit Incomplete';
+          badge.className = 'font-heading font-bold text-base text-amber-400';
+          sub.innerText = `Pack ${kitItems.length - checkedCount} more items to reach full readiness.`;
+        }
+      }
+
+      function toggleKitItem(itemId) {
+        const saved = JSON.parse(localStorage.getItem('disasteros_kit_items') || '{}');
+        saved[itemId] = !saved[itemId];
+        localStorage.setItem('disasteros_kit_items', JSON.stringify(saved));
+        renderKitChecklist();
+      }
+
+      function resetKitChecklist() {
+        localStorage.removeItem('disasteros_kit_items');
+        renderKitChecklist();
+        showToast('Kit Checklist reset successfully.', 'info');
+      }
+
+      function printKitChecklist() {
+        window.print();
+      }
+
+      // Disaster Simulator Scenario Engine
+      function renderSimulatorStep(idx) {
+        currentSimStep = idx;
+        const sim = simulatorScenarios[idx];
+        const box = document.getElementById('sim-box');
+
+        if (!sim) {
+          box.innerHTML = `
+            <div class="text-center space-y-4 py-8">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center font-bold text-2xl">
+                🏆
+              </div>
+              <h3 class="font-heading font-black text-2xl text-white">Simulation Completed!</h3>
+              <p class="text-sm text-slate-300">Your Survival Score: <strong class="text-emerald-400">${simScore} Points</strong></p>
+              <button onclick="renderSimulatorStep(0)" class="px-6 py-3 bg-[#10B981] text-[#0F172A] font-extrabold rounded-xl text-xs transition cursor-pointer">
+                Replay Simulator
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        box.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <span class="text-xs font-bold text-purple-400 font-mono uppercase tracking-wider">${sim.title}</span>
+            <span class="text-xs text-slate-400 font-mono">Score: ${simScore} pts</span>
+          </div>
+
+          <p class="text-sm sm:text-base text-slate-200 leading-relaxed font-medium p-4 rounded-2xl bg-slate-900 border border-white/5">
+            ${sim.scenarioText}
+          </p>
+
+          <div class="space-y-3">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Choose Your Action:</div>
+            ${sim.options.map((opt, oIdx) => `
+              <button
+                onclick="makeSimChoice(${idx}, ${oIdx})"
+                class="w-full text-left p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer text-xs sm:text-sm font-medium text-white hover:text-emerald-400 flex items-center justify-between"
+              >
+                <span>${opt.text}</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 shrink-0"></i>
+              </button>
+            `).join('')}
+          </div>
+        `;
+        lucide.createIcons();
+      }
+
+      function makeSimChoice(scenarioIdx, optionIdx) {
+        const scenario = simulatorScenarios[scenarioIdx];
+        const option = scenario.options[optionIdx];
+
+        if (option.correct) {
+          simScore += 50;
+          showToast('Correct decision! +50 Points', 'success');
+        } else {
+          showToast(option.feedback, 'error');
+        }
+
+        setTimeout(() => {
+          renderSimulatorStep(scenarioIdx + 1);
+        }, 1200);
+      }
+
+      // Quiz Engine
+      function renderQuizStep(idx) {
+        currentQuizIdx = idx;
+        const q = quizQuestions[idx];
+        const box = document.getElementById('quiz-container');
+
+        if (!q) {
+          box.innerHTML = `
+            <div class="text-center space-y-4 py-6">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center font-bold text-2xl">
+                🎓
+              </div>
+              <h3 class="font-heading font-black text-2xl text-white">Quiz Mastered!</h3>
+              <p class="text-sm text-slate-300">You scored <strong class="text-emerald-400">${quizScore} / ${quizQuestions.length}</strong> correct.</p>
+              <button onclick="quizScore=0; renderQuizStep(0);" class="px-6 py-3 bg-[#10B981] text-[#0F172A] font-extrabold rounded-xl text-xs transition cursor-pointer">
+                Retake Quiz
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        box.innerHTML = `
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <span class="text-xs font-bold text-sky-400 font-mono">Question ${idx + 1} of ${quizQuestions.length}</span>
+            <span class="text-xs text-slate-400 font-mono">Score: ${quizScore}</span>
+          </div>
+
+          <h3 class="font-heading font-bold text-lg text-white">${q.q}</h3>
+
+          <div class="space-y-2.5">
+            ${q.choices.map((choice, cIdx) => `
+              <button
+                onclick="answerQuiz(${cIdx})"
+                class="w-full text-left p-3.5 rounded-xl bg-slate-900 hover:bg-white/10 border border-white/10 transition cursor-pointer text-xs font-medium text-slate-200 hover:text-white"
+              >
+                ${choice}
+              </button>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      function answerQuiz(choiceIdx) {
+        const q = quizQuestions[currentQuizIdx];
+        if (choiceIdx === q.answer) {
+          quizScore++;
+          showToast('Correct answer!', 'success');
+        } else {
+          showToast(`Incorrect! ${q.explain}`, 'error');
+        }
+
+        setTimeout(() => {
+          renderQuizStep(currentQuizIdx + 1);
+        }, 1500);
+      }
+
+      // Download PDF Helper
+      function triggerPdfDownload(title, description) {
+        showToast(`Preparing PDF: ${title}...`, 'info');
+        const element = document.createElement('a');
+        const fileContent = `DISASTEROS SAFETY MANUAL - ${title.toUpperCase()}\n\nOverview:\n${description}\n\nGenerated by DisasterOS Safety Learning Academy\nhttps://disasteros.org`;
+        const file = new Blob([fileContent], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `DisasterOS_${title.replace(/\s+/g, '_')}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      }
+
+      function downloadKitPdf() {
+        triggerPdfDownload('Emergency Survival Manual & Checklist', 'Full 72-hour survival manual and kit inventory.');
+      }
+
+      // AI Chatbot Logic
+      function toggleAiChat() {
+        const chatBox = document.getElementById('ai-chat-box');
+        chatBox.classList.toggle('hidden');
+      }
+
+      function handleAiChatSubmit(event) {
+        event.preventDefault();
+        const input = document.getElementById('ai-input');
+        const prompt = input.value.trim();
+        if (!prompt) return;
+
+        sendAiPrompt(prompt);
+        input.value = '';
+      }
+
+      function sendAiPrompt(promptText) {
+        const container = document.getElementById('chat-messages');
+
+        // User message bubble
+        const userMsg = document.createElement('div');
+        userMsg.className = 'flex justify-end';
+        userMsg.innerHTML = `
+          <div class="p-3 rounded-2xl bg-[#10B981] text-[#0F172A] font-semibold max-w-[85%] text-xs">
+            ${promptText}
+          </div>
+        `;
+        container.appendChild(userMsg);
+        container.scrollTop = container.scrollHeight;
+
+        // Bot typing placeholder
+        const botMsg = document.createElement('div');
+        botMsg.className = 'flex gap-2.5 items-start';
+        botMsg.innerHTML = `
+          <div class="w-6 h-6 rounded-lg bg-[#10B981] text-[#0F172A] flex items-center justify-center shrink-0 mt-0.5">
+            <i data-lucide="bot" class="w-3.5 h-3.5"></i>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-800 text-slate-200 border border-white/5 space-y-1 text-xs">
+            <p class="animate-pulse">Analyzing emergency safety guidelines...</p>
+          </div>
+        `;
+        container.appendChild(botMsg);
+        container.scrollTop = container.scrollHeight;
+        lucide.createIcons();
+
+        // Simulate AI Intelligent response
+        setTimeout(() => {
+          let response = 'During emergencies, always prioritize immediate personal safety and follow official local emergency evacuation instructions.';
+          const lower = promptText.toLowerCase();
+
+          if (lower.includes('flood')) {
+            response = '🌊 <strong>Flash Flood Protocol:</strong> Move immediately to higher ground. Never drive or walk through flowing water. Turn Around, Don\'t Drown!';
+          } else if (lower.includes('cpr')) {
+            response = '❤️ <strong>CPR Steps:</strong> 1) Call 911. 2) Push hard and fast in center of chest at 100-120 BPM to beat of "Stayin Alive". 3) Continue until help arrives.';
+          } else if (lower.includes('kit') || lower.includes('survival')) {
+            response = '🎒 <strong>72-Hour Kit Essentials:</strong> 3 gallons water per person, 3-day non-perishable food, first aid kit, solar power bank, weather radio, LED flashlight, and copies of ID documents.';
+          } else if (lower.includes('bleed')) {
+            response = '🩸 <strong>Severe Bleeding:</strong> Apply firm direct pressure with clean cloth for 10-15 mins continuously. If soaked, add more cloth on top. Apply tourniquet 2 inches above wound for arterial bleeding.';
+          }
+
+          botMsg.querySelector('div:nth-child(2)').innerHTML = `<p>${response}</p>`;
+          container.scrollTop = container.scrollHeight;
+        }, 1000);
+      }
+
+      // Toast Notification System
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+
+        const colors = {
+          success: 'bg-emerald-500 text-slate-950 border-emerald-400',
+          error: 'bg-red-500 text-white border-red-400',
+          info: 'bg-slate-800 text-white border-white/20'
+        };
+
+        toast.className = `p-3.5 rounded-2xl border ${colors[type]} font-medium text-xs shadow-2xl transition-all duration-300 transform translate-x-8 pointer-events-auto flex items-center justify-between gap-3 animate-fadeInUp`;
+        toast.innerHTML = `
+          <span>${message}</span>
+          <button onclick="this.parentElement.remove()" class="text-current opacity-70 hover:opacity-100 cursor-pointer">✕</button>
+        `;
+
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 4000);
+      }
+
+      // Clipboard Helper
+      function copyToClipboard(text) {
+        navigator.clipboard.writeText(text);
+        showToast(`Copied to clipboard: ${text}`, 'success');
+      }
+
+      // SOS Modal Toggle
+      function openSosModal() {
+        document.getElementById('sos-modal').classList.remove('hidden');
+      }
+      function closeSosModal() {
+        document.getElementById('sos-modal').classList.add('hidden');
+      }
+      function triggerSosBeacon() {
+        showToast('Distress beacon transmitted to regional dispatch with GPS.', 'success');
+        closeSosModal();
+      }
+
+      // Theme Toggle
+      function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+        showToast('Theme updated.', 'info');
+      }
+
+      // Newsletter
+      function handleNewsletterSubmit(event) {
+        event.preventDefault();
+        const email = document.getElementById('newsletter-email').value;
+        showToast(`Subscribed successfully: ${email}`, 'success');
+        document.getElementById('newsletter-email').value = '';
+      }
+    </script>
+  </body>
+</html>

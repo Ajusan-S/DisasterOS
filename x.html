@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+  <head>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-K2SBFSH1EF"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-K2SBFSH1EF');
+</script>
+        <link rel="shortcut icon" href="images/logo.jpg" type="image/x-icon">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DisasterOS – Community Coordination Center & Resource Mesh</title>
+    <meta
+      name="description"
+      content="Real-time disaster community feed, AI-verified emergency intelligence, resource exchange mesh, and volunteer dispatch network."
+    />
+
+    <!-- Google Fonts: Inter & Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              heading: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              forest: '#166534',
+              verified: '#22C55E',
+              flood: '#3B82F6',
+              cyclone: '#8B5CF6',
+              landslide: '#A16207',
+              fire: '#EF4444',
+              earthquake: '#F97316',
+              storm: '#475569',
+              warning: '#F59E0B',
+              danger: '#DC2626',
+              safezone: '#10B981',
+              brand: {
+                dark: '#0F172A',
+                light: '#F8FAFC',
+              },
+            },
+            boxShadow: {
+              glass: '0 8px 32px 0 rgba(15, 23, 42, 0.12)',
+              'glass-dark': '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
+              glow: '0 0 25px rgba(16, 185, 129, 0.35)',
+              'glow-red': '0 0 25px rgba(239, 68, 68, 0.45)',
+            },
+            keyframes: {
+              pulseGlow: {
+                '0%, 100%': { transform: 'scale(1)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.08)', opacity: '1' },
+              },
+              fadeInUp: {
+                '0%': { transform: 'translateY(16px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+            },
+            animation: {
+              pulseGlow: 'pulseGlow 2.5s ease-in-out infinite',
+              fadeInUp: 'fadeInUp 0.3s ease-out forwards',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Leaflet CSS & JS for Interactive Community Map -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      crossorigin=""
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+
+    <!-- Canvas Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: rgba(15, 23, 42, 0.6);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(16, 185, 129, 0.4);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #10b981;
+      }
+
+      /* Glassmorphism Styles */
+      .glass-card {
+        background: rgba(15, 23, 42, 0.82);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      html:not(.dark) .glass-card {
+        background: rgba(255, 255, 255, 0.92);
+        border: 1px solid rgba(226, 232, 240, 0.9);
+      }
+
+      .glass-card-hover {
+        transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      .glass-card-hover:hover {
+        transform: translateY(-3px);
+        border-color: rgba(16, 185, 129, 0.4);
+        box-shadow: 0 16px 32px -10px rgba(16, 185, 129, 0.2);
+      }
+
+      #mini-coord-map {
+        height: 280px;
+        width: 100%;
+        border-radius: 1.25rem;
+        z-index: 10;
+        background-color: #0b1120;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#0B1120] text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-[#10B981] selection:text-[#0F172A] transition-colors duration-300"
+    id="app-body"
+  >
+    <!-- Toast Notification Container -->
+    <div
+      id="toast-container"
+      class="fixed top-20 right-6 z-50 flex flex-col gap-3 pointer-events-none max-w-sm w-full"
+    ></div>
+
+    <!-- ========================================== -->
+    <!-- STICKY TOP NAVIGATION BAR                  -->
+    <!-- ========================================== -->
+    <header class="h-16 bg-[#0F172A]/90 backdrop-blur-xl border-b border-white/10 px-4 sm:px-6 flex items-center justify-between sticky top-0 z-40">
+      <!-- Left Logo & Nav Controls -->
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-[#0F172A]"></i>
+          </div>
+          <div class="flex flex-col">
+            <span class="font-heading font-extrabold text-lg leading-none text-white tracking-tight">
+              Disaster<span class="text-[#10B981]">OS</span>
+            </span>
+            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">
+              Community Center
+            </span>
+          </div>
+        </a>
+
+        <!-- Global Search Input Bar -->
+        <div class="relative hidden md:block w-72">
+          <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input
+            type="text"
+            id="global-search-input"
+            oninput="handleGlobalSearch(this.value)"
+            placeholder="Search posts, #hashtags, locations, resources..."
+            class="w-full pl-10 pr-4 py-2 rounded-full bg-slate-900/90 border border-white/15 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#10B981] transition"
+          />
+        </div>
+      </div>
+
+      <!-- Center Weather Advisory Ticker -->
+      <div class="hidden xl:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold">
+        <i data-lucide="cloud-lightning" class="w-4 h-4 animate-bounce"></i>
+        <span>Silver Valley Sector: Heavy Storm Warning (Level 3 Risk)</span>
+      </div>
+
+      <!-- Right Header Navigation Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Direct Links -->
+        <a href="index.html" class="text-slate-300 hover:text-white transition text-xs font-semibold hidden sm:flex items-center gap-1">
+          <i data-lucide="home" class="w-4 h-4"></i> Main
+        </a>
+        <a href="live.html" class="text-slate-300 hover:text-emerald-400 transition text-xs font-semibold flex items-center gap-1">
+          <i data-lucide="map" class="w-4 h-4 text-sky-400"></i> Map
+        </a>
+        <a href="prepare.html" class="text-slate-300 hover:text-emerald-400 transition text-xs font-semibold hidden sm:flex items-center gap-1">
+          <i data-lucide="book-open-check" class="w-4 h-4 text-emerald-400"></i> Academy
+        </a>
+        <a href="user.html" class="text-slate-300 hover:text-emerald-400 transition text-xs font-semibold flex items-center gap-1">
+          <i data-lucide="user-check" class="w-4 h-4 text-purple-400"></i> Portal
+        </a>
+
+        <!-- Emergency Request Action Button -->
+        <button
+          onclick="openCreatePostModal('help')"
+          class="px-3.5 py-2 bg-red-600 hover:bg-red-500 text-white rounded-xl text-xs font-bold transition shadow-lg shadow-red-600/30 flex items-center gap-1.5 cursor-pointer"
+        >
+          <i data-lucide="siren" class="w-4 h-4 animate-pulse"></i>
+          <span class="hidden sm:inline">Request Emergency</span>
+        </button>
+
+
+
+        <!-- Theme Toggle -->
+
+      </div>
+    </header>
+
+    <!-- ========================================== -->
+    <!-- MAIN THREE-COLUMN COMMUNITY WORKSPACE      -->
+    <!-- ========================================== -->
+    <div class="max-w-7xl w-full mx-auto p-4 sm:p-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+
+      <!-- LEFT COLUMN: TRENDING, CATEGORIES, DISASTER FILTERS (3 cols) -->
+      <aside class="lg:col-span-3 space-y-6">
+        
+       
+        <!-- Trending Emergency Hashtags & Hot Topics -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
+            <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Trending Disaster Topics</span>
+            <i data-lucide="flame" class="w-4 h-4 text-amber-400"></i>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <button onclick="searchHashtag('#SilverValleyFlood')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 transition flex items-center justify-between group">
+              <div>
+                <div class="font-bold text-white group-hover:text-emerald-400 transition">#SilverValleyFlood</div>
+                <div class="text-[10px] text-slate-400">842 verified updates</div>
+              </div>
+              <span class="px-2 py-0.5 bg-red-500/20 text-red-400 text-[10px] font-bold rounded-full">HIGH</span>
+            </button>
+
+            <button onclick="searchHashtag('#BridgeCollapse')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 transition flex items-center justify-between group">
+              <div>
+                <div class="font-bold text-white group-hover:text-emerald-400 transition">#BridgeCollapse</div>
+                <div class="text-[10px] text-slate-400">310 reports</div>
+              </div>
+              <span class="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-[10px] font-bold rounded-full">MED</span>
+            </button>
+
+            <button onclick="searchHashtag('#NeedBoats')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 transition flex items-center justify-between group">
+              <div>
+                <div class="font-bold text-white group-hover:text-emerald-400 transition">#NeedBoats</div>
+                <div class="text-[10px] text-slate-400">125 requests</div>
+              </div>
+              <span class="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full">ACTION</span>
+            </button>
+
+            <button onclick="searchHashtag('#ShelterOpen')" class="w-full text-left p-2 rounded-xl hover:bg-white/5 transition flex items-center justify-between group">
+              <div>
+                <div class="font-bold text-white group-hover:text-emerald-400 transition">#ShelterOpen</div>
+                <div class="text-[10px] text-slate-400">4 local shelters</div>
+              </div>
+              <span class="px-2 py-0.5 bg-sky-500/20 text-sky-400 text-[10px] font-bold rounded-full">SAFE</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Nearby Shielded Communities -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+            Active Response Sectors
+          </div>
+          <div class="space-y-2 text-xs">
+            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-white">Silver Valley Sector 4</div>
+                <div class="text-[10px] text-slate-400">Radius: 2.4 miles</div>
+              </div>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-white">East Hills District</div>
+                <div class="text-[10px] text-slate-400">Radius: 5.1 miles</div>
+              </div>
+              <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+
+      <!-- CENTER COLUMN: COMMUNITY FEED & CREATE POST ENGINE (6 cols) -->
+      <main class="lg:col-span-6 space-y-6">
+
+        <!-- Hero Community Greeting Banner -->
+        <div class="glass-card rounded-3xl p-6 border border-white/15 relative overflow-hidden space-y-4">
+          <div class="flex items-start justify-between">
+            <div class="space-y-1">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-400 text-xs font-bold">
+                <i data-lucide="users" class="w-3.5 h-3.5"></i> Community Coordination Mesh
+              </div>
+              <h1 class="font-heading font-black text-2xl text-white">Communities Helping Communities</h1>
+              <p class="text-xs text-slate-300 leading-relaxed max-w-lg">
+                Share real-time incident reports, offer or request emergency supplies, and dispatch verified volunteer response units.
+              </p>
+            </div>
+          </div>
+
+          <!-- Quick Actions Bar -->
+          <div class="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 text-xs font-bold">
+            <button
+              onclick="openCreatePostModal('general')"
+              class="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="edit-3" class="w-4 h-4 text-emerald-400"></i> Create Update
+            </button>
+
+            <button
+              onclick="openCreatePostModal('help')"
+              class="py-2.5 px-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="life-buoy" class="w-4 h-4 text-red-400"></i> Request Aid
+            </button>
+
+            <button
+              onclick="openCreatePostModal('offer')"
+              class="py-2.5 px-3 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 text-emerald-300 transition flex items-center justify-center gap-1.5 cursor-pointer"
+            >
+              <i data-lucide="heart" class="w-4 h-4 text-emerald-400"></i> Offer Resources
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Chips Bar -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-semibold no-scrollbar">
+          <button onclick="filterFeedBySub('all')" id="fchip-all" class="px-3.5 py-1.5 rounded-full bg-[#10B981] text-[#0F172A] font-extrabold shrink-0 cursor-pointer">
+            All Feed
+          </button>
+          <button onclick="filterFeedBySub('floods')" id="fchip-floods" class="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 shrink-0 cursor-pointer">
+            🌊 Floods
+          </button>
+          <button onclick="filterFeedBySub('road')" id="fchip-road" class="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 shrink-0 cursor-pointer">
+            🚧 Road Blocked
+          </button>
+          <button onclick="filterFeedBySub('shelter')" id="fchip-shelter" class="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 shrink-0 cursor-pointer">
+            🏕️ Shelters
+          </button>
+          <button onclick="filterFeedBySub('medical')" id="fchip-medical" class="px-3.5 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 shrink-0 cursor-pointer">
+            🚑 Medical
+          </button>
+        </div>
+
+        <!-- DYNAMIC COMMUNITY FEED CONTAINER -->
+        <div id="community-feed-container" class="space-y-4">
+          <!-- Feed Posts populated via JS -->
+        </div>
+
+      </main>
+
+      <!-- RIGHT COLUMN: RESOURCE EXCHANGE, MINI MAP, VOLUNTEERS & AI SUMMARY (3 cols) -->
+      <aside class="lg:col-span-3 space-y-6">
+
+        <!-- AI Community Live Intelligence Summary -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
+            <div class="flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400"></i>
+              <span class="font-heading font-bold text-xs text-white">AI Real-Time Summary</span>
+            </div>
+            <span class="text-[9px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-mono font-bold">UPDATED 1m AGO</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-slate-900/90 border border-white/5 space-y-2 text-xs">
+            <div class="font-bold text-amber-400">Sector Situation Brief:</div>
+            <p class="text-slate-300 text-[11px] leading-relaxed" id="ai-summary-text">
+              Silver Valley cresting flood waters at 4.2m. High demand for clean drinking water and inflatable rescue boats near 4th Avenue. 3 shelters operating at 85% capacity.
+            </p>
+          </div>
+        </div>
+
+        <!-- Mini Interactive Map for Nearby Help & Shelters -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <i data-lucide="map-pin" class="w-4 h-4 text-sky-400"></i>
+              <span class="font-heading font-bold text-xs text-white">Check The Live</span>
+            </div>
+            <a href="live.html" class="text-[11px] text-emerald-400 font-bold hover:underline">Full Map</a>
+          </div>
+          <div id="mini-coord-map"></div>
+        </div>
+
+        <!-- Resource Exchange Card (Need vs Offer Tabs) -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-4">
+          <div class="flex items-center justify-between border-b border-white/10 pb-3">
+            <span class="font-heading font-bold text-xs text-white">Emergency Resource Exchange</span>
+            <button onclick="openResourceModal()" class="text-[11px] text-emerald-400 font-bold hover:underline">+ Post Resource</button>
+          </div>
+
+          <!-- Resource Tabs -->
+          <div class="flex gap-2 text-xs font-bold border-b border-white/10 pb-2">
+            <button onclick="switchResourceTab('need')" id="rtab-need" class="px-3 py-1.5 rounded-xl bg-red-500/20 text-red-400 transition cursor-pointer">
+              Need Supplies (6)
+            </button>
+            <button onclick="switchResourceTab('offer')" id="rtab-offer" class="px-3 py-1.5 rounded-xl bg-white/5 text-slate-400 transition cursor-pointer">
+              Offering Help (10)
+            </button>
+          </div>
+
+          <!-- Resource Items Container -->
+          <div id="resource-items-container" class="space-y-2.5 text-xs">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Volunteer Dispatch Panel -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="flex items-center justify-between border-b border-white/10 pb-2">
+            <div class="flex items-center gap-2">
+              <i data-lucide="heart-handshake" class="w-4 h-4 text-amber-400"></i>
+              <span class="font-heading font-bold text-xs text-white">Nearby Active Volunteers</span>
+            </div>
+            <span class="text-[10px] text-slate-400">5 Online</span>
+          </div>
+
+          <div class="space-y-2 text-xs" id="volunteer-list-container">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+
+        <!-- Live Activity Ticker -->
+        <div class="glass-card rounded-3xl p-5 border border-white/15 space-y-3">
+          <div class="flex items-center gap-2 text-xs font-bold text-white border-b border-white/10 pb-2">
+            <i data-lucide="activity" class="w-4 h-4 text-emerald-400 animate-pulse"></i>
+            <span>Live Action Stream</span>
+          </div>
+
+          <div class="space-y-2 text-[11px] text-slate-300" id="activity-stream-container">
+            <!-- Ticker logs via JS -->
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL 1: CREATE POST / EMERGENCY UPDATE    -->
+    <!-- ========================================== -->
+    <div
+      id="modal-create-post"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-xl w-full border border-white/20 shadow-2xl space-y-5 animate-fadeInUp">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </div>
+            <h3 class="font-heading font-bold text-base text-white" id="modal-post-title">Create Emergency Update</h3>
+          </div>
+          <button onclick="closeModal('modal-create-post')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handlePostSubmit(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Update Category</label>
+            <select id="post-category" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white">
+              <option value="general">📢 General Community Update</option>
+              <option value="need_help">🚨 SOS / Need Assistance</option>
+              <option value="offer">❤️ Offering Help / Supplies</option>
+              <option value="road">🚧 Road Closure / Hazard</option>
+              <option value="shelter">🏕️ Shelter Information</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Update Title or Short Headline</label>
+            <input
+              type="text"
+              id="post-headline"
+              required
+              placeholder="e.g. Flash Flood Water Cresting at Silver Valley Bridge"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white"
+            />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Detailed Description & Emergency Status</label>
+            <textarea
+              id="post-content"
+              rows="4"
+              required
+              placeholder="Provide exact details, street names, urgency level, or instructions..."
+              class="w-full p-3.5 rounded-xl bg-slate-900 border border-white/15 text-white resize-none"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Location / Sector</label>
+              <input
+                type="text"
+                id="post-location"
+                value="Silver Valley, 4th Avenue"
+                class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white"
+              />
+            </div>
+
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Severity Level</label>
+              <select id="post-severity" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white">
+                <option value="HIGH">🔴 Critical / High</option>
+                <option value="MED">🟡 Moderate</option>
+                <option value="LOW">🟢 Low Risk</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Attachments & Image Simulation -->
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Attach Photo Evidence (Simulated)</label>
+            <input
+              type="text"
+              id="post-image-url"
+              placeholder="https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=600&q=80"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white placeholder-slate-500"
+            />
+            <span class="text-[10px] text-slate-400 mt-1 block">Leave default for sample flood image.</span>
+          </div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-white/10">
+            <label class="flex items-center gap-2 cursor-pointer text-slate-300">
+              <input type="checkbox" id="post-anonymous" class="accent-[#10B981] rounded" />
+              <span>Post Anonymously</span>
+            </label>
+
+            <button
+              type="submit"
+              class="px-6 py-3 bg-[#10B981] hover:bg-emerald-400 text-[#0F172A] font-extrabold rounded-xl shadow-lg transition cursor-pointer flex items-center gap-2"
+            >
+              <i data-lucide="send" class="w-4 h-4"></i> Dispatch Post (AI Verify)
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MODAL 2: MISSING PERSONS REGISTRY          -->
+    <!-- ========================================== -->
+    <div
+      id="modal-missing-person"
+      class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto"
+    >
+      <div class="glass-card rounded-3xl p-6 sm:p-8 max-w-xl w-full border border-white/20 shadow-2xl space-y-5 animate-fadeInUp">
+        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="user-search" class="w-5 h-5 text-rose-400"></i>
+            <h3 class="font-heading font-bold text-base text-white">Missing Persons Urgent Alert</h3>
+          </div>
+          <button onclick="closeModal('modal-missing-person')" class="text-slate-400 hover:text-white p-1 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <form onsubmit="handleMissingPersonSubmit(event)" class="space-y-4 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Full Name of Missing Person</label>
+            <input type="text" id="mp-name" required placeholder="e.g. David Miller" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Age & Gender</label>
+              <input type="text" id="mp-age" placeholder="e.g. 34 / Male" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-300 mb-1">Last Seen Location</label>
+              <input type="text" id="mp-location" required placeholder="Silver Valley Sector 4" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Identifying Description & Clothing</label>
+            <textarea id="mp-desc" rows="3" placeholder="Wearing yellow raincoat, height 5'10, carrying red backpack..." class="w-full p-3 rounded-xl bg-slate-900 border border-white/15 text-white resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Contact Phone for Leads</label>
+            <input type="tel" id="mp-contact" required placeholder="+1 (555) 019-2831" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-white/15 text-white" />
+          </div>
+
+          <button type="submit" class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-extrabold rounded-xl shadow-lg transition cursor-pointer">
+            Broadcast Missing Person Bulletin
+          </button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- MASTER JAVASCRIPT LOGIC & STATE DATABASE   -->
+    <!-- ========================================== -->
+    <script>
+      // ----------------------------------------------------
+      // 1. DATABASE & INITIAL STATE ENGINE (LOCALSTORAGE)
+      // ----------------------------------------------------
+      const SEED_POSTS = [
+        {
+          id: 'post-101',
+          author: 'Sarah Jenkins',
+          role: 'Volunteer Responder',
+          verified: true,
+          badgeColor: 'bg-emerald-500',
+          avatar: 'SJ',
+          timestamp: '10 mins ago',
+          location: 'Silver Valley, West Bridge',
+          category: 'floods',
+          headline: 'River levels rising quickly at West River Parkway!',
+          content: 'Water has crossed the lower retaining wall. If you are parked near Sector 4 lower parking lot, please move your vehicle immediately to high ground near Silver Valley High School.',
+          image: 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80',
+          severity: 'HIGH',
+          aiScore: 98,
+          aiStatus: 'Verified by Satellite & 4 User Cross-Checks',
+          likes: 42,
+          comments: [
+            { user: 'Mark D.', text: 'Thanks Sarah! Moving my truck right now.' },
+            { user: 'Officer Vance', text: 'Police units dispatched to close West River Parkway bridge.' }
+          ]
+        },
+        {
+          id: 'post-102',
+          author: 'Red Cross Response Unit',
+          role: 'NGO Relief Ops',
+          verified: true,
+          badgeColor: 'bg-sky-500',
+          avatar: 'RC',
+          timestamp: '25 mins ago',
+          location: 'Community Center Shelter #2',
+          category: 'shelter',
+          headline: 'Emergency Shelter #2 open & accepting evacuees',
+          content: 'We have 250 dry cots, hot soup, clean drinking water, and pediatric medical supplies available. Pet friendly area set up in North Gymnasium.',
+          image: 'https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?auto=format&fit=crop&w=800&q=80',
+          severity: 'LOW',
+          aiScore: 100,
+          aiStatus: 'Official NGO Broadcast Verified',
+          likes: 89,
+          comments: [
+            { user: 'Elena R.', text: 'Do you need extra blankets? I have 20 clean ones to donate.' }
+          ]
+        },
+        {
+          id: 'post-103',
+          author: 'David Chen',
+          role: 'Local Citizen',
+          verified: false,
+          badgeColor: 'bg-slate-500',
+          avatar: 'DC',
+          timestamp: '1 hour ago',
+          location: 'Oakridge Avenue & 5th St',
+          category: 'road',
+          headline: 'Downed power line across Oakridge Ave',
+          content: 'A large pine tree fell on power lines near the 5th Street intersection. Road is completely blocked. Sparks visible — DO NOT APPROACH.',
+          image: null,
+          severity: 'HIGH',
+          aiScore: 92,
+          aiStatus: 'Likely Accurate (Power Grid Telemetry Match)',
+          likes: 27,
+          comments: []
+        }
+      ];
+
+      const SEED_RESOURCES = [
+        { id: 'r1', type: 'need', title: '50 Gallons Drinking Water', location: 'Sector 4 Shelter', qty: '50 Gal', urgency: 'URGENT' },
+        { id: 'r2', type: 'need', title: 'Inflatable Rescue Raft', location: 'West River Parkway', qty: '2 Boats', urgency: 'CRITICAL' },
+        { id: 'r3', type: 'offer', title: 'Portable 5kW Generator', location: 'Silver Valley North', qty: '1 Unit', status: 'Available' },
+        { id: 'r4', type: 'offer', title: 'Warm Blankets & Clothes', location: 'East Hills Hub', qty: '40 Sets', status: 'Available' }
+      ];
+
+      const SEED_VOLUNTEERS = [
+        { name: 'Dr. Marcus Vance', skill: 'Medical & First Aid', distance: '0.8 miles away', status: 'Active' },
+        { name: 'Jake Thorne', skill: 'Boat Rescue & Swift Water', distance: '1.4 miles away', status: 'Active' },
+        { name: 'Maria Gomez', skill: 'Bilingual Logistics', distance: '2.1 miles away', status: 'On Call' }
+      ];
+
+      // Load DB from localStorage or seed
+      let appPosts = JSON.parse(localStorage.getItem('dos_x_posts')) || SEED_POSTS;
+      let appResources = JSON.parse(localStorage.getItem('dos_x_resources')) || SEED_RESOURCES;
+      let activeFeedFilter = 'all';
+      let activeSubFilter = 'all';
+      let activeResourceTab = 'need';
+
+      function saveDb() {
+        localStorage.setItem('dos_x_posts', JSON.stringify(appPosts));
+        localStorage.setItem('dos_x_resources', JSON.stringify(appResources));
+      }
+
+      // ----------------------------------------------------
+      // 2. RENDER COMMUNITY FEED ENGINE
+      // ----------------------------------------------------
+      function renderFeed() {
+        const container = document.getElementById('community-feed-container');
+        if (!container) return;
+
+        let filtered = appPosts.filter(post => {
+          // Category filter
+          if (activeFeedFilter === 'need_help' && post.category !== 'need_help') return false;
+          if (activeFeedFilter === 'resource' && post.category !== 'offer') return false;
+          if (activeFeedFilter === 'volunteer' && post.role.indexOf('Volunteer') === -1) return false;
+          if (activeFeedFilter === 'official' && post.role.indexOf('NGO') === -1 && post.role.indexOf('Gov') === -1) return false;
+
+          // Sub chip filter
+          if (activeSubFilter !== 'all' && post.category !== activeSubFilter) return false;
+
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `
+            <div class="glass-card rounded-3xl p-8 text-center space-y-3">
+              <i data-lucide="search-x" class="w-8 h-8 text-slate-400 mx-auto"></i>
+              <div class="font-heading font-bold text-white text-sm">No updates match this filter</div>
+              <p class="text-xs text-slate-400">Try selecting "All Feed" or clearing your search keywords.</p>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        container.innerHTML = filtered.map(post => `
+          <div class="glass-card glass-card-hover rounded-3xl p-5 border border-white/15 space-y-4 animate-fadeInUp">
+            
+            <!-- Author Header & AI Verification Badge -->
+            <div class="flex items-start justify-between">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-[#10B981] text-[#0F172A] font-extrabold flex items-center justify-center text-xs shadow-md">
+                  ${post.avatar}
+                </div>
+                <div>
+                  <div class="flex items-center gap-1.5 font-bold text-xs text-white">
+                    <span>${post.author}</span>
+                    ${post.verified ? `<i data-lucide="check-circle" class="w-3.5 h-3.5 text-emerald-400"></i>` : ''}
+                    <span class="text-[10px] px-2 py-0.5 rounded-full ${post.badgeColor} text-white font-mono">${post.role}</span>
+                  </div>
+                  <div class="text-[10px] text-slate-400 flex items-center gap-2 mt-0.5">
+                    <span><i data-lucide="clock" class="w-3 h-3 inline"></i> ${post.timestamp}</span>
+                    <span>•</span>
+                    <span class="text-sky-400 font-semibold"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${post.location}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Severity Tag -->
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${
+                post.severity === 'HIGH' ? 'bg-red-500/20 text-red-400 border border-red-500/30' :
+                post.severity === 'MED' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+              }">
+                ${post.severity} SEVERITY
+              </span>
+            </div>
+
+            <!-- Post Content & Headline -->
+            <div class="space-y-1.5 text-xs text-slate-200">
+              <h3 class="font-heading font-bold text-sm text-white">${post.headline}</h3>
+              <p class="leading-relaxed text-slate-300">${post.content}</p>
+            </div>
+
+            <!-- Image Attachment (if present) -->
+            ${post.image ? `
+              <div class="rounded-2xl overflow-hidden border border-white/10 max-h-64 relative group">
+                <img src="${post.image}" alt="Disaster Incident" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div class="absolute bottom-2 left-2 px-2.5 py-1 rounded-lg bg-black/70 backdrop-blur-md text-[10px] text-emerald-400 font-bold border border-emerald-500/30">
+                  <i data-lucide="camera" class="w-3 h-3 inline"></i> Photo Verified
+                </div>
+              </div>
+            ` : ''}
+
+            <!-- AI Confidence Telemetry Bar -->
+            <div class="p-2.5 rounded-xl bg-slate-900/80 border border-white/5 flex items-center justify-between text-[11px]">
+              <div class="flex items-center gap-1.5 text-emerald-400 font-semibold">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                <span>${post.aiStatus}</span>
+              </div>
+              <span class="font-mono font-bold text-slate-400">${post.aiScore}% Match</span>
+            </div>
+
+            <!-- Interactive Action Bar (Like, Comment, Share, Dispatch) -->
+            <div class="flex items-center justify-between pt-2 border-t border-white/10 text-xs font-semibold text-slate-400">
+              <button onclick="likePost('${post.id}')" class="flex items-center gap-1.5 hover:text-emerald-400 transition cursor-pointer">
+                <i data-lucide="heart" class="w-4 h-4 text-emerald-400"></i>
+                <span>${post.likes} Support</span>
+              </button>
+
+              <button onclick="toggleComments('${post.id}')" class="flex items-center gap-1.5 hover:text-white transition cursor-pointer">
+                <i data-lucide="message-square" class="w-4 h-4"></i>
+                <span>${post.comments.length} Comments</span>
+              </button>
+
+              <button onclick="sharePost('${post.id}')" class="flex items-center gap-1.5 hover:text-sky-400 transition cursor-pointer">
+                <i data-lucide="share-2" class="w-4 h-4"></i>
+                <span>Share</span>
+              </button>
+
+              <a href="/map2.html" class="flex items-center gap-1 text-emerald-400 font-bold hover:underline">
+                <i data-lucide="navigation" class="w-3.5 h-3.5"></i> Route
+              </a>
+            </div>
+
+            <!-- Comments Section Drawer -->
+            <div id="comments-drawer-${post.id}" class="hidden pt-3 border-t border-white/10 space-y-2 text-xs">
+              <div class="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                ${post.comments.map(c => `
+                  <div class="p-2 rounded-xl bg-white/5 text-[11px] space-y-0.5">
+                    <span class="font-bold text-emerald-400">${c.user}:</span>
+                    <span class="text-slate-300 ml-1">${c.text}</span>
+                  </div>
+                `).join('')}
+              </div>
+
+              <!-- Add Comment Input -->
+              <div class="flex gap-2 pt-1">
+                <input
+                  type="text"
+                  id="comment-input-${post.id}"
+                  placeholder="Write a comment..."
+                  class="flex-1 px-3 py-1.5 rounded-xl bg-slate-900 border border-white/15 text-xs text-white"
+                />
+                <button
+                  onclick="addComment('${post.id}')"
+                  class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-[#0F172A] font-bold rounded-xl text-xs transition cursor-pointer"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+
+          </div>
+        `).join('');
+
+        lucide.createIcons();
+      }
+
+      // ----------------------------------------------------
+      // 3. RESOURCE EXCHANGE ENGINE
+      // ----------------------------------------------------
+      function renderResources() {
+        const container = document.getElementById('resource-items-container');
+        if (!container) return;
+
+        let filtered = appResources.filter(r => r.type === activeResourceTab);
+
+        container.innerHTML = filtered.map(r => `
+          <div class="p-3 rounded-2xl bg-slate-900/80 border border-white/10 hover:border-emerald-500/40 transition flex items-center justify-between space-y-1">
+            <div>
+              <div class="font-bold text-white text-xs">${r.title}</div>
+              <div class="text-[10px] text-slate-400 flex items-center gap-2">
+                <span>📍 ${r.location}</span>
+                <span>• Qty: ${r.qty}</span>
+              </div>
+            </div>
+            <button
+              onclick="claimResource('${r.id}')"
+              class="px-2.5 py-1 rounded-xl text-[10px] font-extrabold ${
+                r.type === 'need' ? 'bg-red-500/20 text-red-400 border border-red-500/30 hover:bg-red-500/40' :
+                'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/40'
+              } transition cursor-pointer shrink-0"
+            >
+              ${r.type === 'need' ? 'Supply Item' : 'Claim Help'}
+            </button>
+          </div>
+        `).join('');
+      }
+
+      function switchResourceTab(type) {
+        activeResourceTab = type;
+        const btnNeed = document.getElementById('rtab-need');
+        const btnOffer = document.getElementById('rtab-offer');
+
+        if (type === 'need') {
+          btnNeed.className = 'px-3 py-1.5 rounded-xl bg-red-500/20 text-red-400 transition cursor-pointer font-bold';
+          btnOffer.className = 'px-3 py-1.5 rounded-xl bg-white/5 text-slate-400 transition cursor-pointer font-bold';
+        } else {
+          btnOffer.className = 'px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 transition cursor-pointer font-bold';
+          btnNeed.className = 'px-3 py-1.5 rounded-xl bg-white/5 text-slate-400 transition cursor-pointer font-bold';
+        }
+
+        renderResources();
+      }
+
+      function claimResource(id) {
+        showToast('Resource match request sent to coordinator!', 'success');
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+      }
+
+      // ----------------------------------------------------
+      // 4. VOLUNTEER LIST & ACTIVITY TICKER
+      // ----------------------------------------------------
+      function renderVolunteers() {
+        const container = document.getElementById('volunteer-list-container');
+        if (!container) return;
+
+        container.innerHTML = SEED_VOLUNTEERS.map(v => `
+          <div class="p-2.5 rounded-xl bg-white/5 flex items-center justify-between">
+            <div>
+              <div class="font-bold text-white">${v.name}</div>
+              <div class="text-[10px] text-amber-400 font-semibold">${v.skill} (${v.distance})</div>
+            </div>
+            <button onclick="dispatchVolunteer('${v.name}')" class="px-2 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-lg hover:bg-emerald-500/30 transition cursor-pointer">
+              Dispatch
+            </button>
+          </div>
+        `).join('');
+      }
+
+      function dispatchVolunteer(name) {
+        showToast(`Dispatched alert to volunteer ${name}!`, 'info');
+      }
+
+      function initActivityTicker() {
+        const container = document.getElementById('activity-stream-container');
+        if (!container) return;
+
+        const activities = [
+          '🚨 Volunteer Jake T. accepted rescue mission near West River Bridge.',
+          '🏕️ Shelter #2 added 50 dry cots to available capacity.',
+          '🚧 West River Parkway closed by Police Unit 4.',
+          '✅ AI Verified flood level report in Silver Valley.'
+        ];
+
+        container.innerHTML = activities.map(a => `
+          <div class="p-2 rounded-xl bg-slate-900/60 border border-white/5">
+            ${a}
+          </div>
+        `).join('');
+      }
+
+      // ----------------------------------------------------
+      // 5. INTERACTIVE LEAFLET MINI-MAP
+      // ----------------------------------------------------
+      let miniMap = null;
+      function initMiniMap() {
+        const mapEl = document.getElementById('mini-coord-map');
+        if (!mapEl || miniMap) return;
+
+        miniMap = L.map('mini-coord-map', {
+          center: [34.0522, -118.2437],
+          zoom: 12,
+          zoomControl: false,
+        });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors',
+        }).addTo(miniMap);
+
+        // Custom Markers
+        const incidentIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div style="background-color: #EF4444; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #EF4444;"></div>`,
+          iconSize: [14, 14],
+        });
+
+        const shelterIcon = L.divIcon({
+          className: 'custom-div-icon',
+          html: `<div style="background-color: #10B981; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px #10B981;"></div>`,
+          iconSize: [14, 14],
+        });
+
+        L.marker([34.058, -118.25], { icon: incidentIcon }).addTo(miniMap).bindPopup('Critical Flood Area');
+        L.marker([34.045, -118.23], { icon: shelterIcon }).addTo(miniMap).bindPopup('Open Shelter #2');
+      }
+
+      // ----------------------------------------------------
+      // 6. EVENT HANDLERS & MODAL MANAGEMENT
+      // ----------------------------------------------------
+      function openCreatePostModal(category = 'general') {
+        const modal = document.getElementById('modal-create-post');
+        if (modal) {
+          modal.classList.remove('hidden');
+          document.getElementById('post-category').value = category;
+        }
+      }
+
+      function openMissingPersonModal() {
+        const modal = document.getElementById('modal-missing-person');
+        if (modal) modal.classList.remove('hidden');
+      }
+
+      function closeModal(id) {
+        const modal = document.getElementById(id);
+        if (modal) modal.classList.add('hidden');
+      }
+
+      function handlePostSubmit(e) {
+        e.preventDefault();
+
+        const category = document.getElementById('post-category').value;
+        const headline = document.getElementById('post-headline').value;
+        const content = document.getElementById('post-content').value;
+        const location = document.getElementById('post-location').value;
+        const severity = document.getElementById('post-severity').value;
+        const image = document.getElementById('post-image-url').value || 'https://images.unsplash.com/photo-1547683905-f686c993aae5?auto=format&fit=crop&w=800&q=80';
+        const isAnon = document.getElementById('post-anonymous').checked;
+
+        const newPost = {
+          id: 'post-' + Date.now(),
+          author: isAnon ? 'Anonymous Citizen' : 'Alex Johnson',
+          role: isAnon ? 'Verified Reporter' : 'Volunteer',
+          verified: true,
+          badgeColor: 'bg-emerald-500',
+          avatar: isAnon ? 'AC' : 'AJ',
+          timestamp: 'Just now',
+          location: location,
+          category: category,
+          headline: headline,
+          content: content,
+          image: image,
+          severity: severity,
+          aiScore: 96,
+          aiStatus: 'AI Verified & Satellite Matched',
+          likes: 1,
+          comments: []
+        };
+
+        appPosts.unshift(newPost);
+        saveDb();
+        renderFeed();
+        closeModal('modal-create-post');
+
+        showToast('Emergency update published and AI-verified!', 'success');
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
+      }
+
+      function handleMissingPersonSubmit(e) {
+        e.preventDefault();
+        const name = document.getElementById('mp-name').value;
+        closeModal('modal-missing-person');
+        showToast(`Missing person bulletin broadcast for ${name}!`, 'warning');
+      }
+
+      function filterFeedByCategory(cat) {
+        activeFeedFilter = cat;
+        renderFeed();
+      }
+
+      function filterFeedBySub(sub) {
+        activeSubFilter = sub;
+        renderFeed();
+      }
+
+      function likePost(id) {
+        const post = appPosts.find(p => p.id === id);
+        if (post) {
+          post.likes += 1;
+          saveDb();
+          renderFeed();
+          showToast('Added support endorsement to post!', 'success');
+        }
+      }
+
+      function toggleComments(id) {
+        const drawer = document.getElementById(`comments-drawer-${id}`);
+        if (drawer) drawer.classList.toggle('hidden');
+      }
+
+      function addComment(id) {
+        const input = document.getElementById(`comment-input-${id}`);
+        if (!input || !input.value.trim()) return;
+
+        const post = appPosts.find(p => p.id === id);
+        if (post) {
+          post.comments.push({ user: 'Alex Johnson', text: input.value.trim() });
+          saveDb();
+          renderFeed();
+          showToast('Comment posted!', 'info');
+        }
+      }
+
+      function sharePost(id) {
+        showToast('Direct emergency dispatch link copied to clipboard!', 'info');
+      }
+
+      function handleGlobalSearch(query) {
+        if (!query) {
+          renderFeed();
+          return;
+        }
+        query = query.toLowerCase();
+        const filtered = appPosts.filter(p =>
+          p.headline.toLowerCase().includes(query) ||
+          p.content.toLowerCase().includes(query) ||
+          p.location.toLowerCase().includes(query)
+        );
+
+        const container = document.getElementById('community-feed-container');
+        if (container) {
+          container.innerHTML = filtered.map(post => `
+            <!-- Simplified rendered post snippet -->
+            <div class="glass-card rounded-2xl p-4 space-y-2 border border-emerald-500/30">
+              <div class="font-bold text-white text-xs">${post.headline}</div>
+              <div class="text-[11px] text-slate-300">${post.content}</div>
+            </div>
+          `).join('');
+        }
+      }
+
+      function searchHashtag(tag) {
+        document.getElementById('global-search-input').value = tag;
+        handleGlobalSearch(tag);
+      }
+
+      function switchLanguage(lang) {
+        showToast(`Language switched to ${lang.toUpperCase()}`, 'info');
+      }
+
+      function toggleTheme() {
+        document.documentElement.classList.toggle('dark');
+      }
+
+      function showToast(message, type = 'info') {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = `pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-2xl text-xs font-bold text-white shadow-2xl backdrop-blur-xl border transition-all duration-300 animate-fadeInUp ${
+          type === 'success' ? 'bg-emerald-600/90 border-emerald-400/50' :
+          type === 'warning' ? 'bg-amber-600/90 border-amber-400/50' :
+          'bg-slate-900/90 border-white/20'
+        }`;
+
+        toast.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i data-lucide="${type === 'success' ? 'check-circle-2' : type === 'warning' ? 'alert-triangle' : 'info'}" class="w-4 h-4"></i>
+            <span>${message}</span>
+          </div>
+          <button onclick="this.parentElement.remove()" class="opacity-70 hover:opacity-100"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        `;
+
+        container.appendChild(toast);
+        lucide.createIcons();
+
+        setTimeout(() => {
+          toast.remove();
+        }, 4000);
+      }
+
+      // Initialize on DOM load
+      document.addEventListener('DOMContentLoaded', () => {
+        renderFeed();
+        renderResources();
+        renderVolunteers();
+        initActivityTicker();
+        setTimeout(initMiniMap, 400);
+        lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
